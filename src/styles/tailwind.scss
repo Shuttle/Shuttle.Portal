@@ -1,0 +1,8 @@
+@tailwind utilities;
+
+@layer components {
+  /* Card */
+  .sv-card {
+    @apply text-center;
+  }
+}
