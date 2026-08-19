@@ -152,7 +152,7 @@ export const useSessionStore = defineStore("session", () => {
       (item) =>
         item.tenantId === tenantId.value &&
         (!item.name.startsWith("access://tenants/") ||
-          tenantId.value === configuration.systemTenantId),
+          tenantId.value === configuration.accessSystemTenantId),
     );
   });
 
@@ -192,7 +192,7 @@ export const useSessionStore = defineStore("session", () => {
   };
 
   const systemTenantActive = computed(() => {
-    return tenantId.value === configuration.systemTenantId;
+    return tenantId.value === configuration.accessSystemTenantId;
   });
 
   const getTenantName = (id: string) => {

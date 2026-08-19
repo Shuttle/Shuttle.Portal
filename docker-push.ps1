@@ -14,21 +14,21 @@ if ($version -match '-') {
     $pushLatest = $false
 }
 
-Write-Host "Pushing Docker image shuttle/portal-vue:$version..." -ForegroundColor Cyan
-docker push "shuttle/portal-vue:$version"
+Write-Host "Pushing Docker image shuttle/portal:$version..." -ForegroundColor Cyan
+docker push "shuttle/portal:$version"
 
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "ERROR: Failed to push Docker image shuttle/portal-vue:$version." -ForegroundColor Red
+    Write-Host "ERROR: Failed to push Docker image shuttle/portal:$version." -ForegroundColor Red
     exit 1
 }
 
 if ($pushLatest) {
-    Write-Host "Pushing Docker image shuttle/portal-vue:latest..." -ForegroundColor Cyan
-    docker tag "shuttle/portal-vue:$version" "shuttle/portal-vue:latest"
-    docker push "shuttle/portal-vue:latest"
+    Write-Host "Pushing Docker image shuttle/portal:latest..." -ForegroundColor Cyan
+    docker tag "shuttle/portal:$version" "shuttle/portal:latest"
+    docker push "shuttle/portal:latest"
 
     if ($LASTEXITCODE -ne 0) {
-        Write-Host "ERROR: Failed to push Docker image shuttle/portal-vue:latest." -ForegroundColor Red
+        Write-Host "ERROR: Failed to push Docker image shuttle/portal:latest." -ForegroundColor Red
         exit 1
     }
 }

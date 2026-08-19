@@ -10,4 +10,4 @@ if "%version%"=="" (
     exit /b 1
 )
 
-docker build -t shuttle/portal-vue:latest -t shuttle/portal-vue:%version% .
+docker build -t shuttle/portal:latest -t shuttle/portal:%version% .

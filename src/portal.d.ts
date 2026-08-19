@@ -1,3 +1,5 @@
+import type { Api } from "./enums";
+
 export type Alert = {
   message: string;
   name: string;
@@ -16,10 +18,12 @@ export type Configuration = {
   getErrorMessage: () => string;
   getAccessUrl: () => string;
   getRecallUrl: () => string;
-  isPasswordAuthenticationAllowed: () => boolean;
+  isAccessAvailable: () => boolean;
+  isRecallAvailable: () => boolean;
+  isAccessPasswordAuthenticationAllowed: () => boolean;
   isDebugging: () => boolean;
-  getApiUrl: (path: string) => string;
-  systemTenantId: string;
+  getApiUrl: (api: Api, path: string) => string;
+  accessSystemTenantId: string;
 };
 
 export type ChangePassword = {
@@ -239,7 +243,7 @@ export type RegisterTenant = {
   administratorIdentityName?: string;
 };
 
-export type ServerConfiguration = {
+export type AccessServerConfiguration = {
   allowPasswordAuthentication: boolean;
   systemTenantId: string;
 };

@@ -25,6 +25,7 @@
 <script setup lang="ts">
 import type { DashboardItem } from "@/portal";
 import { accessApi } from "@/api";
+import configuration from "@/configuration";
 import Permissions from "@/permissions";
 import { useSessionStore } from "@/stores/session";
 import {
@@ -54,30 +55,35 @@ const addItem = (title: string, value: number, route: string, svg: string) => {
 };
 
 const refresh = async () => {
-  const response = await accessApi.get("v1/statistics/dashboard");
+  if (configuration.isAccessAvailable()) {
+    const response = await accessApi.get("v1/statistics/dashboard");
 
-  addItem(
-    t("permissions"),
-    response.data.permissionCount,
-    "permissions",
-    mdiShield,
-  );
-  addItem(
-    t("identities"),
-    response.data.identityCount,
-    "identities",
-    mdiAccount,
-  );
-  addItem(t("roles"), response.data.roleCount, "roles", mdiAccountGroup);
-  addItem(
-    t("sessions"),
-    response.data.sessionCount,
-    "sessions",
-    mdiBadgeAccount,
-  );
-  addItem(t("tenants"), response.data.tenantCount, "tenants", mdiDomain);
+    addItem(
+      t("permissions"),
+      response.data.permissionCount,
+      "permissions",
+      mdiShield,
+    );
+    addItem(
+      t("identities"),
+      response.data.identityCount,
+      "identities",
+      mdiAccount,
+    );
+    addItem(t("roles"), response.data.roleCount, "roles", mdiAccountGroup);
+    addItem(
+      t("sessions"),
+      response.data.sessionCount,
+      "sessions",
+      mdiBadgeAccount,
+    );
+    addItem(t("tenants"), response.data.tenantCount, "tenants", mdiDomain);
+  }
 
-  if (sessionStore.hasPermission(Permissions.Events.View)) {
+  if (
+    configuration.isRecallAvailable() &&
+    sessionStore.hasPermission(Permissions.Events.View)
+  ) {
     addItem(t("events"), 0, "events", mdiDatabaseClockOutline);
   }
 };

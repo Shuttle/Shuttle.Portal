@@ -1,8 +1,9 @@
-import type { Configuration, Env, ServerConfiguration } from "./portal";
+import type { AccessServerConfiguration, Configuration, Env } from "./portal";
+import { Api } from "./enums";
 import axios from "axios";
 
 let errorMessage: string;
-let serverConfiguration: ServerConfiguration;
+let accessServerConfiguration: AccessServerConfiguration;
 let values: Env;
 let isOk = true;
 
@@ -20,11 +21,13 @@ try {
 
   values = await env();
 
-  const accessUrl = `${values.VITE_ACCESS_API_URL}${values.VITE_ACCESS_API_URL.endsWith("/") ? "" : "/"}`;
+  if (values.VITE_ACCESS_API_URL) {
+    const accessUrl = `${values.VITE_ACCESS_API_URL}${values.VITE_ACCESS_API_URL.endsWith("/") ? "" : "/"}`;
 
-  serverConfiguration = (
-    await axios.get<ServerConfiguration>(`${accessUrl}v1/server/configuration`)
-  ).data;
+    accessServerConfiguration = (
+      await axios.get<AccessServerConfiguration>(`${accessUrl}v1/server/configuration`)
+    ).data;
+  }
 } catch (error: any) {
   isOk = false;
   errorMessage = error.toString();
@@ -48,22 +51,42 @@ const getConfiguration = (): Configuration => {
         ? `${values.VITE_RECALL_API_URL}${values.VITE_RECALL_API_URL.endsWith("/") ? "" : "/"}`
         : "";
     },
-    isPasswordAuthenticationAllowed() {
-      return isOk ? serverConfiguration.allowPasswordAuthentication : false;
+    isAccessAvailable() {
+      return isOk && !!values.VITE_ACCESS_API_URL;
+    },
+    isRecallAvailable() {
+      return isOk && !!values.VITE_RECALL_API_URL;
+    },
+    isAccessPasswordAuthenticationAllowed() {
+      return this.isAccessAvailable()
+        ? accessServerConfiguration.allowPasswordAuthentication
+        : false;
     },
     isDebugging() {
       return import.meta.env.DEV;
     },
-    getApiUrl(path: string) {
+    getApiUrl(api: Api, path: string) {
       if (path.startsWith("/") && path.length < 2) {
         path = "";
       }
 
-      return (
-        this.getAccessUrl() + (path.startsWith("/") ? path.substring(1) : path)
-      );
+      const buildApiUrl = (baseUrl: string, path: string) => {
+        return baseUrl + (path.startsWith("/") ? path.substring(1) : path);
+      };
+
+      switch (api) {
+        case Api.Access: {
+          return buildApiUrl(this.getAccessUrl(), path);
+        }
+        case Api.Recall: {
+          return buildApiUrl(this.getRecallUrl(), path);
+        }
+        default: {
+          throw `Unknown Api name '${api}'.`;
+        }
+      }
     },
-    systemTenantId: serverConfiguration.systemTenantId,
+    accessSystemTenantId: accessServerConfiguration?.systemTenantId ?? "",
   };
 };
 

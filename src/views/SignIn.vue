@@ -1,7 +1,7 @@
 <template>
   <s-form :submit="signIn" size="small" class="px-5 pt-6">
     <s-title :title="$t('sign-in')"></s-title>
-    <div v-if="configuration.isPasswordAuthenticationAllowed()">
+    <div v-if="configuration.isAccessPasswordAuthenticationAllowed()">
       <v-text-field
         :prepend-icon="`svg:${mdiAccountOutline}`"
         v-model="state.identityName"
