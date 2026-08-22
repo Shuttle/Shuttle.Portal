@@ -64,6 +64,7 @@ export type DashboardItem = {
   title: string;
   value: number;
   svg: string;
+  permission: string;
 };
 
 export type DrawerOptions = {

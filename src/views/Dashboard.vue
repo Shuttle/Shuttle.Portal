@@ -1,19 +1,14 @@
 <template>
   <div>
     <div class="flex flex-col sm:flex-row items-stretch gap-2 p-2">
-      <div
-        v-for="item in items"
-        :key="item.route"
-        class="group flex flex-col items-center justify-center border border-solid rounded-lg p-2 w-full cursor-pointer hover:bg-[color:rgb(var(--v-theme-primary--hover))] active:bg-[color:rgb(var(--v-theme-primary--active))]"
-        @click="click(item)"
-      >
-        <v-icon
-          :icon="item.svg"
-          class="text-[color:rgb(var(--v-theme-primary--hover))] group-hover:text-[color:rgb(var(--v-theme-secondary--hover))]"
-        ></v-icon>
-        <div
-          class="text-2xl font-bold group-hover:text-[color:rgb(var(--v-theme-primary-text--hover))]"
-        >
+      <div v-for="item in items" :key="item.route"
+        class="group flex flex-col items-center justify-center border border-solid rounded-lg p-2 w-full"
+        :class="canNavigate(item) ? 'cursor-pointer hover:bg-[rgb(var(--v-theme-primary--hover))] active:bg-[rgb(var(--v-theme-primary--active))]' : ''"
+        @click="canNavigate(item) && click(item)">
+        <v-icon :icon="item.svg"
+          class="text-[rgb(var(--v-theme-primary--hover))]"
+          :class="canNavigate(item) ? 'group-hover:text-[rgb(var(--v-theme-secondary--hover))]' : ''"></v-icon>
+        <div class="text-2xl font-bold" :class="canNavigate(item) ? 'group-hover:text-[rgb(var(--v-theme-primary-text--hover))]' : ''">
           {{ item.title }}
         </div>
         <div class="text-xl font-semibold">{{ item.value }}</div>
@@ -46,12 +41,27 @@ const sessionStore = useSessionStore();
 
 const items = ref<DashboardItem[]>([]);
 
+const canNavigate = (item: DashboardItem) =>
+  sessionStore.hasPermission(item.permission);
+
 const click = (item: DashboardItem) => {
   router.push({ name: item.route });
 };
 
-const addItem = (title: string, value: number, route: string, svg: string) => {
-  items.value.push({ title: title, value: value, route: route, svg: svg });
+const addItem = (
+  title: string,
+  value: number,
+  route: string,
+  svg: string,
+  permission: string,
+) => {
+  items.value.push({
+    title: title,
+    value: value,
+    route: route,
+    svg: svg,
+    permission: permission,
+  });
 };
 
 const refresh = async () => {
@@ -63,28 +73,46 @@ const refresh = async () => {
       response.data.permissionCount,
       "permissions",
       mdiShield,
+      Permissions.Permissions.View,
     );
     addItem(
       t("identities"),
       response.data.identityCount,
       "identities",
       mdiAccount,
+      Permissions.Identities.View,
     );
-    addItem(t("roles"), response.data.roleCount, "roles", mdiAccountGroup);
+    addItem(
+      t("roles"),
+      response.data.roleCount,
+      "roles",
+      mdiAccountGroup,
+      Permissions.Roles.View,
+    );
     addItem(
       t("sessions"),
       response.data.sessionCount,
       "sessions",
       mdiBadgeAccount,
+      Permissions.Sessions.View,
     );
-    addItem(t("tenants"), response.data.tenantCount, "tenants", mdiDomain);
+    addItem(
+      t("tenants"),
+      response.data.tenantCount,
+      "tenants",
+      mdiDomain,
+      Permissions.Tenants.View,
+    );
   }
 
-  if (
-    configuration.isRecallAvailable() &&
-    sessionStore.hasPermission(Permissions.Events.View)
-  ) {
-    addItem(t("events"), 0, "events", mdiDatabaseClockOutline);
+  if (configuration.isRecallAvailable()) {
+    addItem(
+      t("events"),
+      0,
+      "events",
+      mdiDatabaseClockOutline,
+      Permissions.Events.View,
+    );
   }
 };
 
