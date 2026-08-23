@@ -218,6 +218,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("../views/TenantSelection.vue"),
   },
   {
+    path: "/event-store-selection",
+    name: "event-store-selection",
+    component: () => import("../views/EventStoreSelection.vue"),
+  },
+  {
     path: "/sign-in",
     name: "sign-in",
     props: true,

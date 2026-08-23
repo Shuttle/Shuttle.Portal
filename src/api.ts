@@ -1,6 +1,7 @@
 import axios, { type AxiosInstance } from "axios";
 import { useAlertStore } from "@/stores/alert";
 import { useSessionStore } from "@/stores/session";
+import { useEventStoreStore } from "@/stores/eventStore";
 import configuration from "./configuration";
 import router from "./router";
 
@@ -59,5 +60,15 @@ const recallApi = configure(
   axios.create({ baseURL: configuration.getRecallUrl() }),
   { attachTenantHeader: false },
 );
+
+recallApi.interceptors.request.use((config) => {
+  const eventStoreStore = useEventStoreStore();
+
+  if (eventStoreStore.name) {
+    config.headers["Shuttle-Recall-Event-Store"] = eventStoreStore.name;
+  }
+
+  return config;
+});
 
 export { accessApi, recallApi };

@@ -102,6 +102,11 @@ export type EventEnvelope = {
   version: number;
 };
 
+export type EventStore = {
+  name: string;
+  hasAccess: boolean;
+};
+
 export type EventStoreResponse<T> = {
   items: T[];
 };
@@ -241,6 +246,7 @@ export type RegisterTenant = {
   logoSvg?: string;
   logoUrl?: string;
   status: number;
+  maximumIdentities: number;
   administratorIdentityName?: string;
 };
 
@@ -289,5 +295,6 @@ export type Tenant = {
   logoSvg?: string;
   logoUrl?: string;
   status?: number;
+  maximumIdentities?: number;
   administratorIdentityName?: string;
 };

@@ -88,7 +88,14 @@
         @click.prevent="selectTenant"
         :title="sessionStore.tenant.name ?? t('(unknown)')"
       ></v-list-item>
-      <v-divider></v-divider>
+      <v-divider v-if="sessionStore.tenant"></v-divider>
+      <v-list-item
+        v-if="eventStoreStore.eventStores.length > 1"
+        :prepend-icon="mdiDatabaseOutline"
+        @click.prevent="selectEventStore"
+        :title="eventStoreStore.selected?.name ?? t('event-store')"
+      ></v-list-item>
+      <v-divider v-if="eventStoreStore.eventStores.length > 1"></v-divider>
       <v-list-item
         :prepend-icon="mdiShieldAccountOutline"
         to="/password/token"
@@ -107,6 +114,7 @@
 import map from "./navigation-map";
 import {
   mdiArrowCollapseLeft,
+  mdiDatabaseOutline,
   mdiDotsVertical,
   mdiLogin,
   mdiLogout,
@@ -117,17 +125,20 @@ import {
 } from "@mdi/js";
 import { computed, ref, watch } from "vue";
 import { useSessionStore } from "@/stores/session";
+import { useEventStoreStore } from "@/stores/eventStore";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useTheme } from "vuetify";
 import type { NavigationItem } from "@/portal";
 import { accessApi } from "@/api";
 import { useDrawerStore } from "@/stores/drawer";
+import configuration from "@/configuration";
 
 const { t } = useI18n({ useScope: "global" });
 
 const drawerStore = useDrawerStore();
 const sessionStore = useSessionStore();
+const eventStoreStore = useEventStoreStore();
 const router = useRouter();
 const theme = useTheme();
 const storedTheme =
@@ -184,6 +195,33 @@ const sections = computed(() => {
 const selectTenant = () => {
   router.push({ name: "tenant-selection" });
 };
+
+const selectEventStore = () => {
+  router.push({ name: "event-store-selection" });
+};
+
+const refreshEventStores = async () => {
+  if (!configuration.isRecallAvailable()) {
+    return;
+  }
+
+  try {
+    await eventStoreStore.initialize();
+  } catch {
+    // ignore - the Recall API may not be reachable
+  }
+};
+
+watch(
+  () => sessionStore.isAuthenticated,
+  () => {
+    refreshEventStores();
+  },
+);
+
+onMounted(() => {
+  refreshEventStores();
+});
 
 const signIn = () => {
   router.push({ name: "sign-in" });
