@@ -96,6 +96,10 @@ const headers = useSecureTableHeaders([
     value: "logoUrl",
   },
   {
+    title: t("maximum-identities"),
+    value: "maximumIdentities",
+  },
+  {
     permission: Permissions.Tenants.Manage,
     title: t("status"),
     key: "status",

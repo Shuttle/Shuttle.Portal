@@ -25,6 +25,7 @@ declare module 'vue' {
     ShuttleFilterToggle: typeof import('./src/components/ShuttleFilterToggle.vue')['default']
     ShuttleForm: typeof import('./src/components/ShuttleForm.vue')['default']
     ShuttleNavbar: typeof import('./src/components/ShuttleNavbar.vue')['default']
+    ShuttleNumberInput: typeof import('./src/components/ShuttleNumberInput.vue')['default']
     ShuttleStrip: typeof import('./src/components/ShuttleStrip.vue')['default']
     ShuttleTitle: typeof import('./src/components/ShuttleTitle.vue')['default']
   }
