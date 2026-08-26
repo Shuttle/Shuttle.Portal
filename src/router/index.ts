@@ -210,6 +210,42 @@ const routes: Array<RouteRecordRaw> = [
           permission: Permissions.Tenants.Manage,
         },
       },
+      {
+        path: "tenant/:id/name",
+        name: "tenant-name",
+        component: () => import("../views/TenantName.vue"),
+        props: true,
+        meta: {
+          permission: Permissions.Tenants.Manage,
+        },
+      },
+      {
+        path: "tenant/:id/logo-url",
+        name: "tenant-logo-url",
+        component: () => import("../views/TenantLogoUrl.vue"),
+        props: true,
+        meta: {
+          permission: Permissions.Tenants.Manage,
+        },
+      },
+      {
+        path: "tenant/:id/logo-svg",
+        name: "tenant-logo-svg",
+        component: () => import("../views/TenantLogoSvg.vue"),
+        props: true,
+        meta: {
+          permission: Permissions.Tenants.Manage,
+        },
+      },
+      {
+        path: "tenant/:id/maximum-identities",
+        name: "tenant-maximum-identities",
+        component: () => import("../views/TenantMaximumIdentities.vue"),
+        props: true,
+        meta: {
+          permission: Permissions.Tenants.Manage,
+        },
+      },
     ],
   },
   {

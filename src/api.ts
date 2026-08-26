@@ -4,10 +4,11 @@ import { useSessionStore } from "@/stores/session";
 import { useEventStoreStore } from "@/stores/eventStore";
 import configuration from "./configuration";
 import router from "./router";
+import { Api } from "./enums";
 
 const configure = (
   api: AxiosInstance,
-  { attachTenantHeader }: { attachTenantHeader: boolean },
+  { name, attachTenantHeader }: { name: Api; attachTenantHeader: boolean },
 ): AxiosInstance => {
   api.interceptors.request.use(function (config) {
     const sessionStore = useSessionStore();
@@ -36,12 +37,13 @@ const configure = (
       const alertStore = useAlertStore();
 
       alertStore.add({
-        message:
+        message: `[${name}] ${
           error.response?.data ||
           error.response?.statusText ||
-          "(unknown communication/network error)",
+          "(unknown communication/network error)"
+        }`,
         type: "error",
-        name: "api-error",
+        name: `api-error-${name.toLowerCase()}`,
       });
 
       return Promise.reject(error);
@@ -53,12 +55,12 @@ const configure = (
 
 const accessApi = configure(
   axios.create({ baseURL: configuration.getAccessUrl() }),
-  { attachTenantHeader: true },
+  { name: Api.Access, attachTenantHeader: true },
 );
 
 const recallApi = configure(
   axios.create({ baseURL: configuration.getRecallUrl() }),
-  { attachTenantHeader: false },
+  { name: Api.Recall, attachTenantHeader: false },
 );
 
 recallApi.interceptors.request.use((config) => {

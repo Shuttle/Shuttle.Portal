@@ -1,9 +1,17 @@
 <template>
+  <s-filter-drawer @filter="refresh">
+    <v-text-field
+      v-model="specification.nameMatch"
+      :label="$t('name')"
+      hide-details
+      clearable
+    ></v-text-field>
+  </s-filter-drawer>
   <v-card flat>
     <v-card-title class="sv-card-title">
       <s-title :title="$t('tenants')" />
       <s-strip>
-        <v-btn :icon="mdiRefresh" size="x-small" @click="refresh"></v-btn>
+        <s-filter-toggle></s-filter-toggle>
         <v-text-field
           v-model="search"
           density="compact"
@@ -33,6 +41,46 @@
       <template v-slot:item.action="{ item }">
         <v-btn :icon="mdiDelete" size="x-small" @click.stop="remove(item)" />
       </template>
+      <template v-slot:item.name="{ item }">
+        <div class="flex items-center">
+          <div class="grow">{{ item.name }}</div>
+          <s-btn-edit
+            v-if="sessionStore.hasPermission(Permissions.Tenants.Manage)"
+            @click.stop="rename(item)"
+            class="flex-none"
+          />
+        </div>
+      </template>
+      <template v-slot:item.logoSvg="{ item }">
+        <div class="flex items-center">
+          <div class="grow">{{ item.logoSvg }}</div>
+          <s-btn-edit
+            v-if="sessionStore.hasPermission(Permissions.Tenants.Manage)"
+            @click.stop="logoSvg(item)"
+            class="flex-none"
+          />
+        </div>
+      </template>
+      <template v-slot:item.logoUrl="{ item }">
+        <div class="flex items-center">
+          <div class="grow">{{ item.logoUrl }}</div>
+          <s-btn-edit
+            v-if="sessionStore.hasPermission(Permissions.Tenants.Manage)"
+            @click.stop="logoUrl(item)"
+            class="flex-none"
+          />
+        </div>
+      </template>
+      <template v-slot:item.maximumIdentities="{ item }">
+        <div class="flex items-center">
+          <div class="grow">{{ item.maximumIdentities }}</div>
+          <s-btn-edit
+            v-if="sessionStore.hasPermission(Permissions.Tenants.Manage)"
+            @click.stop="maximumIdentities(item)"
+            class="flex-none"
+          />
+        </div>
+      </template>
       <template v-slot:item.status="{ item }">
         <v-switch
           :model-value="item.status === 1"
@@ -51,11 +99,11 @@
 import { accessApi } from "@/api";
 import { onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { mdiDelete, mdiMagnify, mdiRefresh } from "@mdi/js";
+import { mdiDelete, mdiMagnify } from "@mdi/js";
 import { useRouter } from "vue-router";
 import { useSecureTableHeaders } from "@/composables/useSecureTableHeaders";
 import Permissions from "@/permissions";
-import type { Tenant } from "@/portal";
+import type { Tenant, TenantSpecification } from "@/portal";
 import { useAlertStore } from "@/stores/alert";
 import { useConfirmationStore } from "@/stores/confirmation";
 import { useDrawerStore } from "@/stores/drawer";
@@ -70,6 +118,7 @@ const router = useRouter();
 const busy: Ref<boolean> = ref(false);
 const items: Ref<Tenant[]> = ref([]);
 const search: Ref<string> = ref("");
+const specification: Ref<TenantSpecification> = ref({});
 
 const headers = useSecureTableHeaders([
   {
@@ -110,7 +159,10 @@ const refresh = async () => {
   busy.value = true;
 
   try {
-    const response = await accessApi.post("v1/tenants/search", {});
+    const response = await accessApi.post(
+      "v1/tenants/search",
+      specification.value,
+    );
     items.value = response.data;
   } finally {
     busy.value = false;
@@ -135,6 +187,22 @@ const setStatus = async (item: Tenant) => {
 
 const add = () => {
   router.push({ name: "tenant" });
+};
+
+const rename = (item: Tenant) => {
+  router.push({ name: "tenant-name", params: { id: item.id } });
+};
+
+const logoUrl = (item: Tenant) => {
+  router.push({ name: "tenant-logo-url", params: { id: item.id } });
+};
+
+const logoSvg = (item: Tenant) => {
+  router.push({ name: "tenant-logo-svg", params: { id: item.id } });
+};
+
+const maximumIdentities = (item: Tenant) => {
+  router.push({ name: "tenant-maximum-identities", params: { id: item.id } });
 };
 
 const remove = async (item: Tenant) => {

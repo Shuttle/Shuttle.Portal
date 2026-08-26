@@ -298,3 +298,7 @@ export type Tenant = {
   maximumIdentities?: number;
   administratorIdentityName?: string;
 };
+
+export type TenantSpecification = {
+  nameMatch?: string;
+};
