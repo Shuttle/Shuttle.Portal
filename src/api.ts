@@ -71,4 +71,9 @@ recallApi.interceptors.request.use((config) => {
   return config;
 });
 
-export { accessApi, recallApi };
+const abacusApi = configure(
+  axios.create({ baseURL: configuration.getAbacusUrl() }),
+  { attachTenantHeader: false },
+);
+
+export { accessApi, recallApi, abacusApi };

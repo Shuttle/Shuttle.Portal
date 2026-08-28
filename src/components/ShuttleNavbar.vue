@@ -182,7 +182,7 @@ const items = computed(() => {
 });
 
 const sections = computed(() => {
-  const order = ["access", "recall"];
+  const order = ["access", "recall", "abacus"];
 
   return order
     .map((name) => ({

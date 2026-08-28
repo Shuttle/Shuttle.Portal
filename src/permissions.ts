@@ -31,6 +31,18 @@ const Permissions = {
   Events: {
     View: "recall://default/events",
   },
+  Arguments: {
+    Manage: "abacus://arguments/manage",
+  },
+  Formulas: {
+    Manage: "abacus://formulas/manage",
+  },
+  Matrices: {
+    Manage: "abacus://matrices/manage",
+  },
+  Tests: {
+    Manage: "abacus://tests/manage",
+  },
 };
 
 export default Permissions;

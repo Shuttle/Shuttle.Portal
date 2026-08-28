@@ -6,7 +6,11 @@ import {
   mdiBadgeAccount,
   mdiDatabaseClockOutline,
   mdiDomain,
+  mdiFunctionVariant,
+  mdiGrid,
   mdiShield,
+  mdiTable,
+  mdiTestTube,
   mdiViewDashboard,
 } from "@mdi/js";
 
@@ -58,6 +62,34 @@ const map: NavigationItem[] = [
     title: "events",
     permission: Permissions.Events.View,
     icon: mdiDatabaseClockOutline,
+  },
+  {
+    section: "abacus",
+    to: "/arguments",
+    title: "arguments",
+    permission: Permissions.Arguments.Manage,
+    icon: mdiTable,
+  },
+  {
+    section: "abacus",
+    to: "/formulas",
+    title: "formulas",
+    permission: Permissions.Formulas.Manage,
+    icon: mdiFunctionVariant,
+  },
+  {
+    section: "abacus",
+    to: "/matrices",
+    title: "matrices",
+    permission: Permissions.Matrices.Manage,
+    icon: mdiGrid,
+  },
+  {
+    section: "abacus",
+    to: "/tests",
+    title: "tests",
+    permission: Permissions.Tests.Manage,
+    icon: mdiTestTube,
   },
 ];
 

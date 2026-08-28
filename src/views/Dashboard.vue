@@ -29,7 +29,11 @@ import {
   mdiBadgeAccount,
   mdiDatabaseClockOutline,
   mdiDomain,
+  mdiFunctionVariant,
+  mdiGrid,
   mdiShield,
+  mdiTable,
+  mdiTestTube,
 } from "@mdi/js";
 import { onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
@@ -113,6 +117,13 @@ const refresh = async () => {
       mdiDatabaseClockOutline,
       Permissions.Events.View,
     );
+  }
+
+  if (configuration.isAbacusAvailable()) {
+    addItem(t("arguments"), 0, "arguments", mdiTable, Permissions.Arguments.Manage);
+    addItem(t("formulas"), 0, "formulas", mdiFunctionVariant, Permissions.Formulas.Manage);
+    addItem(t("matrices"), 0, "matrices", mdiGrid, Permissions.Matrices.Manage);
+    addItem(t("tests"), 0, "tests", mdiTestTube, Permissions.Tests.Manage);
   }
 };
 

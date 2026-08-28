@@ -15,6 +15,7 @@ try {
       return {
         VITE_ACCESS_API_URL: import.meta.env.VITE_ACCESS_API_URL,
         VITE_RECALL_API_URL: import.meta.env.VITE_RECALL_API_URL,
+        VITE_ABACUS_API_URL: import.meta.env.VITE_ABACUS_API_URL,
       };
     }
   };
@@ -51,11 +52,19 @@ const getConfiguration = (): Configuration => {
         ? `${values.VITE_RECALL_API_URL}${values.VITE_RECALL_API_URL.endsWith("/") ? "" : "/"}`
         : "";
     },
+    getAbacusUrl() {
+      return isOk && values.VITE_ABACUS_API_URL
+        ? `${values.VITE_ABACUS_API_URL}${values.VITE_ABACUS_API_URL.endsWith("/") ? "" : "/"}`
+        : "";
+    },
     isAccessAvailable() {
       return isOk && !!values.VITE_ACCESS_API_URL;
     },
     isRecallAvailable() {
       return isOk && !!values.VITE_RECALL_API_URL;
+    },
+    isAbacusAvailable() {
+      return isOk && !!values.VITE_ABACUS_API_URL;
     },
     isAccessPasswordAuthenticationAllowed() {
       return this.isAccessAvailable()
@@ -80,6 +89,9 @@ const getConfiguration = (): Configuration => {
         }
         case Api.Recall: {
           return buildApiUrl(this.getRecallUrl(), path);
+        }
+        case Api.Abacus: {
+          return buildApiUrl(this.getAbacusUrl(), path);
         }
         default: {
           throw `Unknown Api name '${api}'.`;
