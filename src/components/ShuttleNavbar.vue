@@ -1,29 +1,14 @@
 <template>
-  <v-navigation-drawer
-    v-model="drawerStore.showNavigationDrawer"
-    :permanent="!$vuetify.display.mobile"
-    class="pt-2"
-  >
+  <v-navigation-drawer v-model="drawerStore.showNavigationDrawer" :permanent="!$vuetify.display.mobile" class="pt-2">
     <div class="flex justify-end">
-      <v-btn
-        :icon="mdiArrowCollapseLeft"
-        @click.stop="
-          drawerStore.showNavigationDrawer = !drawerStore.showNavigationDrawer
-        "
-        class="mr-4"
-        flat
-      ></v-btn>
+      <v-btn :icon="mdiArrowCollapseLeft" @click.stop="
+        drawerStore.showNavigationDrawer = !drawerStore.showNavigationDrawer
+        " class="mr-4" flat></v-btn>
     </div>
     <template v-for="section in sections" :key="section.name">
       <v-list>
         <v-list-subheader>{{ t(section.name) }}</v-list-subheader>
-        <v-list-item
-          v-for="(item, i) in section.items"
-          :key="i"
-          :value="item"
-          color="primary"
-          :to="item.to"
-        >
+        <v-list-item v-for="(item, i) in section.items" :key="i" :value="item" color="primary" :to="item.to">
           <template v-slot:prepend>
             <v-icon :icon="item.icon"></v-icon>
           </template>
@@ -34,105 +19,52 @@
   </v-navigation-drawer>
   <v-app-bar class="shadow-sm">
     <template v-slot:prepend v-if="sessionStore.isAuthenticated">
-      <v-app-bar-nav-icon
-        variant="text"
-        @click.stop="
-          drawerStore.showNavigationDrawer = !drawerStore.showNavigationDrawer
-        "
-      ></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon variant="text" @click.stop="
+        drawerStore.showNavigationDrawer = !drawerStore.showNavigationDrawer
+        "></v-app-bar-nav-icon>
     </template>
-    <v-app-bar-title
-      class="cursor-pointer font-bold"
-      @click="$router.push('/dashboard')"
-      >Shuttle.Portal</v-app-bar-title
-    >
+    <v-app-bar-title class="cursor-pointer font-bold"
+      @click="$router.push('/dashboard')">Shuttle.Portal</v-app-bar-title>
     <template v-slot:append>
       <div class="flex items-center">
-        <v-switch
-          class="mr-2"
-          v-model="isDarkTheme"
-          :false-icon="mdiWhiteBalanceSunny"
-          :true-icon="mdiWeatherNight"
-          hide-details
-        />
-        <v-btn
-          v-if="!sessionStore.isAuthenticated"
-          :icon="mdiLogin"
-          @click.prevent="signIn"
-        ></v-btn>
-        <v-btn
-          v-else
-          :icon="mdiDotsVertical"
-          variant="text"
-          @click.stop="
-            drawerStore.showProfileDrawer = !drawerStore.showProfileDrawer
-          "
-        ></v-btn>
+        <v-switch class="mr-2" v-model="isDarkTheme" :false-icon="mdiWhiteBalanceSunny" :true-icon="mdiWeatherNight"
+          hide-details />
+        <v-btn v-if="!sessionStore.isAuthenticated" :icon="mdiLogin" @click.prevent="signIn"></v-btn>
+        <v-btn v-else :icon="mdiDotsVertical" variant="text" @click.stop="
+          drawerStore.showProfileDrawer = !drawerStore.showProfileDrawer
+          "></v-btn>
       </div>
     </template>
   </v-app-bar>
-  <v-navigation-drawer
-    v-model="drawerStore.showProfileDrawer"
-    location="right"
-    temporary
-  >
+  <v-navigation-drawer v-model="drawerStore.showProfileDrawer" location="right" temporary>
     <v-list>
-      <v-list-item
-        :title="sessionStore.identityName ?? t('(unknown)')"
-        class="select-none"
-      ></v-list-item>
+      <v-list-item :title="sessionStore.identityName ?? t('(unknown)')" class="select-none"></v-list-item>
       <v-divider></v-divider>
-      <v-list-item
-        v-if="sessionStore.tenant"
-        :prepend-icon="mdiSwapHorizontal"
-        @click.prevent="selectTenant"
-        :title="sessionStore.tenant.name ?? t('(unknown)')"
-      ></v-list-item>
+      <v-list-item v-if="sessionStore.tenant" :prepend-icon="mdiSwapHorizontal" @click.prevent="selectTenant"
+        :title="sessionStore.tenant.name ?? t('(unknown)')"></v-list-item>
       <v-divider v-if="sessionStore.tenant"></v-divider>
-      <v-list-item
-        v-if="recallStore.eventStores.length > 1"
-        :prepend-icon="mdiDatabaseOutline"
-        @click.prevent="selectEventStore"
-        :title="recallStore.selected?.name ?? t('event-store')"
-      ></v-list-item>
+      <v-list-item v-if="recallStore.eventStores.length > 1" :prepend-icon="mdiDatabaseOutline"
+        @click.prevent="selectEventStore" :title="recallStore.selected?.name ?? t('event-store')"></v-list-item>
       <v-divider v-if="recallStore.eventStores.length > 1"></v-divider>
-      <v-list-item
-        :prepend-icon="mdiShieldAccountOutline"
-        to="/password/token"
-        :title="t('change-password')"
-      ></v-list-item>
-      <v-list-item
-        v-if="configuration.isDebugging()"
-        :prepend-icon="mdiShieldKeyOutline"
-        @click.prevent="showPermissions"
-        :title="t('permissions')"
-      ></v-list-item>
-      <v-list-item
-        :prepend-icon="mdiLogout"
-        @click.prevent="signOut"
-        :title="t('sign-out')"
-      ></v-list-item>
+      <v-list-item :prepend-icon="mdiShieldAccountOutline" to="/password/token"
+        :title="t('change-password')"></v-list-item>
+      <v-list-item v-if="configuration.isDebugging()" :prepend-icon="mdiShieldKeyOutline"
+        @click.prevent="showPermissions" :title="t('permissions')"></v-list-item>
+      <v-list-item :prepend-icon="mdiLogout" @click.prevent="signOut" :title="t('sign-out')"></v-list-item>
     </v-list>
   </v-navigation-drawer>
   <v-dialog v-model="permissionsDialog" max-width="720">
     <v-card :title="t('permissions')">
       <template v-slot:append>
-        <v-btn
-          :icon="mdiClose"
-          variant="text"
-          @click="permissionsDialog = false"
-        ></v-btn>
+        <v-btn :icon="mdiClose" variant="text" @click="permissionsDialog = false"></v-btn>
       </template>
       <v-divider></v-divider>
       <v-list density="compact" class="max-h-[70vh] overflow-y-auto">
         <v-list-item v-if="!sessionStore.activePermissions.length">
           <v-list-item-title>{{ t("none") }}</v-list-item-title>
         </v-list-item>
-        <v-list-item
-          v-for="permission in sortedActivePermissions"
-          :key="permission.id"
-          :title="permission.name"
-        ></v-list-item>
+        <v-list-item v-for="permission in sortedActivePermissions" :key="permission.id"
+          :title="permission.name"></v-list-item>
       </v-list>
     </v-card>
   </v-dialog>
@@ -212,7 +144,7 @@ const items = computed(() => {
 });
 
 const sections = computed(() => {
-  const order = ["access", "recall", "workflow"];
+  const order = ["access", "abacus", "recall", "workflow"];
 
   return order
     .map((name) => ({

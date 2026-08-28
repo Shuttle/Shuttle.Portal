@@ -51,6 +51,11 @@ const configure = (
   return api;
 };
 
+const abacusApi = configure(
+  axios.create({ baseURL: configuration.getAbacusUrl() }),
+  { attachTenantHeader: false },
+);
+
 const accessApi = configure(
   axios.create({ baseURL: configuration.getAccessUrl() }),
   { attachTenantHeader: true },
@@ -76,4 +81,4 @@ const workflowApi = configure(
   { attachTenantHeader: false },
 );
 
-export { accessApi, recallApi, workflowApi };
+export { abacusApi, accessApi, recallApi, workflowApi };

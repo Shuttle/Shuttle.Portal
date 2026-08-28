@@ -16,6 +16,7 @@ try {
         VITE_ACCESS_API_URL: import.meta.env.VITE_ACCESS_API_URL,
         VITE_RECALL_API_URL: import.meta.env.VITE_RECALL_API_URL,
         VITE_WORKFLOW_API_URL: import.meta.env.VITE_WORKFLOW_API_URL,
+        VITE_ABACUS_API_URL: import.meta.env.VITE_ABACUS_API_URL,
       };
     }
   };
@@ -26,7 +27,9 @@ try {
     const accessUrl = `${values.VITE_ACCESS_API_URL}${values.VITE_ACCESS_API_URL.endsWith("/") ? "" : "/"}`;
 
     accessServerConfiguration = (
-      await axios.get<AccessServerConfiguration>(`${accessUrl}v1/server/configuration`)
+      await axios.get<AccessServerConfiguration>(
+        `${accessUrl}v1/server/configuration`,
+      )
     ).data;
   }
 } catch (error: any) {
@@ -57,6 +60,11 @@ const getConfiguration = (): Configuration => {
         ? `${values.VITE_WORKFLOW_API_URL}${values.VITE_WORKFLOW_API_URL.endsWith("/") ? "" : "/"}`
         : "";
     },
+    getAbacusUrl() {
+      return isOk && values.VITE_ABACUS_API_URL
+        ? `${values.VITE_ABACUS_API_URL}${values.VITE_ABACUS_API_URL.endsWith("/") ? "" : "/"}`
+        : "";
+    },
     isAccessAvailable() {
       return isOk && !!values.VITE_ACCESS_API_URL;
     },
@@ -65,6 +73,9 @@ const getConfiguration = (): Configuration => {
     },
     isWorkflowAvailable() {
       return isOk && !!values.VITE_WORKFLOW_API_URL;
+    },
+    isAbacusAvailable() {
+      return isOk && !!values.VITE_ABACUS_API_URL;
     },
     isAccessPasswordAuthenticationAllowed() {
       return this.isAccessAvailable()
@@ -92,6 +103,9 @@ const getConfiguration = (): Configuration => {
         }
         case Api.Workflow: {
           return buildApiUrl(this.getWorkflowUrl(), path);
+        }
+        case Api.Abacus: {
+          return buildApiUrl(this.getAbacusUrl(), path);
         }
         default: {
           throw `Unknown Api name '${api}'.`;

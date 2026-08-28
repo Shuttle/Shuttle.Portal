@@ -16,9 +16,11 @@ export type Alert = {
 export type Configuration = {
   isOk: () => boolean;
   getErrorMessage: () => string;
+  getAbacusUrl: () => string;
   getAccessUrl: () => string;
   getRecallUrl: () => string;
   getWorkflowUrl: () => string;
+  isAbacusAvailable: () => boolean;
   isAccessAvailable: () => boolean;
   isRecallAvailable: () => boolean;
   isWorkflowAvailable: () => boolean;
@@ -82,6 +84,7 @@ export type EnvelopeHeader = {
 };
 
 export type Env = {
+  VITE_ABACUS_API_URL?: string;
   VITE_ACCESS_API_URL: string;
   VITE_RECALL_API_URL?: string;
   VITE_WORKFLOW_API_URL?: string;
@@ -302,6 +305,78 @@ export type SessionResponse = {
   result: string;
   token: string | null;
   tenants: Tenant[];
+};
+
+export type Argument = {
+  id: string;
+  name: string;
+  dataTypeName: string;
+};
+
+export type ArgumentValue = {
+  value: string;
+};
+
+export type Formula = {
+  id: string;
+  name: string;
+};
+
+export type FormulaOperation = {
+  id?: string;
+  operation: string;
+  valueProviderName: string;
+  inputParameter: string;
+};
+
+export type FormulaConstraint = {
+  id?: string;
+  argumentId: string;
+  comparison: string;
+  value: string;
+};
+
+export type Matrix = {
+  id?: string;
+  name: string;
+  rowArgumentId: string;
+  columnArgumentId?: string | null;
+  dataTypeName: string;
+};
+
+export type MatrixConstraint = {
+  axis: string;
+  index: number;
+  comparison: string;
+  value: string;
+};
+
+export type MatrixElement = {
+  row: number;
+  column: number;
+  value: string;
+};
+
+export type AbacusTest = {
+  id: string;
+  name: string;
+  formulaId: string;
+  expectedResult: string;
+  expectedResultDataTypeName: string;
+  comparison: string;
+};
+
+export type TestArgument = {
+  argumentId: string;
+  value: string;
+};
+
+export type TestRunResult = {
+  passed: boolean;
+  exception?: string | null;
+  result: number;
+  logLines: { indent: number; text: string }[];
+  results: { formulaName: string; value: number; depth: number }[];
 };
 
 export type Tenant = {

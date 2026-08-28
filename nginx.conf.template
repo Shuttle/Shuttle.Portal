@@ -11,7 +11,7 @@ http {
         location /env {
             default_type application/json;
             add_header Content-Type application/json;
-            return 200 '{"VITE_ACCESS_API_URL":"$VITE_ACCESS_API_URL","VITE_RECALL_API_URL":"$VITE_RECALL_API_URL"}';
+            return 200 '{"VITE_ACCESS_API_URL":"$VITE_ACCESS_API_URL","VITE_RECALL_API_URL":"$VITE_RECALL_API_URL","VITE_ABACUS_API_URL":"$VITE_ABACUS_API_URL"}';
         }
 
         location / {

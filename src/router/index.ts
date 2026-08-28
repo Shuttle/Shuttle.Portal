@@ -293,89 +293,64 @@ const routes: Array<RouteRecordRaw> = [
     ],
   },
   {
-    path: "/workflow/states",
-    name: "workflow-states",
-    component: () => import("../views/Workflow/States.vue"),
+    path: "/arguments",
+    name: "arguments",
+    component: () => import("../views/Abacus/Arguments.vue"),
     meta: {
-      permission: Permissions.Workflow.States.View,
+      permission: Permissions.Arguments.Manage,
     },
     children: [
       {
-        path: "state/:id?",
-        name: "workflow-state",
-        component: () => import("../views/Workflow/State.vue"),
-        props: true,
+        path: "argument",
+        name: "argument",
+        component: () => import("../views/Abacus/Argument.vue"),
         meta: {
-          permission: Permissions.Workflow.States.Manage,
+          permission: Permissions.Arguments.Manage,
         },
       },
       {
-        path: "items/:id?",
-        name: "workflow-state-items",
-        component: () => import("../views/Workflow/StateItems.vue"),
+        path: "argument/:id/rename",
+        name: "argument-rename",
+        component: () => import("../views/Abacus/ArgumentRename.vue"),
         props: true,
         meta: {
-          permission: Permissions.Workflow.States.Manage,
+          permission: Permissions.Arguments.Manage,
         },
       },
     ],
   },
   {
-    path: "/workflow/semaphores",
-    name: "workflow-semaphores",
-    component: () => import("../views/Workflow/Semaphores.vue"),
-    meta: {
-      permission: Permissions.Workflow.Semaphores.View,
-    },
-  },
-  {
-    path: "/workflow/processes/:id/continue/:token",
-    name: "workflow-process-continuation",
-    component: () => import("../views/Workflow/ProcessContinuation.vue"),
+    path: "/arguments/:id/values",
+    name: "argument-values",
     props: true,
+    component: () => import("../views/Abacus/ArgumentValues.vue"),
+    meta: {
+      permission: Permissions.Arguments.Manage,
+    },
   },
   {
-    path: "/workflow/processes",
-    name: "workflow-processes",
-    component: () => import("../views/Workflow/Processes.vue"),
+    path: "/formulas",
+    name: "formulas",
+    component: () => import("../views/Abacus/Formulas.vue"),
     meta: {
-      permission: Permissions.Workflow.Processes.View,
+      permission: Permissions.Formulas.Manage,
     },
     children: [
       {
-        path: "process/:id?",
-        name: "workflow-process",
-        component: () => import("../views/Workflow/Process.vue"),
-        props: true,
+        path: "formula",
+        name: "formula",
+        component: () => import("../views/Abacus/Formula.vue"),
         meta: {
-          permission: Permissions.Workflow.Processes.Manage,
+          permission: Permissions.Formulas.Manage,
         },
       },
       {
-        path: "abandon/:id?",
-        name: "workflow-process-abandon",
-        component: () => import("../views/Workflow/ProcessAbandon.vue"),
+        path: "formula/:id/rename",
+        name: "formula-rename",
+        component: () => import("../views/Abacus/FormulaRename.vue"),
         props: true,
         meta: {
-          permission: Permissions.Workflow.Processes.Manage,
-        },
-      },
-      {
-        path: "process/:processId/message",
-        name: "workflow-process-message",
-        component: () => import("../views/Workflow/ProcessMessage.vue"),
-        props: true,
-        meta: {
-          permission: Permissions.Workflow.Processes.Manage,
-        },
-      },
-      {
-        path: "items/:id?",
-        name: "workflow-process-state-items",
-        component: () => import("../views/Workflow/StateItems.vue"),
-        props: true,
-        meta: {
-          permission: Permissions.Workflow.States.Manage,
+          permission: Permissions.Formulas.Manage,
         },
       },
     ],
@@ -414,6 +389,88 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("../views/Workflow/Semaphores.vue"),
     meta: {
       permission: Permissions.Workflow.Semaphores.View,
+    },
+  },
+  {
+    path: "/formulas/:id/operations",
+    name: "formula-operations",
+    props: true,
+    component: () => import("../views/Abacus/FormulaOperations.vue"),
+    meta: {
+      permission: Permissions.Formulas.Manage,
+    },
+  },
+  {
+    path: "/formulas/:id/constraints",
+    name: "formula-constraints",
+    props: true,
+    component: () => import("../views/Abacus/FormulaConstraints.vue"),
+    meta: {
+      permission: Permissions.Formulas.Manage,
+    },
+  },
+  {
+    path: "/matrices",
+    name: "matrices",
+    component: () => import("../views/Abacus/Matrices.vue"),
+    meta: {
+      permission: Permissions.Matrices.Manage,
+    },
+    children: [
+      {
+        path: "matrix/:id?",
+        name: "matrix",
+        component: () => import("../views/Abacus/Matrix.vue"),
+        props: true,
+        meta: {
+          permission: Permissions.Matrices.Manage,
+        },
+      },
+    ],
+  },
+  {
+    path: "/matrices/:id/constraints",
+    name: "matrix-constraints",
+    props: true,
+    component: () => import("../views/Abacus/MatrixConstraints.vue"),
+    meta: {
+      permission: Permissions.Matrices.Manage,
+    },
+  },
+  {
+    path: "/matrices/:id/elements",
+    name: "matrix-elements",
+    props: true,
+    component: () => import("../views/Abacus/MatrixElements.vue"),
+    meta: {
+      permission: Permissions.Matrices.Manage,
+    },
+  },
+  {
+    path: "/tests",
+    name: "tests",
+    component: () => import("../views/Abacus/Tests.vue"),
+    meta: {
+      permission: Permissions.Tests.Manage,
+    },
+    children: [
+      {
+        path: "test",
+        name: "test",
+        component: () => import("../views/Abacus/Test.vue"),
+        meta: {
+          permission: Permissions.Tests.Manage,
+        },
+      },
+    ],
+  },
+  {
+    path: "/tests/:id/arguments",
+    name: "test-arguments",
+    props: true,
+    component: () => import("../views/Abacus/TestArguments.vue"),
+    meta: {
+      permission: Permissions.Tests.Manage,
     },
   },
 ];
