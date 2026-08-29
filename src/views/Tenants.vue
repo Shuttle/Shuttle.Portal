@@ -88,14 +88,6 @@ const headers = useSecureTableHeaders([
     value: "name",
   },
   {
-    title: t("logo-svg"),
-    value: "logoSvg",
-  },
-  {
-    title: t("logo-url"),
-    value: "logoUrl",
-  },
-  {
     title: t("maximum-identities"),
     value: "maximumIdentities",
   },

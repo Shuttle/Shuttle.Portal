@@ -9,11 +9,6 @@
         class="py-8 px-4 flex flex-row justify-center items-center gap-2 w-full border cursor-pointer"
         @click="select(tenant)"
       >
-        <div
-          v-if="tenant.logoSvg"
-          v-html="tenant.logoSvg"
-          class="v-icon__svg w-8 h-8 mr-4"
-        ></div>
         <span>{{ tenant.name }}</span>
       </v-btn>
     </div>

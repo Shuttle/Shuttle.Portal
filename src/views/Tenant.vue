@@ -10,20 +10,6 @@
       :error-messages="validation.message('name')"
     >
     </v-text-field>
-    <v-text-field
-      v-model="state.logoSvg"
-      :label="$t('logo-svg')"
-      class="mb-2"
-      :error-messages="validation.message('logoSvg')"
-    >
-    </v-text-field>
-    <v-text-field
-      v-model="state.logoUrl"
-      :label="$t('logo-url')"
-      class="mb-2"
-      :error-messages="validation.message('logoUrl')"
-    >
-    </v-text-field>
     <s-number-input
       v-model="state.maximumIdentities"
       :min="0"
@@ -64,8 +50,6 @@ const busy: Ref<boolean> = ref(false);
 
 const state: Reactive<RegisterTenant> = reactive({
   name: "",
-  logoSvg: "",
-  logoUrl: "",
   status: 1,
   maximumIdentities: 0,
   administratorIdentityName: "",
@@ -84,8 +68,6 @@ const rules = computed(() => {
       integer,
       minValue: minValue(0),
     },
-    logoSvg: {},
-    logoUrl: {},
   };
 });
 
