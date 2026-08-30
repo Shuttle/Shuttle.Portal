@@ -234,6 +234,94 @@ const routes: Array<RouteRecordRaw> = [
     meta: { authenticated: true, permission: Permissions.Events.View },
     component: () => import("../views/Events.vue"),
   },
+  {
+    path: "/workflow/processes/:id/continue/:token",
+    name: "workflow-process-continuation",
+    component: () => import("../views/WorkflowProcessContinuation.vue"),
+    props: true,
+  },
+  {
+    path: "/workflow/processes",
+    name: "workflow-processes",
+    component: () => import("../views/WorkflowProcesses.vue"),
+    meta: {
+      permission: Permissions.Workflow.Processes.View,
+    },
+    children: [
+      {
+        path: "process/:id?",
+        name: "workflow-process",
+        component: () => import("../views/WorkflowProcess.vue"),
+        props: true,
+        meta: {
+          permission: Permissions.Workflow.Processes.Manage,
+        },
+      },
+      {
+        path: "abandon/:id?",
+        name: "workflow-process-abandon",
+        component: () => import("../views/WorkflowProcessAbandon.vue"),
+        props: true,
+        meta: {
+          permission: Permissions.Workflow.Processes.Manage,
+        },
+      },
+      {
+        path: "process/:processId/message",
+        name: "workflow-process-message",
+        component: () => import("../views/WorkflowProcessMessage.vue"),
+        props: true,
+        meta: {
+          permission: Permissions.Workflow.Processes.Manage,
+        },
+      },
+      {
+        path: "items/:id?",
+        name: "workflow-process-state-items",
+        component: () => import("../views/WorkflowStateItems.vue"),
+        props: true,
+        meta: {
+          permission: Permissions.Workflow.States.Manage,
+        },
+      },
+    ],
+  },
+  {
+    path: "/workflow/states",
+    name: "workflow-states",
+    component: () => import("../views/WorkflowStates.vue"),
+    meta: {
+      permission: Permissions.Workflow.States.View,
+    },
+    children: [
+      {
+        path: "state/:id?",
+        name: "workflow-state",
+        component: () => import("../views/WorkflowState.vue"),
+        props: true,
+        meta: {
+          permission: Permissions.Workflow.States.Manage,
+        },
+      },
+      {
+        path: "items/:id?",
+        name: "workflow-state-items",
+        component: () => import("../views/WorkflowStateItems.vue"),
+        props: true,
+        meta: {
+          permission: Permissions.Workflow.States.Manage,
+        },
+      },
+    ],
+  },
+  {
+    path: "/workflow/semaphores",
+    name: "workflow-semaphores",
+    component: () => import("../views/WorkflowSemaphores.vue"),
+    meta: {
+      permission: Permissions.Workflow.Semaphores.View,
+    },
+  },
 ];
 
 const router = createRouter({

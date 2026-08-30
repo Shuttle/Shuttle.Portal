@@ -102,18 +102,47 @@
         :title="t('change-password')"
       ></v-list-item>
       <v-list-item
+        v-if="configuration.isDebugging()"
+        :prepend-icon="mdiShieldKeyOutline"
+        @click.prevent="showPermissions"
+        :title="t('permissions')"
+      ></v-list-item>
+      <v-list-item
         :prepend-icon="mdiLogout"
         @click.prevent="signOut"
         :title="t('sign-out')"
       ></v-list-item>
     </v-list>
   </v-navigation-drawer>
+  <v-dialog v-model="permissionsDialog" max-width="720">
+    <v-card :title="t('permissions')">
+      <template v-slot:append>
+        <v-btn
+          :icon="mdiClose"
+          variant="text"
+          @click="permissionsDialog = false"
+        ></v-btn>
+      </template>
+      <v-divider></v-divider>
+      <v-list density="compact" class="max-h-[70vh] overflow-y-auto">
+        <v-list-item v-if="!sessionStore.activePermissions.length">
+          <v-list-item-title>{{ t("none") }}</v-list-item-title>
+        </v-list-item>
+        <v-list-item
+          v-for="permission in sortedActivePermissions"
+          :key="permission.id"
+          :title="permission.name"
+        ></v-list-item>
+      </v-list>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
 import map from "./navigation-map";
 import {
   mdiArrowCollapseLeft,
+  mdiClose,
   mdiDatabaseOutline,
   mdiDotsVertical,
   mdiLogin,
@@ -121,6 +150,7 @@ import {
   mdiWhiteBalanceSunny,
   mdiWeatherNight,
   mdiShieldAccountOutline,
+  mdiShieldKeyOutline,
   mdiSwapHorizontal,
 } from "@mdi/js";
 import { computed, ref, watch } from "vue";
@@ -182,7 +212,7 @@ const items = computed(() => {
 });
 
 const sections = computed(() => {
-  const order = ["access", "recall"];
+  const order = ["access", "recall", "workflow"];
 
   return order
     .map((name) => ({
@@ -191,6 +221,19 @@ const sections = computed(() => {
     }))
     .filter((section) => section.items.length > 0);
 });
+
+const permissionsDialog: Ref<boolean> = ref(false);
+
+const sortedActivePermissions = computed(() => {
+  return [...sessionStore.activePermissions].sort((a, b) =>
+    a.name.localeCompare(b.name),
+  );
+});
+
+const showPermissions = () => {
+  drawerStore.showProfileDrawer = false;
+  permissionsDialog.value = true;
+};
 
 const selectTenant = () => {
   router.push({ name: "tenant-selection" });

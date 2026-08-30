@@ -10,11 +10,7 @@
       v-model="specification.sequenceNumberStart"
       hide-details
     ></v-text-field>
-    <v-text-field
-      :label="$t('maximum-rows')"
-      v-model="specification.maximumRows"
-      hide-details
-    ></v-text-field>
+    <s-maximum-rows v-model="specification.maximumRows" />
     <v-select
       v-model="specification.eventTypes"
       multiple
@@ -114,7 +110,7 @@ const busy = ref(false);
 const sequenceNumberStartDisplay = ref(0);
 const sequenceNumberEndDisplay = ref(0);
 const sequenceNumberStart = ref(0);
-const specification: Ref<EventSpecification> = ref({});
+const specification: Ref<EventSpecification> = ref({ maximumRows: 100 });
 const selected: Ref<Event[]> = ref([]);
 
 const headers: any = [

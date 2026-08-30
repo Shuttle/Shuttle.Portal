@@ -18,8 +18,10 @@ export type Configuration = {
   getErrorMessage: () => string;
   getAccessUrl: () => string;
   getRecallUrl: () => string;
+  getWorkflowUrl: () => string;
   isAccessAvailable: () => boolean;
   isRecallAvailable: () => boolean;
+  isWorkflowAvailable: () => boolean;
   isAccessPasswordAuthenticationAllowed: () => boolean;
   isDebugging: () => boolean;
   getApiUrl: (api: Api, path: string) => string;
@@ -82,6 +84,7 @@ export type EnvelopeHeader = {
 export type Env = {
   VITE_ACCESS_API_URL: string;
   VITE_RECALL_API_URL?: string;
+  VITE_WORKFLOW_API_URL?: string;
 };
 
 export type Event = {
@@ -243,8 +246,6 @@ export type RegisterPermission = {
 export type RegisterTenant = {
   id?: string;
   name: string;
-  logoSvg?: string;
-  logoUrl?: string;
   status: number;
   maximumIdentities: number;
   administratorIdentityName?: string;
@@ -292,9 +293,155 @@ export type SessionResponse = {
 export type Tenant = {
   id: string;
   name: string;
-  logoSvg?: string;
-  logoUrl?: string;
   status?: number;
   maximumIdentities?: number;
   administratorIdentityName?: string;
+};
+
+export type WorkflowProcess = {
+  tab?: string;
+  id?: string;
+  name?: string;
+  key?: string;
+  description?: string;
+  dateRegistered?: Date;
+  dateCompleted?: Date;
+  deferredTill?: Date;
+  overdueAt?: Date;
+  status?: string;
+  statusMessage?: string;
+  continuationToken?: string;
+  continuationMessageId?: string;
+  continuationRegisteredAt?: Date;
+  state?: WorkflowState;
+  messages?: WorkflowProcessMessage[];
+  commits?: WorkflowProcessCommit[];
+};
+
+export type WorkflowProcessCommit = {
+  key: string;
+  dateCommitted: Date;
+};
+
+export type WorkflowProcessMessage = {
+  id?: string;
+  processId?: string;
+  typeName: string;
+  sequenceNumber?: number;
+  dateSent?: Date;
+  dateCompleted?: Date;
+};
+
+export type WorkflowProcessSpecification = {
+  ids?: string[];
+  name?: string;
+  activeOnly?: boolean;
+  key?: string;
+  shouldIncludeMessages?: boolean;
+  shouldIncludeCommits?: boolean;
+  nameMatch?: string;
+  keyMatch?: string;
+  includedStatuses?: string[];
+  excludedStatuses?: string[];
+  fromDateRegisteredInclusive?: string;
+  toDateRegisteredExclusive?: string;
+  fromDateCompletedInclusive?: string;
+  toDateCompletedExclusive?: string;
+  maximumRows: number;
+};
+
+export type WorkflowProcessStatus = {
+  message: string;
+};
+
+export type WorkflowProcessContinuation = {
+  token: string;
+  messageId: string;
+  registeredAt: Date;
+};
+
+export type WorkflowProcessDefinition = {
+  id?: string;
+  name: string;
+  description?: string;
+  stateItems?: WorkflowProcessDefinitionStateItem[];
+  messages?: WorkflowProcessDefinitionMessage[];
+};
+
+export type WorkflowProcessDefinitionStateItem = {
+  name: string;
+  type: string;
+};
+
+export type WorkflowProcessDefinitionMessage = {
+  typeName: string;
+  sequenceNumber: number;
+};
+
+export type RegisterWorkflowProcess = {
+  name: string;
+  key?: string;
+  deferredTill?: Date;
+  stateItems?: WorkflowStateItem[];
+  messages?: WorkflowProcessMessage[];
+  description?: string;
+  wait: boolean;
+};
+
+export type WorkflowSemaphore = {
+  id: string;
+  key: string;
+  owner: string;
+  dateRegistered: Date;
+  expiresAt: Date;
+};
+
+export type WorkflowSemaphoreSpecification = {
+  key?: string;
+  keyMatch?: string;
+  owner?: string;
+  ownerMatch?: string;
+  maximumRows: number;
+};
+
+export type WorkflowState = {
+  tab?: string;
+  id?: string;
+  key?: string;
+  items?: WorkflowStateItem[];
+};
+
+export type WorkflowStateItem = {
+  id?: number;
+  required?: boolean;
+  name: string;
+  type: string;
+  value?: string;
+  effectiveDate?: Date;
+  effectiveDateEnd?: Date;
+  dateRegistered?: Date;
+  message?: string;
+};
+
+export type WorkflowStateExpiry = {
+  name: string;
+  effectiveDateEnd?: Date;
+};
+
+export type WorkflowStateItemMatch = {
+  name: string;
+  operator: string;
+  type: string;
+  value?: string;
+};
+
+export type WorkflowStateSpecification = {
+  key?: string;
+  id?: string;
+  itemEffectiveDate?: Date;
+  itemStartEffectiveDate?: Date;
+  itemEndEffectiveDateExclusive?: Date;
+  itemMatches?: WorkflowStateItemMatch[];
+  keyMatch?: string;
+  maximumRows: number;
 };

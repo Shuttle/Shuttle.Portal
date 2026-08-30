@@ -1,3 +1,9 @@
+export function isOpenEnded(
+  value: Date | string | null | undefined,
+): boolean {
+  return !value || new Date(value).getUTCFullYear() >= 9999;
+}
+
 export interface DateTimeFormatter {
   date(): string | null;
   dateTime(): string | null;
