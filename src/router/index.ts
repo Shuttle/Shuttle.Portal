@@ -23,7 +23,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/identities",
     name: "identities",
-    component: () => import("../views/Identities.vue"),
+    component: () => import("../views/Access/Identities.vue"),
     meta: {
       permission: Permissions.Identities.View,
     },
@@ -31,7 +31,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "identity",
         name: "identity",
-        component: () => import("../views/Identity.vue"),
+        component: () => import("../views/Access/Identity.vue"),
         meta: {
           permission: Permissions.Identities.Manage,
         },
@@ -40,12 +40,12 @@ const routes: Array<RouteRecordRaw> = [
         path: "password/:id",
         name: "identity-password",
         props: true,
-        component: () => import("../views/Password.vue"),
+        component: () => import("../views/Access/Password.vue"),
       },
       {
         path: "identity/:id/description",
         name: "identity-description",
-        component: () => import("../views/IdentityDescription.vue"),
+        component: () => import("../views/Access/IdentityDescription.vue"),
         props: true,
         meta: {
           permission: Permissions.Identities.Manage,
@@ -54,7 +54,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "identity/:id/rename",
         name: "identity-rename",
-        component: () => import("../views/IdentityRename.vue"),
+        component: () => import("../views/Access/IdentityRename.vue"),
         props: true,
         meta: {
           permission: Permissions.Identities.Manage,
@@ -63,7 +63,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/identities/:id/roles",
         name: "identity-roles",
-        component: () => import("../views/IdentityRoles.vue"),
+        component: () => import("../views/Access/IdentityRoles.vue"),
         meta: {
           permission: Permissions.Identities.View,
         },
@@ -71,7 +71,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "/identities/:id/tenants",
         name: "identity-tenants",
-        component: () => import("../views/IdentityTenants.vue"),
+        component: () => import("../views/Access/IdentityTenants.vue"),
         meta: {
           permission: Permissions.Identities.View,
         },
@@ -81,18 +81,18 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/oauth",
     name: "oauth",
-    component: () => import("../views/OAuth.vue"),
+    component: () => import("../views/Access/OAuth.vue"),
   },
   {
     path: "/password/:id",
     name: "password",
     props: true,
-    component: () => import("../views/Password.vue"),
+    component: () => import("../views/Access/Password.vue"),
   },
   {
     path: "/permissions",
     name: "permissions",
-    component: () => import("../views/Permissions.vue"),
+    component: () => import("../views/Access/Permissions.vue"),
     meta: {
       permission: Permissions.Permissions.View,
     },
@@ -100,7 +100,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "permission",
         name: "permission",
-        component: () => import("../views/Permission.vue"),
+        component: () => import("../views/Access/Permission.vue"),
         meta: {
           permission: Permissions.Permissions.Manage,
         },
@@ -108,7 +108,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: ":id/rename",
         name: "permission-rename",
-        component: () => import("../views/PermissionRename.vue"),
+        component: () => import("../views/Access/PermissionRename.vue"),
         props: true,
         meta: {
           permission: Permissions.Permissions.Manage,
@@ -117,7 +117,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "permission/:id/permission",
         name: "permission-description",
-        component: () => import("../views/PermissionDescription.vue"),
+        component: () => import("../views/Access/PermissionDescription.vue"),
         props: true,
         meta: {
           permission: Permissions.Identities.Manage,
@@ -126,7 +126,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "permission/upload",
         name: "permission-upload",
-        component: () => import("../views/PermissionUpload.vue"),
+        component: () => import("../views/Access/PermissionUpload.vue"),
         meta: {
           permission: Permissions.Permissions.Manage,
         },
@@ -136,7 +136,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/roles",
     name: "roles",
-    component: () => import("../views/Roles.vue"),
+    component: () => import("../views/Access/Roles.vue"),
     meta: {
       permission: Permissions.Roles.View,
     },
@@ -144,7 +144,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "role",
         name: "role",
-        component: () => import("../views/Role.vue"),
+        component: () => import("../views/Access/Role.vue"),
         meta: {
           permission: Permissions.Roles.Manage,
         },
@@ -152,7 +152,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "role/:id/rename",
         name: "role-rename",
-        component: () => import("../views/RoleRename.vue"),
+        component: () => import("../views/Access/RoleRename.vue"),
         props: true,
         meta: {
           permission: Permissions.Roles.Manage,
@@ -162,7 +162,7 @@ const routes: Array<RouteRecordRaw> = [
         path: "roles/:id/identities",
         name: "role-identities",
         props: true,
-        component: () => import("../views/RoleIdentities.vue"),
+        component: () => import("../views/Access/RoleIdentities.vue"),
         meta: {
           permission: Permissions.Roles.Manage,
         },
@@ -171,7 +171,7 @@ const routes: Array<RouteRecordRaw> = [
         path: "roles/:id/permissions",
         name: "role-permissions",
         props: true,
-        component: () => import("../views/RolePermissions.vue"),
+        component: () => import("../views/Access/RolePermissions.vue"),
         meta: {
           permission: Permissions.Roles.View,
         },
@@ -179,7 +179,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "role/upload",
         name: "role-upload",
-        component: () => import("../views/RoleUpload.vue"),
+        component: () => import("../views/Access/RoleUpload.vue"),
         meta: {
           permission: Permissions.Roles.Manage,
         },
@@ -189,7 +189,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/sessions",
     name: "sessions",
-    component: () => import("../views/Sessions.vue"),
+    component: () => import("../views/Access/Sessions.vue"),
     meta: {
       permission: Permissions.Sessions.View,
     },
@@ -197,7 +197,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/tenants",
     name: "tenants",
-    component: () => import("../views/Tenants.vue"),
+    component: () => import("../views/Access/Tenants.vue"),
     meta: {
       permission: Permissions.Tenants.View,
     },
@@ -205,7 +205,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "tenant",
         name: "tenant",
-        component: () => import("../views/Tenant.vue"),
+        component: () => import("../views/Access/Tenant.vue"),
         meta: {
           permission: Permissions.Tenants.Manage,
         },
@@ -215,24 +215,24 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/tenant-selection",
     name: "tenant-selection",
-    component: () => import("../views/TenantSelection.vue"),
+    component: () => import("../views/Access/TenantSelection.vue"),
   },
   {
     path: "/event-store-selection",
     name: "event-store-selection",
-    component: () => import("../views/EventStoreSelection.vue"),
+    component: () => import("../views/Recall/EventStoreSelection.vue"),
   },
   {
     path: "/sign-in",
     name: "sign-in",
     props: true,
-    component: () => import("../views/SignIn.vue"),
+    component: () => import("../views/Access/SignIn.vue"),
   },
   {
     path: "/recall/events",
     name: "events",
     meta: { authenticated: true, permission: Permissions.Events.View },
-    component: () => import("../views/Events.vue"),
+    component: () => import("../views/Recall/Events.vue"),
   },
 ];
 
