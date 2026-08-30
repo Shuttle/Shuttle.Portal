@@ -43,10 +43,6 @@
   "identity": "Identity",
   "identity-name": "Identity name",
   "last-administrator": "You cannot remove the administrator role as this identity is the last administrator.",
-  "logo-svg": "Logo SVG",
-  "logo-url": "Logo URL",
-  "maximum-identities": "Maximum identities",
-  "maximum-identities-hint": "The maximum number of identities that may be added to this tenant. 0 means unlimited.",
   "maximum-rows": "Maximum rows",
   "messages": {
     "fetching-oauth-providers": "(fetching authentication providers)",

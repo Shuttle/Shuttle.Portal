@@ -246,7 +246,6 @@ export type RegisterTenant = {
   logoSvg?: string;
   logoUrl?: string;
   status: number;
-  maximumIdentities: number;
   administratorIdentityName?: string;
 };
 
@@ -295,6 +294,5 @@ export type Tenant = {
   logoSvg?: string;
   logoUrl?: string;
   status?: number;
-  maximumIdentities?: number;
   administratorIdentityName?: string;
 };

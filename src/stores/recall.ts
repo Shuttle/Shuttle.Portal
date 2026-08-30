@@ -5,7 +5,7 @@ import type { EventStore, EventStoreResponse } from "@/portal";
 
 const STORAGE_KEY = "shuttle-recall.event-store-name";
 
-export const useEventStoreStore = defineStore("event-store", () => {
+export const useRecallStore = defineStore("recall", () => {
   const eventStores = ref<EventStore[]>([]);
   const name = ref<string | null>(localStorage.getItem(STORAGE_KEY));
 
