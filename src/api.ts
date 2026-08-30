@@ -1,7 +1,7 @@
 import axios, { type AxiosInstance } from "axios";
 import { useAlertStore } from "@/stores/alert";
 import { useSessionStore } from "@/stores/session";
-import { useEventStoreStore } from "@/stores/eventStore";
+import { useRecallStore } from "@/stores/recall";
 import configuration from "./configuration";
 import router from "./router";
 
@@ -62,10 +62,10 @@ const recallApi = configure(
 );
 
 recallApi.interceptors.request.use((config) => {
-  const eventStoreStore = useEventStoreStore();
+  const recallStore = useRecallStore();
 
-  if (eventStoreStore.name) {
-    config.headers["Shuttle-Recall-Event-Store"] = eventStoreStore.name;
+  if (recallStore.name) {
+    config.headers["Shuttle-Recall-Event-Store"] = recallStore.name;
   }
 
   return config;

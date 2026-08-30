@@ -90,12 +90,12 @@
       ></v-list-item>
       <v-divider v-if="sessionStore.tenant"></v-divider>
       <v-list-item
-        v-if="eventStoreStore.eventStores.length > 1"
+        v-if="recallStore.eventStores.length > 1"
         :prepend-icon="mdiDatabaseOutline"
         @click.prevent="selectEventStore"
-        :title="eventStoreStore.selected?.name ?? t('event-store')"
+        :title="recallStore.selected?.name ?? t('event-store')"
       ></v-list-item>
-      <v-divider v-if="eventStoreStore.eventStores.length > 1"></v-divider>
+      <v-divider v-if="recallStore.eventStores.length > 1"></v-divider>
       <v-list-item
         :prepend-icon="mdiShieldAccountOutline"
         to="/password/token"
@@ -125,7 +125,7 @@ import {
 } from "@mdi/js";
 import { computed, ref, watch } from "vue";
 import { useSessionStore } from "@/stores/session";
-import { useEventStoreStore } from "@/stores/eventStore";
+import { useRecallStore } from "@/stores/recall";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import { useTheme } from "vuetify";
@@ -138,7 +138,7 @@ const { t } = useI18n({ useScope: "global" });
 
 const drawerStore = useDrawerStore();
 const sessionStore = useSessionStore();
-const eventStoreStore = useEventStoreStore();
+const recallStore = useRecallStore();
 const router = useRouter();
 const theme = useTheme();
 const storedTheme =
@@ -206,7 +206,7 @@ const refreshEventStores = async () => {
   }
 
   try {
-    await eventStoreStore.initialize();
+    await recallStore.initialize();
   } catch {
     // ignore - the Recall API may not be reachable
   }
@@ -214,13 +214,17 @@ const refreshEventStores = async () => {
 
 watch(
   () => sessionStore.isAuthenticated,
-  () => {
-    refreshEventStores();
+  (isAuthenticated) => {
+    if (isAuthenticated) {
+      refreshEventStores();
+    }
   },
 );
 
 onMounted(() => {
-  refreshEventStores();
+  if (sessionStore.isAuthenticated) {
+    refreshEventStores();
+  }
 });
 
 const signIn = () => {

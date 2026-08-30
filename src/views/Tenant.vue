@@ -10,16 +10,6 @@
       :error-messages="validation.message('name')"
     >
     </v-text-field>
-    <s-number-input
-      v-model="state.maximumIdentities"
-      :min="0"
-      :label="$t('maximum-identities')"
-      :hint="$t('maximum-identities-hint')"
-      persistent-hint
-      class="mb-2"
-      :error-messages="validation.message('maximumIdentities')"
-    >
-    </s-number-input>
     <v-text-field
       v-model="state.administratorIdentityName"
       :label="$t('administrator-identity-name')"
@@ -37,7 +27,7 @@
 
 <script setup lang="ts">
 import { computed, reactive, type Reactive, ref, type Ref } from "vue";
-import { integer, minValue, required } from "@vuelidate/validators";
+import { required } from "@vuelidate/validators";
 import { useValidation } from "@/composables/useValidation";
 import { accessApi } from "@/api";
 import { useDrawerStore } from "@/stores/drawer";
@@ -51,7 +41,6 @@ const busy: Ref<boolean> = ref(false);
 const state: Reactive<RegisterTenant> = reactive({
   name: "",
   status: 1,
-  maximumIdentities: 0,
   administratorIdentityName: "",
 });
 
@@ -62,11 +51,6 @@ const rules = computed(() => {
     },
     administratorIdentityName: {
       required,
-    },
-    maximumIdentities: {
-      required,
-      integer,
-      minValue: minValue(0),
     },
   };
 });
