@@ -71,4 +71,9 @@ recallApi.interceptors.request.use((config) => {
   return config;
 });
 
-export { accessApi, recallApi };
+const workflowApi = configure(
+  axios.create({ baseURL: configuration.getWorkflowUrl() }),
+  { attachTenantHeader: false },
+);
+
+export { accessApi, recallApi, workflowApi };

@@ -4,10 +4,13 @@ import {
   mdiAccount,
   mdiAccountGroup,
   mdiBadgeAccount,
+  mdiCogOutline,
   mdiDatabaseClockOutline,
   mdiDatabaseSyncOutline,
   mdiDomain,
+  mdiLockOutline,
   mdiShield,
+  mdiSitemapOutline,
   mdiViewDashboard,
 } from "@mdi/js";
 
@@ -66,6 +69,27 @@ const map: NavigationItem[] = [
     title: "projections",
     permission: Permissions.Projections.View,
     icon: mdiDatabaseSyncOutline,
+  },
+  {
+    section: "workflow",
+    to: "/workflow/processes",
+    title: "processes",
+    permission: Permissions.Workflow.Processes.View,
+    icon: mdiSitemapOutline,
+  },
+  {
+    section: "workflow",
+    to: "/workflow/states",
+    title: "states",
+    permission: Permissions.Workflow.States.View,
+    icon: mdiCogOutline,
+  },
+  {
+    section: "workflow",
+    to: "/workflow/semaphores",
+    title: "semaphores",
+    permission: Permissions.Workflow.Semaphores.View,
+    icon: mdiLockOutline,
   },
 ];
 

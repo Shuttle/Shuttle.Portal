@@ -24,9 +24,12 @@ declare module 'vue' {
     ShuttleFilterDrawer: typeof import('./src/components/ShuttleFilterDrawer.vue')['default']
     ShuttleFilterToggle: typeof import('./src/components/ShuttleFilterToggle.vue')['default']
     ShuttleForm: typeof import('./src/components/ShuttleForm.vue')['default']
+    ShuttleMaximumRows: typeof import('./src/components/ShuttleMaximumRows.vue')['default']
     ShuttleNavbar: typeof import('./src/components/ShuttleNavbar.vue')['default']
     ShuttleNumberInput: typeof import('./src/components/ShuttleNumberInput.vue')['default']
     ShuttleStrip: typeof import('./src/components/ShuttleStrip.vue')['default']
     ShuttleTitle: typeof import('./src/components/ShuttleTitle.vue')['default']
+    WorkflowProcessDefinition: typeof import('./src/components/WorkflowProcessDefinition.vue')['default']
+    WorkflowStateItemsEditor: typeof import('./src/components/WorkflowStateItemsEditor.vue')['default']
   }
 }

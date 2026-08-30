@@ -15,6 +15,7 @@ try {
       return {
         VITE_ACCESS_API_URL: import.meta.env.VITE_ACCESS_API_URL,
         VITE_RECALL_API_URL: import.meta.env.VITE_RECALL_API_URL,
+        VITE_WORKFLOW_API_URL: import.meta.env.VITE_WORKFLOW_API_URL,
       };
     }
   };
@@ -51,11 +52,19 @@ const getConfiguration = (): Configuration => {
         ? `${values.VITE_RECALL_API_URL}${values.VITE_RECALL_API_URL.endsWith("/") ? "" : "/"}`
         : "";
     },
+    getWorkflowUrl() {
+      return isOk && values.VITE_WORKFLOW_API_URL
+        ? `${values.VITE_WORKFLOW_API_URL}${values.VITE_WORKFLOW_API_URL.endsWith("/") ? "" : "/"}`
+        : "";
+    },
     isAccessAvailable() {
       return isOk && !!values.VITE_ACCESS_API_URL;
     },
     isRecallAvailable() {
       return isOk && !!values.VITE_RECALL_API_URL;
+    },
+    isWorkflowAvailable() {
+      return isOk && !!values.VITE_WORKFLOW_API_URL;
     },
     isAccessPasswordAuthenticationAllowed() {
       return this.isAccessAvailable()
@@ -80,6 +89,9 @@ const getConfiguration = (): Configuration => {
         }
         case Api.Recall: {
           return buildApiUrl(this.getRecallUrl(), path);
+        }
+        case Api.Workflow: {
+          return buildApiUrl(this.getWorkflowUrl(), path);
         }
         default: {
           throw `Unknown Api name '${api}'.`;

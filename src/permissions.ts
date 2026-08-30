@@ -34,6 +34,24 @@ const Permissions = {
   Projections: {
     View: "recall://default/projections",
   },
+  Workflow: {
+    Processes: {
+      Manage: "workflow://processes/manage",
+      View: "workflow://processes/view",
+    },
+    ProcessDefinitions: {
+      Manage: "workflow://process-definitions/manage",
+      View: "workflow://process-definitions/view",
+    },
+    Semaphores: {
+      Manage: "workflow://semaphores/manage",
+      View: "workflow://semaphores/view",
+    },
+    States: {
+      Manage: "workflow://states/manage",
+      View: "workflow://states/view",
+    },
+  },
 };
 
 export default Permissions;
