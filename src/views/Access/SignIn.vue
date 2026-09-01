@@ -2,25 +2,12 @@
   <s-form :submit="signIn" size="small" class="px-5 pt-6">
     <s-title :title="$t('sign-in')"></s-title>
     <div v-if="configuration.isAccessPasswordAuthenticationAllowed()">
-      <v-text-field
-        :prepend-icon="`svg:${mdiAccountOutline}`"
-        v-model="state.identityName"
-        :label="$t('identity-name')"
-        class="mb-2"
-        :error-messages="validation.message('identityName')"
-      >
+      <v-text-field :prepend-icon="`svg:${mdiAccountOutline}`" v-model="state.identityName" :label="$t('identity-name')"
+        class="mb-2" :error-messages="validation.message('identityName')">
       </v-text-field>
-      <v-text-field
-        :prepend-icon="`svg:${mdiShieldOutline}`"
-        v-model="state.password"
-        :label="$t('password')"
-        :icon-end="getPasswordIcon()"
-        icon-end-clickable
-        :append-icon="`svg:${getPasswordIcon()}`"
-        @click:append="togglePasswordIcon"
-        :type="getPasswordType()"
-        :error-messages="validation.message('password')"
-      >
+      <v-text-field :prepend-icon="`svg:${mdiShieldOutline}`" v-model="state.password" :label="$t('password')"
+        :icon-end="getPasswordIcon()" icon-end-clickable :append-icon="`svg:${getPasswordIcon()}`"
+        @click:append="togglePasswordIcon" :type="getPasswordType()" :error-messages="validation.message('password')">
       </v-text-field>
       <div class="flex justify-end mt-4">
         <s-btn-alert type="submit" :disabled="busy" :validation="validation">{{
@@ -29,22 +16,11 @@
       </div>
       <v-divider v-if="oauthProviders.length > 0" class="mt-4 mb-2"></v-divider>
     </div>
-    <div
-      class="flex flex-col gap-2 justify-start"
-      v-if="oauthProviders.length > 0"
-    >
-      <v-btn
-        v-for="oauthProvider in oauthProviders"
-        v-bind:key="oauthProvider.name"
-        :alt="`${oauthProvider.name} logo`"
+    <div class="flex flex-col gap-2 justify-start" v-if="oauthProviders.length > 0">
+      <v-btn v-for="oauthProvider in oauthProviders" v-bind:key="oauthProvider.name" :alt="`${oauthProvider.name} logo`"
         class="py-8 px-4 flex flex-row justify-center items-center gap-2 w-full"
-        @click="oauthAuthenticate(oauthProvider.name)"
-      >
-        <div
-          v-if="oauthProvider.svg"
-          v-html="oauthProvider.svg"
-          class="v-icon__svg w-8 h-8 mr-4"
-        ></div>
+        @click="oauthAuthenticate(oauthProvider.name)">
+        <div v-if="oauthProvider.svg" v-html="oauthProvider.svg" class="v-icon__svg w-8 h-8 mr-4"></div>
         <span>{{ oauthProvider.name }}</span>
       </v-btn>
     </div>
@@ -140,8 +116,8 @@ const signIn = async () => {
       message:
         error.response?.status == 400
           ? t("exceptions.invalid-credentials", {
-              reason: error.response?.data ?? t("exceptions.bad-request"),
-            })
+            reason: error.response?.data ?? t("exceptions.bad-request"),
+          })
           : error.toString(),
       type: "error",
       name: "sign-in-exception",
@@ -155,9 +131,8 @@ const oauthAuthenticate = async (provider: string) => {
   busy.value = true;
 
   try {
-    const response = await accessApi.get(
-      `v1/oauth/authenticate/${provider}/Access`,
-    );
+    const redirectUri = encodeURIComponent(`${window.location.protocol}//${window.location.hostname}${window.location.port ? ':' + window.location.port : ''}/oauth`)
+    const response = await accessApi.get(`v1/oauth/authenticate/${provider}/Access?redirectUri=${redirectUri}`);
 
     window.location.replace(response?.data?.authorizationUrl);
   } finally {
