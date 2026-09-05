@@ -12,7 +12,6 @@ import type {
 } from "@/portal";
 
 export const useSessionStore = defineStore("session", () => {
-  const isAuthenticated = ref(false);
   const isInitialized = ref(false);
   const identityName = ref<string | null>();
   const token = ref<string | null>();
@@ -20,8 +19,12 @@ export const useSessionStore = defineStore("session", () => {
   const sessionPermissions = ref<SessionPermission[]>([]);
   const tenants = ref<Tenant[]>([]);
 
+  const isAuthenticated = computed(() => {
+    return !!token.value && !!tenantId.value;
+  });
+
   const status = computed(() => {
-    return !token.value ? "not-signed-in" : "signed-in";
+    return isAuthenticated.value ? "signed-in" : "not-signed-in";
   });
 
   const initialize = async () => {
@@ -72,8 +75,6 @@ export const useSessionStore = defineStore("session", () => {
     }
 
     sessionPermissions.value = sessionResponse.session.permissions;
-
-    isAuthenticated.value = true;
   };
 
   const signIn = async (credentials: Credentials): Promise<SessionResponse> => {
@@ -139,8 +140,6 @@ export const useSessionStore = defineStore("session", () => {
     localStorage.removeItem("shuttle-access.token");
 
     sessionPermissions.value = [];
-
-    isAuthenticated.value = false;
   };
 
   const hasSession = () => {
