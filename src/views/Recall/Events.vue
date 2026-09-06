@@ -1,5 +1,14 @@
 <template>
   <s-filter-drawer @filter="refreshEvents">
+    <v-select
+      v-model="eventStoreName"
+      :label="$t('event-store')"
+      :items="recallStore.eventStores"
+      item-title="name"
+      item-value="name"
+      :item-props="(item: EventStore) => ({ disabled: !item.hasAccess })"
+      hide-details
+    ></v-select>
     <v-text-field
       :label="$t('id')"
       v-model="specification.id"
@@ -100,13 +109,25 @@ import { useI18n } from "vue-i18n";
 import { recallApi } from "@/api";
 import type {
   Event,
+  EventStore,
   EventStoreResponse,
   EventType,
   EventSpecification,
 } from "@/portal";
 import { useConfirmationStore } from "@/stores/confirmation";
+import { useRecallStore } from "@/stores/recall";
 
 const confirmationStore = useConfirmationStore();
+const recallStore = useRecallStore();
+
+const eventStoreName = computed({
+  get: () => recallStore.name ?? undefined,
+  set: (value?: string) => {
+    if (value) {
+      recallStore.select(value);
+    }
+  },
+});
 
 const { t } = useI18n({ useScope: "global" });
 const search = ref("");
@@ -256,6 +277,14 @@ const remove = async () => {
 
   await refreshEvents();
 };
+
+watch(
+  () => recallStore.name,
+  () => {
+    refreshEvents();
+    refreshEventTypes();
+  },
+);
 
 onMounted(() => {
   refreshEvents();
