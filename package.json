@@ -2,7 +2,7 @@
   "name": "shuttle-portal",
   "private": true,
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "scripts": {
     "dev": "vite --port 3005",
     "build": "run-p type-check \"build-only {@}\" --",

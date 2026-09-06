@@ -31,6 +31,9 @@ const Permissions = {
   Events: {
     View: "recall://default/events",
   },
+  Projections: {
+    View: "recall://default/projections",
+  },
 };
 
 export default Permissions;

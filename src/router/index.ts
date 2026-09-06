@@ -234,6 +234,12 @@ const routes: Array<RouteRecordRaw> = [
     meta: { authenticated: true, permission: Permissions.Events.View },
     component: () => import("../views/Recall/Events.vue"),
   },
+  {
+    path: "/recall/projections",
+    name: "projections",
+    meta: { authenticated: true, permission: Permissions.Projections.View },
+    component: () => import("../views/Recall/Projections.vue"),
+  },
 ];
 
 const router = createRouter({

@@ -123,6 +123,21 @@ export type EventType = {
   typeName: string;
 };
 
+export type Projection = {
+  name: string;
+  sequenceNumber: number;
+  failureCount: number;
+  deferredUntil?: Date | null;
+};
+
+export type ProjectionSpecification = {
+  nameMatch?: string;
+  failureCountStart?: number;
+  sequenceNumberStart?: number;
+  deferred?: boolean;
+  maximumRows?: number;
+};
+
 export type PrimitiveEvent = {
   recordedAt: Date;
   eventEnvelope: Uint8Array;

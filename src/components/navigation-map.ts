@@ -5,6 +5,7 @@ import {
   mdiAccountGroup,
   mdiBadgeAccount,
   mdiDatabaseClockOutline,
+  mdiDatabaseSyncOutline,
   mdiDomain,
   mdiShield,
   mdiViewDashboard,
@@ -58,6 +59,13 @@ const map: NavigationItem[] = [
     title: "events",
     permission: Permissions.Events.View,
     icon: mdiDatabaseClockOutline,
+  },
+  {
+    section: "recall",
+    to: "/recall/projections",
+    title: "projections",
+    permission: Permissions.Projections.View,
+    icon: mdiDatabaseSyncOutline,
   },
 ];
 
