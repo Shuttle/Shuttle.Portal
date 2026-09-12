@@ -18,11 +18,11 @@ export const useSnackbarStore = defineStore("snackbar", () => {
   }
 
   function requestSent(duration: number = 3000) {
-    open(i18n.global.t("messages.request-sent"), duration);
+    open(i18n.global.t("_messages.request-sent"), duration);
   }
 
   function working(duration: number = 3000) {
-    open(i18n.global.t("messages.working"), duration);
+    open(i18n.global.t("_messages.working"), duration);
   }
 
   return {

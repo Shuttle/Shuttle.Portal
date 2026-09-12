@@ -52,7 +52,7 @@ const rules = computed(() => {
   return {
     file: {
       required: helpers.withMessage(
-        t("messages.file-required"),
+        t("_messages.file-required"),
         () => state.file || state.file?.value.name,
       ),
     },

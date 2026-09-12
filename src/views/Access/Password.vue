@@ -128,7 +128,7 @@ const change = async () => {
     });
 
     alertStore.add({
-      message: t("messages.password-changed"),
+      message: t("_messages.password-changed"),
       variant: "success",
       name: "password-changed",
     });

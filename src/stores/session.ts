@@ -54,7 +54,7 @@ export const useSessionStore = defineStore("session", () => {
       !sessionResponse.session ||
       (!sessionResponse.token && sessionResponse.result !== "Renewed")
     ) {
-      throw Error(i18n.global.t("messages.invalid-session"));
+      throw Error(i18n.global.t("_messages.invalid-session"));
     }
 
     localStorage.setItem(
@@ -83,7 +83,7 @@ export const useSessionStore = defineStore("session", () => {
       !credentials.identityName ||
       !(credentials.password || credentials.token)
     ) {
-      throw new Error(i18n.global.t("messages.missing-credentials"));
+      throw new Error(i18n.global.t("_messages.missing-credentials"));
     }
 
     const { data: sessionResponse } = await accessApi.post<SessionResponse>(
@@ -113,7 +113,7 @@ export const useSessionStore = defineStore("session", () => {
 
   const oauth = async (oauthData: OAuthData): Promise<SessionResponse> => {
     if (!oauthData || !oauthData.state || !oauthData.code) {
-      throw new Error(i18n.global.t("messages.oauth-missing-data"));
+      throw new Error(i18n.global.t("_messages.oauth-missing-data"));
     }
 
     const { data: sessionResponse } = await accessApi.get<SessionResponse>(

@@ -53,8 +53,8 @@ onMounted(async () => {
     if (sessionResponse.result === "UnknownIdentity") {
       alertStore.add({
         message: sessionResponse.registrationRequested
-          ? t("messages.oauth-unknown-identity-registered", params)
-          : t("messages.oauth-unknown-identity", params),
+          ? t("_messages.oauth-unknown-identity-registered", params)
+          : t("_messages.oauth-unknown-identity", params),
         type: "error",
         name: "oauth-unknown-identity",
       });
