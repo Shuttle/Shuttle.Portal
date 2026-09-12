@@ -5,7 +5,7 @@
     size="medium"
   >
     <v-progress-circular indeterminate></v-progress-circular>
-    <span>{{ $t("_workflow.working") }}</span>
+    <span>{{ $t("working") }}</span>
   </s-container>
   <s-container v-if="!!responseMessage" size="medium">
     <v-alert :title="responseTitle" :type="responseType" :text="responseMessage" class="mb-2">
@@ -45,11 +45,11 @@ onMounted(async () => {
     );
 
     responseTitle.value = t("success");
-    responseMessage.value = t("_workflow.process-continuation-success");
+    responseMessage.value = t("process-continuation-success");
   } catch (error: any) {
     responseType.value = "error";
     responseTitle.value = t("error");
-    responseMessage.value = t("_workflow.process-continuation-error", {
+    responseMessage.value = t("process-continuation-error", {
       error: error.response?.data ?? error.toString(),
     });
   } finally {

@@ -1,6 +1,6 @@
 <template>
   <s-form :submit="submit">
-    <s-title :title="$t('_workflow.state-items')" close-drawer type="borderless" />
+    <s-title :title="$t('state-items')" close-drawer type="borderless" />
     <v-text-field
       v-model="state.key"
       :label="$t('key')"

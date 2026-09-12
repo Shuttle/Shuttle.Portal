@@ -103,7 +103,7 @@ const headers = useSecureTableHeaders([
     },
   },
   {
-    title: t("_workflow.expires-at"),
+    title: t("expires-at"),
     key: "expiresAt",
     value: (item: WorkflowSemaphore) => {
       return useDateFormatter(item.expiresAt).dateTime();

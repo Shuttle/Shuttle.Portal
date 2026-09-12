@@ -1,9 +1,9 @@
 <template>
   <s-form :submit="submit">
-    <s-title :title="$t('_workflow.process-message')" close-drawer type="borderless" />
+    <s-title :title="$t('process-message')" close-drawer type="borderless" />
     <v-text-field
       v-model="state.typeName"
-      :label="$t('_workflow.type-name')"
+      :label="$t('type-name')"
       :error-messages="validation.message('typeName')"
     >
     </v-text-field>

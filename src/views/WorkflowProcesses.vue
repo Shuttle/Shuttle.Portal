@@ -2,7 +2,7 @@
   <s-filter-drawer @filter="refresh">
     <v-switch
       v-model="specification.activeOnly"
-      :label="$t('_workflow.show-active-only')"
+      :label="$t('show-active-only')"
       hide-details
       @update:model-value="refresh"
     ></v-switch>
@@ -24,7 +24,7 @@
     ></v-text-field>
     <v-combobox
       v-model="specification.ids"
-      :label="$t('_workflow.ids')"
+      :label="$t('ids')"
       variant="solo-filled"
       multiple
       chips
@@ -36,7 +36,7 @@
       prepend-icon=""
       prepend-inner-icon="$calendar"
       v-model="specification.fromDateRegisteredInclusive"
-      :label="$t('_workflow.from-date-registered-inclusive')"
+      :label="$t('from-date-registered-inclusive')"
       clearable
       hide-details
       :max="new Date()"
@@ -45,7 +45,7 @@
       prepend-icon=""
       prepend-inner-icon="$calendar"
       v-model="specification.toDateRegisteredExclusive"
-      :label="$t('_workflow.to-date-registered-exclusive')"
+      :label="$t('to-date-registered-exclusive')"
       clearable
       hide-details
       :max="new Date()"
@@ -54,7 +54,7 @@
       prepend-icon=""
       prepend-inner-icon="$calendar"
       v-model="specification.fromDateCompletedInclusive"
-      :label="$t('_workflow.from-date-completed-inclusive')"
+      :label="$t('from-date-completed-inclusive')"
       clearable
       hide-details
       :max="new Date()"
@@ -63,7 +63,7 @@
       prepend-icon=""
       prepend-inner-icon="$calendar"
       v-model="specification.toDateCompletedExclusive"
-      :label="$t('_workflow.to-date-completed-exclusive')"
+      :label="$t('to-date-completed-exclusive')"
       clearable
       hide-details
       :max="new Date()"
@@ -74,7 +74,7 @@
       closable-chips
       hide-details
       :items="statuses"
-      :label="$t('_workflow.included-statuses')"
+      :label="$t('included-statuses')"
       multiple
       v-model="specification.includedStatuses"
     ></v-select>
@@ -84,7 +84,7 @@
       closable-chips
       hide-details
       :items="statuses"
-      :label="$t('_workflow.excluded-statuses')"
+      :label="$t('excluded-statuses')"
       multiple
       v-model="specification.excludedStatuses"
     ></v-select>
@@ -133,20 +133,20 @@
             :icon="mdiCancel"
             size="x-small"
             @click.stop="abandonProcess(item)"
-            v-tooltip="t('_workflow.process-abandon')"
+            v-tooltip="t('process-abandon')"
           />
           <v-btn
             :icon="mdiPlayOutline"
             size="x-small"
             @click.stop="continueProcess(item)"
-            v-tooltip="t('_workflow.process-continue')"
+            v-tooltip="t('process-continue')"
           />
           <v-btn
             v-if="(item.status ?? '') === 'Deferred'"
             :icon="mdiTimerPlayOutline"
             size="x-small"
             @click.stop="continueDeferredProcess(item)"
-            v-tooltip="t('_workflow.process-continue-deferred')"
+            v-tooltip="t('process-continue-deferred')"
           />
           <v-btn
             :icon="mdiContentCopy"
@@ -158,14 +158,14 @@
             :icon="mdiIdentifier"
             size="x-small"
             @click.stop="copyIdToClipboard(item)"
-            v-tooltip="`${t('_workflow.copy-id-to-clipboard')}: ${item.id}`"
+            v-tooltip="`${t('copy-id-to-clipboard')}: ${item.id}`"
           />
           <v-btn
             v-if="item.continuationToken"
             :icon="mdiLinkVariant"
             size="x-small"
             @click.stop="copyContinuationLinkToClipboard(item)"
-            v-tooltip="t('_workflow.copy-continuation-link-to-clipboard')"
+            v-tooltip="t('copy-continuation-link-to-clipboard')"
           />
         </s-strip>
       </template>
@@ -175,7 +175,7 @@
             <s-container show-border>
               <v-tabs v-model="process.tab" class="mb-2">
                 <v-tab value="items">{{ $t("items") }}</v-tab>
-                <v-tab value="messages">{{ $t("_workflow.messages") }}</v-tab>
+                <v-tab value="messages">{{ $t("workflow-messages") }}</v-tab>
               </v-tabs>
               <v-divider></v-divider>
               <v-tabs-window v-model="process.tab">
@@ -222,7 +222,7 @@
                           :icon="mdiDebugStepOver"
                           size="x-small"
                           @click.stop="completeMessage(process, message)"
-                          v-tooltip="t('_workflow.process-complete-message')"
+                          v-tooltip="t('process-complete-message')"
                         />
                       </s-strip>
                     </template>
@@ -325,7 +325,7 @@ const headers = useSecureTableHeaders([
     },
   },
   {
-    title: t("_workflow.deferred-till"),
+    title: t("deferred-till"),
     key: "item.deferredTill",
     value: (item: WorkflowProcess) => {
       return useDateFormatter(item.deferredTill).dateTimeMilliseconds();
@@ -336,7 +336,7 @@ const headers = useSecureTableHeaders([
     value: "status",
   },
   {
-    title: t("_workflow.status-message"),
+    title: t("status-message"),
     value: "statusMessage",
   },
 ]);
@@ -362,14 +362,14 @@ const itemHeaders = [
     value: "type",
   },
   {
-    title: t("_workflow.effective-date"),
+    title: t("effective-date"),
     key: "item.effectiveDate",
     value: (item: WorkflowStateItem) => {
       return useDateFormatter(item.effectiveDate).dateTimeMilliseconds();
     },
   },
   {
-    title: t("_workflow.effective-date-end"),
+    title: t("effective-date-end"),
     key: "item.effectiveDateEnd",
     value: (item: WorkflowStateItem) => {
       return isOpenEnded(item.effectiveDateEnd)
@@ -399,7 +399,7 @@ const messageHeaders = [
     value: "sequenceNumber",
   },
   {
-    title: t("_workflow.type-name"),
+    title: t("type-name"),
     value: "typeName",
   },
   {
@@ -427,7 +427,7 @@ const copyIdToClipboard = async (item: WorkflowProcess) => {
 
   await navigator.clipboard.writeText(item.id);
 
-  useSnackbarStore().open(t("_workflow.copied"));
+  useSnackbarStore().open(t("copied"));
 };
 
 const copyContinuationLinkToClipboard = async (item: WorkflowProcess) => {
@@ -444,7 +444,7 @@ const copyContinuationLinkToClipboard = async (item: WorkflowProcess) => {
     new URL(href, window.location.origin).href,
   );
 
-  useSnackbarStore().open(t("_workflow.copied"));
+  useSnackbarStore().open(t("copied"));
 };
 
 const show = (item: WorkflowProcess | null) => {
@@ -464,7 +464,7 @@ const continueDeferredProcess = async (item: WorkflowProcess) => {
   if (
     !(
       await confirmationStore.show({
-        messageKey: "_workflow.confirm-continue-deferred-process",
+        messageKey: "confirm-continue-deferred-process",
       })
     ).confirmed
   ) {
@@ -489,7 +489,7 @@ const completeMessage = async (
   if (
     !(
       await confirmationStore.show({
-        messageKey: "_workflow.confirm-complete-message",
+        messageKey: "confirm-complete-message",
       })
     ).confirmed
   ) {

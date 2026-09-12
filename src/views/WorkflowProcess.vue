@@ -14,13 +14,13 @@
           prepend-icon=""
           prepend-inner-icon="$calendar"
           v-model="state.deferredTill"
-          :label="$t('_workflow.deferred-till')"
+          :label="$t('deferred-till')"
           clearable
           hide-details
         ></v-date-input>
       </div>
       <div class="w-full">
-        <div>{{ $t("_workflow.state-items") }}</div>
+        <div>{{ $t("state-items") }}</div>
         <WorkflowStateItemsEditor v-model="state.stateItems" hide-state-items />
       </div>
     </div>

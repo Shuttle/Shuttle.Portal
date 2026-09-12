@@ -2,7 +2,7 @@
   <v-autocomplete
     v-model="selectedName"
     :items="names"
-    :label="$t('_workflow.process-definition')"
+    :label="$t('process-definition')"
     :loading="loading"
   ></v-autocomplete>
 </template>

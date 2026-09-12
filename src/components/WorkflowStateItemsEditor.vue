@@ -196,7 +196,7 @@ const headers = [
     key: "value",
   },
   {
-    title: t("_workflow.effective-date"),
+    title: t("effective-date"),
     key: "effectiveDate",
   },
 ];

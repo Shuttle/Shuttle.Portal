@@ -174,14 +174,14 @@ const itemHeaders = useSecureTableHeaders([
     value: "value",
   },
   {
-    title: t("_workflow.effective-date"),
+    title: t("effective-date"),
     key: "item.effectiveDate",
     value: (item: WorkflowStateItem) => {
       return useDateFormatter(item.effectiveDate).dateTimeMilliseconds();
     },
   },
   {
-    title: t("_workflow.effective-date-end"),
+    title: t("effective-date-end"),
     key: "item.effectiveDateEnd",
     value: (item: WorkflowStateItem) => {
       return isOpenEnded(item.effectiveDateEnd)
@@ -239,7 +239,7 @@ const expireItem = async (state: WorkflowState, item: WorkflowStateItem) => {
   if (
     !(
       await confirmationStore.show({
-        messageKey: "_workflow.confirm-expire-state-item",
+        messageKey: "confirm-expire-state-item",
       })
     ).confirmed
   ) {

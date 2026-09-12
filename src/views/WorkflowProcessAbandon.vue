@@ -1,6 +1,6 @@
 <template>
   <s-form :submit="submit">
-    <s-title :title="$t('_workflow.process-abandon')" close-drawer type="borderless" />
+    <s-title :title="$t('process-abandon')" close-drawer type="borderless" />
     <div class="flex flex-col gap-4">
       <v-text-field
         v-model:model-value="state.name"
@@ -17,10 +17,10 @@
         readonly
       />
       <v-divider></v-divider>
-      <v-text-field v-model="state.message" :label="$t('_workflow.message')"> </v-text-field>
+      <v-text-field v-model="state.message" :label="$t('message')"> </v-text-field>
     </div>
     <div class="flex justify-end mt-4">
-      <v-btn type="submit" :disabled="busy">{{ $t("_workflow.abandon") }}</v-btn>
+      <v-btn type="submit" :disabled="busy">{{ $t("abandon") }}</v-btn>
     </div>
   </s-form>
 </template>
@@ -66,7 +66,7 @@ const submit = async () => {
     await workflowApi.patch(`v1/processes/${props.id}/abandon`, body);
     drawerStore.close();
 
-    useSnackbarStore().open(t("_workflow.process-abandoned"));
+    useSnackbarStore().open(t("process-abandoned"));
   } finally {
     busy.value = false;
   }
