@@ -1,10 +1,6 @@
 <template>
-  <v-autocomplete
-    v-model="selectedName"
-    :items="names"
-    :label="$t('process-definition')"
-    :loading="loading"
-  ></v-autocomplete>
+  <v-autocomplete v-model="selectedName" :items="names" :label="$t('process-definition')"
+    :loading="loading"></v-autocomplete>
 </template>
 
 <script setup lang="ts">

@@ -1,132 +1,51 @@
 <template>
   <s-strip v-if="!hideStateItems" class="mb-2 overflow-y-auto md:overflow-y-auto">
-    <v-select
-      :items="stateItemSelectItems"
-      v-model="selectedStateItem"
-      density="compact"
-      variant="solo-filled"
-      hide-details
-      clearable
-    />
-    <v-btn
-      :icon="mdiTablePlus"
-      size="x-small"
-      @click.stop="add(selectedStateItem)"
-      v-tooltip="t('add')"
-      class="mr-auto"
-    ></v-btn>
+    <v-select :items="stateItemSelectItems" v-model="selectedStateItem" density="compact" variant="solo-filled"
+      hide-details clearable />
+    <v-btn :icon="mdiTablePlus" size="x-small" @click.stop="add(selectedStateItem)" v-tooltip="t('add')"
+      class="mr-auto"></v-btn>
   </s-strip>
-  <v-text-field
-    v-model="search"
-    density="compact"
-    :label="$t('search')"
-    :prepend-inner-icon="mdiMagnify"
-    variant="solo-filled"
-    flat
-    hide-details
-    single-line
-    class="mb-2"
-  ></v-text-field>
+  <v-text-field v-model="search" density="compact" :label="$t('search')" :prepend-inner-icon="mdiMagnify"
+    variant="solo-filled" flat hide-details single-line class="mb-2"></v-text-field>
   <v-divider></v-divider>
-  <v-data-table
-    v-model:search="search"
-    disable-sort
-    hide-sort
-    :items="items"
-    :headers="headers"
-    :mobile="true"
-    :loading="busy"
-    :items-per-page="5"
-  >
+  <v-data-table v-model:search="search" disable-sort hide-sort :items="items" :headers="headers" :mobile="true"
+    :loading="busy" :items-per-page="5">
     <template v-slot:footer.prepend="">
-      <v-btn
-        :icon="mdiPlus"
-        size="x-small"
-        @click.stop="add(undefined)"
-        v-tooltip="t('add')"
-        class="mr-auto"
-      ></v-btn>
+      <v-btn :icon="mdiPlus" size="x-small" @click.stop="add(undefined)" v-tooltip="t('add')" class="mr-auto"></v-btn>
     </template>
     <template v-slot:item.action="{ item }">
-      <v-btn
-        :disabled="item.required"
-        :icon="mdiTrashCanOutline"
-        size="x-small"
-        @click.stop="remove(item)"
-        v-tooltip="t('remove')"
-        class="mr-auto"
-      ></v-btn>
+      <v-btn :disabled="item.required" :icon="mdiTrashCanOutline" size="x-small" @click.stop="remove(item)"
+        v-tooltip="t('remove')" class="mr-auto"></v-btn>
     </template>
     <template v-slot:item.name="{ item }">
-      <v-text-field
-        v-model="item.name"
-        density="compact"
-        :variant="item.required ? 'outlined' : 'solo-filled'"
-        :error-messages="item.message"
-        :hide-details="!item.message"
-        :readonly="item.required"
-      >
+      <v-text-field v-model="item.name" density="compact" :variant="item.required ? 'outlined' : 'solo-filled'"
+        :error-messages="item.message" :hide-details="!item.message" :readonly="item.required">
       </v-text-field>
     </template>
     <template v-slot:item.type="{ item }">
-      <v-select
-        v-model="item.type"
-        :items="types"
-        density="compact"
-        :variant="item.required ? 'outlined' : 'solo-filled'"
-        :error-messages="item.message"
-        :hide-details="!item.message"
-        :readonly="item.required"
-      />
+      <v-select v-model="item.type" :items="types" density="compact"
+        :variant="item.required ? 'outlined' : 'solo-filled'" :error-messages="item.message"
+        :hide-details="!item.message" :readonly="item.required" />
     </template>
     <template v-slot:item.value="{ item }">
       <div v-if="item.type === 'DateTime'">
-        <v-date-input
-          v-model="item.dateValue"
-          @update:model-value="setDateValue(item)"
-          density="compact"
-          :error-messages="item.message"
-          :hide-details="!item.message"
-        ></v-date-input>
-        <v-text-field
-          :model-value="item.timeValue"
-          :prepend-icon="mdiClockTimeFourOutline"
-          readonly
-          hide-details
-          density="compact"
-        >
+        <v-date-input v-model="item.dateValue" @update:model-value="setDateValue(item)" density="compact"
+          :error-messages="item.message" :hide-details="!item.message"></v-date-input>
+        <v-text-field :model-value="item.timeValue" :prepend-icon="mdiClockTimeFourOutline" readonly hide-details
+          density="compact">
           <v-dialog v-model="showDialog" activator="parent" width="auto">
-            <v-time-picker
-              v-model="item.timeValue"
-              @update:model-value="setTimeValue(item)"
-            ></v-time-picker>
+            <v-time-picker v-model="item.timeValue" @update:model-value="setTimeValue(item)"></v-time-picker>
           </v-dialog>
         </v-text-field>
       </div>
-      <v-checkbox
-        v-else-if="item.type === 'Boolean'"
-        v-model="item.value"
-        density="compact"
-        true-value="true"
-        false-value="false"
-      ></v-checkbox>
-      <v-text-field
-        v-else
-        v-model="item.value"
-        density="compact"
-        variant="solo-filled"
-        :error-messages="item.message"
-        :hide-details="!item.message"
-      ></v-text-field>
+      <v-checkbox v-else-if="item.type === 'Boolean'" v-model="item.value" density="compact" true-value="true"
+        false-value="false"></v-checkbox>
+      <v-text-field v-else v-model="item.value" density="compact" variant="solo-filled" :error-messages="item.message"
+        :hide-details="!item.message"></v-text-field>
     </template>
     <template v-slot:item.effectiveDate="{ item }">
-      <v-date-input
-        v-model="item.effectiveDate"
-        density="compact"
-        clearable
-        :error-messages="item.message"
-        :hide-details="!item.message"
-      ></v-date-input>
+      <v-date-input v-model="item.effectiveDate" density="compact" clearable :error-messages="item.message"
+        :hide-details="!item.message"></v-date-input>
     </template>
   </v-data-table>
 </template>
@@ -221,19 +140,19 @@ const setTimeValue = (item: ExtendedStateItem) => {
 const add = (selectedStateItem?: WorkflowStateItem) => {
   const item = !selectedStateItem
     ? {
-        id: id,
-        required: false,
-        name: "",
-        type: "String",
-      }
+      id: id,
+      required: false,
+      name: "",
+      type: "String",
+    }
     : {
-        id: id,
-        required: false,
-        name: selectedStateItem.name,
-        type: selectedStateItem.type,
-        value: selectedStateItem.value,
-        effectiveDate: selectedStateItem.effectiveDate,
-      };
+      id: id,
+      required: false,
+      name: selectedStateItem.name,
+      type: selectedStateItem.type,
+      value: selectedStateItem.value,
+      effectiveDate: selectedStateItem.effectiveDate,
+    };
   id++;
   emit("update:modelValue", [...items.value, item]);
 };

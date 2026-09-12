@@ -2,20 +2,8 @@
   <s-form :submit="submit">
     <s-title :title="$t('process-abandon')" close-drawer type="borderless" />
     <div class="flex flex-col gap-4">
-      <v-text-field
-        v-model:model-value="state.name"
-        :label="t('name')"
-        variant="solo-filled"
-        hide-details
-        readonly
-      />
-      <v-text-field
-        v-model:model-value="state.key"
-        :label="t('key')"
-        variant="solo-filled"
-        hide-details
-        readonly
-      />
+      <v-text-field v-model:model-value="state.name" :label="t('name')" variant="solo-filled" hide-details readonly />
+      <v-text-field v-model:model-value="state.key" :label="t('key')" variant="solo-filled" hide-details readonly />
       <v-divider></v-divider>
       <v-text-field v-model="state.message" :label="$t('message')"> </v-text-field>
     </div>

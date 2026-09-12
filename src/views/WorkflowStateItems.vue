@@ -1,13 +1,7 @@
 <template>
   <s-form :submit="submit">
     <s-title :title="$t('state-items')" close-drawer type="borderless" />
-    <v-text-field
-      v-model="state.key"
-      :label="$t('key')"
-      readonly
-      variant="outlined"
-      density="compact"
-    >
+    <v-text-field v-model="state.key" :label="$t('key')" readonly variant="outlined" density="compact">
     </v-text-field>
     <WorkflowStateItemsEditor v-model="stateItems" :state-items="state.items" />
     <div class="flex justify-end mt-4">
@@ -21,10 +15,8 @@ import { workflowApi } from "@/api";
 import type { WorkflowState, WorkflowStateItem } from "@/portal";
 import { useSnackbarStore } from "@/stores/snackbar";
 import { useDrawerStore } from "@/stores/drawer";
-import { useI18n } from "vue-i18n";
 import { useConfirmationStore } from "@/stores/confirmation";
 
-const { t } = useI18n({ useScope: "global" });
 const drawerStore = useDrawerStore();
 const confirmationStore = useConfirmationStore();
 

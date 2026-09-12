@@ -1,40 +1,20 @@
 <template>
   <s-filter-drawer @filter="refresh">
-    <v-text-field
-      v-model="specification.keyMatch"
-      :label="$t('key')"
-      density="compact"
-      variant="solo-filled"
-      flat
-      hide-details
-    ></v-text-field>
+    <v-text-field v-model="specification.keyMatch" :label="$t('key')" density="compact" variant="solo-filled" flat
+      hide-details></v-text-field>
     <s-maximum-rows v-model="specification.maximumRows" />
   </s-filter-drawer>
   <v-card flat>
     <v-card-title class="sv-card-title">
       <s-title :title="$t('semaphores')" />
       <s-strip>
-        <v-text-field
-          v-model="search"
-          density="compact"
-          :label="$t('search')"
-          :prepend-inner-icon="mdiMagnify"
-          variant="solo-filled"
-          flat
-          hide-details
-          single-line
-        ></v-text-field>
+        <v-text-field v-model="search" density="compact" :label="$t('search')" :prepend-inner-icon="mdiMagnify"
+          variant="solo-filled" flat hide-details single-line></v-text-field>
       </s-strip>
     </v-card-title>
     <v-divider></v-divider>
-    <s-data-table
-      :items="items"
-      :headers="headers"
-      :mobile="null"
-      mobile-breakpoint="md"
-      v-model:search="search"
-      :loading="busy"
-    >
+    <s-data-table :items="items" :headers="headers" :mobile="null" mobile-breakpoint="md" v-model:search="search"
+      :loading="busy">
       <template v-slot:header.action="">
         <s-strip>
           <s-filter-toggle />
@@ -42,13 +22,8 @@
       </template>
       <template v-slot:item.action="{ item }">
         <s-strip>
-          <v-btn
-            v-if="sessionStore.hasPermission(Permissions.Workflow.Semaphores.Manage)"
-            :icon="mdiTrashCanOutline"
-            size="x-small"
-            @click.stop="remove(item)"
-            v-tooltip="t('remove')"
-          />
+          <v-btn v-if="sessionStore.hasPermission(Permissions.Workflow.Semaphores.Manage)" :icon="mdiTrashCanOutline"
+            size="x-small" @click.stop="remove(item)" v-tooltip="t('remove')" />
         </s-strip>
       </template>
     </s-data-table>

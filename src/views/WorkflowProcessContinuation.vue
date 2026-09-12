@@ -1,9 +1,5 @@
 <template>
-  <s-container
-    v-if="busy"
-    class="text-lg flex flex-col justify-center items-center p-4 rounded"
-    size="medium"
-  >
+  <s-container v-if="busy" class="text-lg flex flex-col justify-center items-center p-4 rounded" size="medium">
     <v-progress-circular indeterminate></v-progress-circular>
     <span>{{ $t("working") }}</span>
   </s-container>

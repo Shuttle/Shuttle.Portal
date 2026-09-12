@@ -1,58 +1,29 @@
 <template>
   <s-filter-drawer @filter="refresh">
-    <v-text-field
-      v-model="specification.keyMatch"
-      :label="$t('key')"
-      density="compact"
-      variant="solo-filled"
-      flat
-      hide-details
-    ></v-text-field>
+    <v-text-field v-model="specification.keyMatch" :label="$t('key')" density="compact" variant="solo-filled" flat
+      hide-details></v-text-field>
     <s-maximum-rows v-model="specification.maximumRows" />
   </s-filter-drawer>
   <v-card flat v-if="drawerStore.size != 'full'">
     <v-card-title class="sv-card-title">
       <s-title :title="$t('states')" />
       <s-strip>
-        <v-text-field
-          v-model="search"
-          density="compact"
-          :label="$t('search')"
-          :prepend-inner-icon="mdiMagnify"
-          variant="solo-filled"
-          flat
-          hide-details
-          single-line
-        ></v-text-field>
+        <v-text-field v-model="search" density="compact" :label="$t('search')" :prepend-inner-icon="mdiMagnify"
+          variant="solo-filled" flat hide-details single-line></v-text-field>
       </s-strip>
     </v-card-title>
     <v-divider></v-divider>
-    <s-data-table
-      :items="items"
-      :headers="headers"
-      :mobile="null"
-      mobile-breakpoint="md"
-      v-model:search="search"
-      :loading="busy"
-      show-expand
-      expand-on-click
-      v-model:expanded="expanded"
-    >
+    <s-data-table :items="items" :headers="headers" :mobile="null" mobile-breakpoint="md" v-model:search="search"
+      :loading="busy" show-expand expand-on-click v-model:expanded="expanded">
       <template v-slot:header.action="">
         <s-strip>
-          <s-btn-add
-            :permission="Permissions.Workflow.States.Manage"
-            @click="show(null)"
-          ></s-btn-add>
+          <s-btn-add :permission="Permissions.Workflow.States.Manage" @click="show(null)"></s-btn-add>
           <s-filter-toggle />
         </s-strip>
       </template>
       <template v-slot:item.action="{ item }">
         <s-strip>
-          <s-btn-edit
-            :permission="Permissions.Workflow.States.Manage"
-            @click.stop="show(item)"
-          />
+          <s-btn-edit :permission="Permissions.Workflow.States.Manage" @click.stop="show(item)" />
         </s-strip>
       </template>
       <template #expanded-row="{ columns, item: state }">
@@ -67,34 +38,19 @@
               <v-divider></v-divider>
               <v-tabs-window v-model="state.tab">
                 <v-tabs-window-item value="items">
-                  <s-data-table
-                    :items="state.items"
-                    :headers="itemHeaders"
-                    :mobile="null"
-                    mobile-breakpoint="md"
-                    :hide-default-footer="(state.items?.length ?? 0) < 10"
-                  >
+                  <s-data-table :items="state.items" :headers="itemHeaders" :mobile="null" mobile-breakpoint="md"
+                    :hide-default-footer="(state.items?.length ?? 0) < 10">
                     <template v-slot:header.action="">
-                      <v-btn
-                        v-if="sessionStore.hasPermission(Permissions.Workflow.States.Manage)"
-                        :icon="mdiTableEdit"
-                        size="x-small"
-                        @click.stop="showItems(state)"
-                        v-tooltip="t('edit')"
-                      ></v-btn>
+                      <v-btn v-if="sessionStore.hasPermission(Permissions.Workflow.States.Manage)" :icon="mdiTableEdit"
+                        size="x-small" @click.stop="showItems(state)" v-tooltip="t('edit')"></v-btn>
                     </template>
                     <template v-slot:item.action="{ item }">
                       <s-strip>
-                        <v-btn
-                          v-if="
-                            isOpenEnded(item.effectiveDateEnd) &&
-                            sessionStore.hasPermission(Permissions.Workflow.States.Manage)
-                          "
-                          :icon="mdiTimerOffOutline"
-                          size="x-small"
-                          @click.stop="expireItem(state, item)"
-                          v-tooltip="t('expire')"
-                        />
+                        <v-btn v-if="
+                          isOpenEnded(item.effectiveDateEnd) &&
+                          sessionStore.hasPermission(Permissions.Workflow.States.Manage)
+                        " :icon="mdiTimerOffOutline" size="x-small" @click.stop="expireItem(state, item)"
+                          v-tooltip="t('expire')" />
                       </s-strip>
                     </template>
                   </s-data-table>

@@ -3,21 +3,12 @@
     <s-title :title="$t('process')" close-drawer type="borderless" />
     <div class="flex gap-4" :class="getClasses">
       <div class="w-full">
-        <WorkflowProcessDefinition
-          v-model="state.name"
-          @process-definition-selected="processDefinitionSelected"
-          :error-messages="validation.message('name')"
-        ></WorkflowProcessDefinition>
+        <WorkflowProcessDefinition v-model="state.name" @process-definition-selected="processDefinitionSelected"
+          :error-messages="validation.message('name')"></WorkflowProcessDefinition>
         <v-text-field v-model="state.key" :label="$t('key')"> </v-text-field>
         <v-text-field v-model="state.description" :label="$t('description')"> </v-text-field>
-        <v-date-input
-          prepend-icon=""
-          prepend-inner-icon="$calendar"
-          v-model="state.deferredTill"
-          :label="$t('deferred-till')"
-          clearable
-          hide-details
-        ></v-date-input>
+        <v-date-input prepend-icon="" prepend-inner-icon="$calendar" v-model="state.deferredTill"
+          :label="$t('deferred-till')" clearable hide-details></v-date-input>
       </div>
       <div class="w-full">
         <div>{{ $t("state-items") }}</div>
@@ -44,10 +35,8 @@ import type {
 } from "@/portal";
 import { useSnackbarStore } from "@/stores/snackbar";
 import { useDrawerStore } from "@/stores/drawer";
-import { useI18n } from "vue-i18n";
 import { useConfirmationStore } from "@/stores/confirmation";
 
-const { t } = useI18n({ useScope: "global" });
 const drawerStore = useDrawerStore();
 const confirmationStore = useConfirmationStore();
 
