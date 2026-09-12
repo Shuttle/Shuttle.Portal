@@ -243,13 +243,13 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/workflow/processes/:id/continue/:token",
     name: "workflow-process-continuation",
-    component: () => import("../views/WorkflowProcessContinuation.vue"),
+    component: () => import("../views/Workflow/ProcessContinuation.vue"),
     props: true,
   },
   {
     path: "/workflow/processes",
     name: "workflow-processes",
-    component: () => import("../views/WorkflowProcesses.vue"),
+    component: () => import("../views/Workflow/Processes.vue"),
     meta: {
       permission: Permissions.Workflow.Processes.View,
     },
@@ -257,7 +257,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "process/:id?",
         name: "workflow-process",
-        component: () => import("../views/WorkflowProcess.vue"),
+        component: () => import("../views/Workflow/Process.vue"),
         props: true,
         meta: {
           permission: Permissions.Workflow.Processes.Manage,
@@ -266,7 +266,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "abandon/:id?",
         name: "workflow-process-abandon",
-        component: () => import("../views/WorkflowProcessAbandon.vue"),
+        component: () => import("../views/Workflow/ProcessAbandon.vue"),
         props: true,
         meta: {
           permission: Permissions.Workflow.Processes.Manage,
@@ -275,7 +275,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "process/:processId/message",
         name: "workflow-process-message",
-        component: () => import("../views/WorkflowProcessMessage.vue"),
+        component: () => import("../views/Workflow/ProcessMessage.vue"),
         props: true,
         meta: {
           permission: Permissions.Workflow.Processes.Manage,
@@ -284,7 +284,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "items/:id?",
         name: "workflow-process-state-items",
-        component: () => import("../views/WorkflowStateItems.vue"),
+        component: () => import("../views/Workflow/StateItems.vue"),
         props: true,
         meta: {
           permission: Permissions.Workflow.States.Manage,
@@ -295,7 +295,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/workflow/states",
     name: "workflow-states",
-    component: () => import("../views/WorkflowStates.vue"),
+    component: () => import("../views/Workflow/States.vue"),
     meta: {
       permission: Permissions.Workflow.States.View,
     },
@@ -303,7 +303,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "state/:id?",
         name: "workflow-state",
-        component: () => import("../views/WorkflowState.vue"),
+        component: () => import("../views/Workflow/State.vue"),
         props: true,
         meta: {
           permission: Permissions.Workflow.States.Manage,
@@ -312,7 +312,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "items/:id?",
         name: "workflow-state-items",
-        component: () => import("../views/WorkflowStateItems.vue"),
+        component: () => import("../views/Workflow/StateItems.vue"),
         props: true,
         meta: {
           permission: Permissions.Workflow.States.Manage,
@@ -323,7 +323,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/workflow/semaphores",
     name: "workflow-semaphores",
-    component: () => import("../views/WorkflowSemaphores.vue"),
+    component: () => import("../views/Workflow/Semaphores.vue"),
     meta: {
       permission: Permissions.Workflow.Semaphores.View,
     },
@@ -331,13 +331,13 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/workflow/processes/:id/continue/:token",
     name: "workflow-process-continuation",
-    component: () => import("../views/WorkflowProcessContinuation.vue"),
+    component: () => import("../views/Workflow/ProcessContinuation.vue"),
     props: true,
   },
   {
     path: "/workflow/processes",
     name: "workflow-processes",
-    component: () => import("../views/WorkflowProcesses.vue"),
+    component: () => import("../views/Workflow/Processes.vue"),
     meta: {
       permission: Permissions.Workflow.Processes.View,
     },
@@ -345,7 +345,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "process/:id?",
         name: "workflow-process",
-        component: () => import("../views/WorkflowProcess.vue"),
+        component: () => import("../views/Workflow/Process.vue"),
         props: true,
         meta: {
           permission: Permissions.Workflow.Processes.Manage,
@@ -354,7 +354,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "abandon/:id?",
         name: "workflow-process-abandon",
-        component: () => import("../views/WorkflowProcessAbandon.vue"),
+        component: () => import("../views/Workflow/ProcessAbandon.vue"),
         props: true,
         meta: {
           permission: Permissions.Workflow.Processes.Manage,
@@ -363,7 +363,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "process/:processId/message",
         name: "workflow-process-message",
-        component: () => import("../views/WorkflowProcessMessage.vue"),
+        component: () => import("../views/Workflow/ProcessMessage.vue"),
         props: true,
         meta: {
           permission: Permissions.Workflow.Processes.Manage,
@@ -372,7 +372,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "items/:id?",
         name: "workflow-process-state-items",
-        component: () => import("../views/WorkflowStateItems.vue"),
+        component: () => import("../views/Workflow/StateItems.vue"),
         props: true,
         meta: {
           permission: Permissions.Workflow.States.Manage,
@@ -383,7 +383,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/workflow/states",
     name: "workflow-states",
-    component: () => import("../views/WorkflowStates.vue"),
+    component: () => import("../views/Workflow/States.vue"),
     meta: {
       permission: Permissions.Workflow.States.View,
     },
@@ -391,7 +391,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "state/:id?",
         name: "workflow-state",
-        component: () => import("../views/WorkflowState.vue"),
+        component: () => import("../views/Workflow/State.vue"),
         props: true,
         meta: {
           permission: Permissions.Workflow.States.Manage,
@@ -400,7 +400,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: "items/:id?",
         name: "workflow-state-items",
-        component: () => import("../views/WorkflowStateItems.vue"),
+        component: () => import("../views/Workflow/StateItems.vue"),
         props: true,
         meta: {
           permission: Permissions.Workflow.States.Manage,
@@ -411,7 +411,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/workflow/semaphores",
     name: "workflow-semaphores",
-    component: () => import("../views/WorkflowSemaphores.vue"),
+    component: () => import("../views/Workflow/Semaphores.vue"),
     meta: {
       permission: Permissions.Workflow.Semaphores.View,
     },
