@@ -44,8 +44,6 @@
           <v-btn :icon="mdiCancel" size="x-small" @click.stop="abandonProcess(item)" v-tooltip="t('process-abandon')" />
           <v-btn :icon="mdiPlayOutline" size="x-small" @click.stop="continueProcess(item)"
             v-tooltip="t('process-continue')" />
-          <v-btn v-if="(item.status ?? '') === 'Deferred'" :icon="mdiTimerPlayOutline" size="x-small"
-            @click.stop="continueDeferredProcess(item)" v-tooltip="t('process-continue-deferred')" />
           <v-btn :icon="mdiContentCopy" size="x-small" @click.stop="show(item)" v-tooltip="t('clone')" />
           <v-btn :icon="mdiIdentifier" size="x-small" @click.stop="copyIdToClipboard(item)"
             v-tooltip="`${t('copy-id-to-clipboard')}: ${item.id}`" />
@@ -114,7 +112,6 @@ import {
   mdiMagnify,
   mdiPlayOutline,
   mdiTableEdit,
-  mdiTimerPlayOutline,
 } from "@mdi/js";
 import { useSecureTableHeaders } from "@/composables/useSecureTableHeaders";
 import { useDateFormatter, isOpenEnded } from "@/composables/useDateFormatter";
@@ -318,22 +315,23 @@ const abandonProcess = async (item: WorkflowProcess) => {
 };
 
 const continueProcess = async (item: WorkflowProcess) => {
-  await workflowApi.patch(`v1/processes/${item.id}/continue`);
-  await refresh();
-};
+  if ((item.status ?? "") === "Deferred") {
+    if (
+      !(
+        await confirmationStore.show({
+          messageKey: "confirm-continue-deferred-process",
+        })
+      ).confirmed
+    ) {
+      return;
+    }
 
-const continueDeferredProcess = async (item: WorkflowProcess) => {
-  if (
-    !(
-      await confirmationStore.show({
-        messageKey: "confirm-continue-deferred-process",
-      })
-    ).confirmed
-  ) {
+    await workflowApi.patch(`v1/processes/${item.id}/continue-deferred`);
+    await refresh();
     return;
   }
 
-  await workflowApi.patch(`v1/processes/${item.id}/continue-deferred`);
+  await workflowApi.patch(`v1/processes/${item.id}/continue`);
   await refresh();
 };
 

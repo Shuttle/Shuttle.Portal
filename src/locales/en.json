@@ -125,7 +125,6 @@
   "process-continuation-error": "Could not continue the process.  Error: {error}",
   "process-continuation-success": "The process has been continued successfully.",
   "process-continue": "Continue process",
-  "process-continue-deferred": "Continue deferred process",
   "process-definition": "Process definition",
   "process-message": "Process message",
   "processes": "Processes",
