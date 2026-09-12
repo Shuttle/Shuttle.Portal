@@ -8,14 +8,14 @@
       hide-details></v-text-field>
     <v-combobox v-model="specification.ids" :label="$t('ids')" variant="solo-filled" multiple chips closable-chips flat
       hide-details></v-combobox>
-    <v-date-input prepend-icon="" prepend-inner-icon="$calendar" v-model="specification.fromDateRegisteredInclusive"
-      :label="$t('from-date-registered-inclusive')" clearable hide-details :max="new Date()"></v-date-input>
-    <v-date-input prepend-icon="" prepend-inner-icon="$calendar" v-model="specification.toDateRegisteredExclusive"
-      :label="$t('to-date-registered-exclusive')" clearable hide-details :max="new Date()"></v-date-input>
-    <v-date-input prepend-icon="" prepend-inner-icon="$calendar" v-model="specification.fromDateCompletedInclusive"
-      :label="$t('from-date-completed-inclusive')" clearable hide-details :max="new Date()"></v-date-input>
-    <v-date-input prepend-icon="" prepend-inner-icon="$calendar" v-model="specification.toDateCompletedExclusive"
-      :label="$t('to-date-completed-exclusive')" clearable hide-details :max="new Date()"></v-date-input>
+    <s-date-input filter v-model="specification.fromDateRegisteredInclusive"
+      :label="$t('from-date-registered-inclusive')" :max="new Date()"></s-date-input>
+    <s-date-input filter v-model="specification.toDateRegisteredExclusive"
+      :label="$t('to-date-registered-exclusive')" :max="new Date()"></s-date-input>
+    <s-date-input filter v-model="specification.fromDateCompletedInclusive"
+      :label="$t('from-date-completed-inclusive')" :max="new Date()"></s-date-input>
+    <s-date-input filter v-model="specification.toDateCompletedExclusive"
+      :label="$t('to-date-completed-exclusive')" :max="new Date()"></s-date-input>
     <v-select chips clearable closable-chips hide-details :items="statuses" :label="$t('included-statuses')" multiple
       v-model="specification.includedStatuses"></v-select>
     <v-select chips clearable closable-chips hide-details :items="statuses" :label="$t('excluded-statuses')" multiple

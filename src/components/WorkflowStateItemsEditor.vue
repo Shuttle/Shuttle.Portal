@@ -29,8 +29,8 @@
     </template>
     <template v-slot:item.value="{ item }">
       <div v-if="item.type === 'DateTime'">
-        <v-date-input v-model="item.dateValue" @update:model-value="setDateValue(item)" density="compact"
-          :error-messages="item.message" :hide-details="!item.message"></v-date-input>
+        <s-date-input v-model="item.dateValue" @update:model-value="setDateValue(item)" density="compact"
+          :error-messages="item.message" :hide-details="!item.message"></s-date-input>
         <v-text-field :model-value="item.timeValue" :prepend-icon="mdiClockTimeFourOutline" readonly hide-details
           density="compact">
           <v-dialog v-model="showDialog" activator="parent" width="auto">
@@ -44,8 +44,8 @@
         :hide-details="!item.message"></v-text-field>
     </template>
     <template v-slot:item.effectiveDate="{ item }">
-      <v-date-input v-model="item.effectiveDate" density="compact" clearable :error-messages="item.message"
-        :hide-details="!item.message"></v-date-input>
+      <s-date-input v-model="item.effectiveDate" density="compact" :error-messages="item.message"
+        :hide-details="!item.message"></s-date-input>
     </template>
   </v-data-table>
 </template>

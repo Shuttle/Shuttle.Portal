@@ -22,6 +22,7 @@ import ShuttleButtonEdit from "@/components/ShuttleButtonEdit.vue";
 import ShuttleButtonUrl from "@/components/ShuttleButtonUrl.vue";
 import ShuttleContainer from "@/components/ShuttleContainer.vue";
 import ShuttleDataTable from "@/components/ShuttleDataTable.vue";
+import ShuttleDateInput from "@/components/ShuttleDateInput.vue";
 import ShuttleDrawer from "@/components/ShuttleDrawer.vue";
 import ShuttleFilterDrawer from "@/components/ShuttleFilterDrawer.vue";
 import ShuttleFilterToggle from "@/components/ShuttleFilterToggle.vue";
@@ -42,6 +43,7 @@ export function registerPlugins(app: App) {
   app.component("s-btn-url", ShuttleButtonUrl);
   app.component("s-container", ShuttleContainer);
   app.component("s-data-table", ShuttleDataTable);
+  app.component("s-date-input", ShuttleDateInput);
   app.component("s-drawer", ShuttleDrawer);
   app.component("s-filter-drawer", ShuttleFilterDrawer);
   app.component("s-filter-toggle", ShuttleFilterToggle);

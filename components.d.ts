@@ -20,6 +20,7 @@ declare module 'vue' {
     ShuttleButtonUrl: typeof import('./src/components/ShuttleButtonUrl.vue')['default']
     ShuttleContainer: typeof import('./src/components/ShuttleContainer.vue')['default']
     ShuttleDataTable: typeof import('./src/components/ShuttleDataTable.vue')['default']
+    ShuttleDateInput: typeof import('./src/components/ShuttleDateInput.vue')['default']
     ShuttleDrawer: typeof import('./src/components/ShuttleDrawer.vue')['default']
     ShuttleFilterDrawer: typeof import('./src/components/ShuttleFilterDrawer.vue')['default']
     ShuttleFilterToggle: typeof import('./src/components/ShuttleFilterToggle.vue')['default']

@@ -7,8 +7,7 @@
           :error-messages="validation.message('name')"></WorkflowProcessDefinition>
         <v-text-field v-model="state.key" :label="$t('key')"> </v-text-field>
         <v-text-field v-model="state.description" :label="$t('description')"> </v-text-field>
-        <v-date-input prepend-icon="" prepend-inner-icon="$calendar" v-model="state.deferredTill"
-          :label="$t('deferred-till')" clearable hide-details></v-date-input>
+        <s-date-input v-model="state.deferredTill" :label="$t('deferred-till')"></s-date-input>
       </div>
       <div class="w-full">
         <div>{{ $t("state-items") }}</div>
