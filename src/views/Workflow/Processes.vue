@@ -51,6 +51,10 @@
             @click.stop="copyContinuationLinkToClipboard(item)" v-tooltip="t('copy-continuation-link-to-clipboard')" />
         </s-strip>
       </template>
+      <template v-slot:item.statusIcon="{ item }">
+        <v-icon :icon="getStatusIcon(item.status)" :class="getStatusIconClasses(item.status)"
+          v-tooltip="item.status"></v-icon>
+      </template>
       <template #expanded-row="{ columns, item: process }">
         <tr>
           <td :colspan="columns.length">
@@ -104,14 +108,20 @@ import { workflowApi } from "@/api";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 import {
+  mdiAlertCircleOutline,
   mdiCancel,
+  mdiCheckCircleOutline,
+  mdiCircleOutline,
   mdiContentCopy,
   mdiDebugStepOver,
   mdiIdentifier,
   mdiLinkVariant,
   mdiMagnify,
+  mdiPlayCircleOutline,
   mdiPlayOutline,
   mdiTableEdit,
+  mdiTimerPauseOutline,
+  mdiTimerSand,
 } from "@mdi/js";
 import { useSecureTableHeaders } from "@/composables/useSecureTableHeaders";
 import { useDateFormatter, isOpenEnded } from "@/composables/useDateFormatter";
@@ -154,7 +164,66 @@ const statuses: string[] = [
   "Waiting",
 ];
 
+const getStatusIcon = (status?: string) => {
+  switch (status) {
+    case "Abandoned": {
+      return mdiCancel;
+    }
+    case "Completed": {
+      return mdiCheckCircleOutline;
+    }
+    case "Deferred": {
+      return mdiTimerSand;
+    }
+    case "Failed": {
+      return mdiAlertCircleOutline;
+    }
+    case "Started": {
+      return mdiPlayCircleOutline;
+    }
+    case "Waiting": {
+      return mdiTimerPauseOutline;
+    }
+    default: {
+      return mdiCircleOutline;
+    }
+  }
+};
+
+const getStatusIconClasses = (status?: string) => {
+  switch (status) {
+    case "Abandoned": {
+      return "text-gray-500";
+    }
+    case "Completed": {
+      return "text-green-500";
+    }
+    case "Deferred": {
+      return "text-orange-500";
+    }
+    case "Failed": {
+      return "text-red-500";
+    }
+    case "Started": {
+      return "text-blue-500";
+    }
+    case "Waiting": {
+      return "text-yellow-500";
+    }
+    default: {
+      return "text-gray-400";
+    }
+  }
+};
+
 const headers = useSecureTableHeaders([
+  {
+    value: "statusIcon",
+    headerProps: {
+      class: "w-1",
+    },
+    filterable: false,
+  },
   {
     value: "action",
     headerProps: {
