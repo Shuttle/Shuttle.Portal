@@ -7,7 +7,8 @@
           :error-messages="validation.message('name')"></WorkflowProcessDefinition>
         <v-text-field v-model="state.key" :label="$t('key')"> </v-text-field>
         <v-text-field v-model="state.description" :label="$t('description')"> </v-text-field>
-        <s-date-input v-model="state.deferredTill" :label="$t('deferred-till')"></s-date-input>
+        <s-date-input v-model="deferredTillDate" :label="$t('deferred-till')"></s-date-input>
+        <s-time-picker v-model="deferredTillTime" :label="$t('deferred-till-time')"></s-time-picker>
       </div>
       <div class="w-full">
         <div>{{ $t("state-items") }}</div>
@@ -23,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref } from "vue";
+import { computed, reactive, ref, watch } from "vue";
 import { required } from "@vuelidate/validators";
 import { useValidation } from "@/composables/useValidation";
 import { workflowApi } from "@/api";
@@ -53,6 +54,46 @@ const initialState: RegisterWorkflowProcess = {
 };
 
 const state = reactive<RegisterWorkflowProcess>({ ...initialState });
+
+const deferredTillDate = ref<Date | null>(null);
+const deferredTillTime = ref<string | null>(null);
+
+const setDeferredTillParts = (value?: Date) => {
+  if (!value) {
+    deferredTillDate.value = null;
+    deferredTillTime.value = null;
+    return;
+  }
+
+  const date = new Date(value);
+
+  deferredTillDate.value = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+  );
+  deferredTillTime.value = `${String(date.getHours()).padStart(2, "0")}:${String(
+    date.getMinutes(),
+  ).padStart(2, "0")}`;
+};
+
+watch([deferredTillDate, deferredTillTime], () => {
+  if (!deferredTillDate.value) {
+    state.deferredTill = undefined;
+    return;
+  }
+
+  const combined = new Date(deferredTillDate.value);
+
+  if (deferredTillTime.value) {
+    const [hours, minutes] = deferredTillTime.value.split(":").map(Number);
+    combined.setHours(hours, minutes, 0, 0);
+  } else {
+    combined.setHours(0, 0, 0, 0);
+  }
+
+  state.deferredTill = combined;
+});
 
 const processDefinitionSelected = (
   selectedProcessDefinition: WorkflowProcessDefinition,
@@ -98,6 +139,7 @@ const submit = async () => {
     await drawerStore.options.refresh();
 
     Object.assign(state, initialState);
+    setDeferredTillParts(undefined);
     confirmationStore.addConfirmationState("process", state);
     useSnackbarStore().requestSent();
     drawerStore.close();
@@ -122,6 +164,7 @@ onMounted(async () => {
     );
 
     Object.assign(state, response.data);
+    setDeferredTillParts(response.data.deferredTill);
 
     state.stateItems = response.data.state?.items;
 

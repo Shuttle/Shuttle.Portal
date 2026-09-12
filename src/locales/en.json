@@ -49,6 +49,7 @@
   "deactivated": "Deactivated",
   "deferred": "Deferred",
   "deferred-till": "Deferred till",
+  "deferred-till-time": "Deferred till time",
   "deferred-until": "Deferred until",
   "description": "Description",
   "domain-event": "Domain event",
