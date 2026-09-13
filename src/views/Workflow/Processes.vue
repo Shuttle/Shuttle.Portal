@@ -17,9 +17,41 @@
     <s-date-input filter v-model="specification.toDateCompletedExclusive"
       :label="$t('to-date-completed-exclusive')" :max="new Date()"></s-date-input>
     <v-select chips clearable closable-chips hide-details :items="statuses" :label="$t('included-statuses')" multiple
-      v-model="specification.includedStatuses"></v-select>
+      v-model="specification.includedStatuses">
+      <template v-slot:item="{ item, props }">
+        <v-list-item v-bind="props">
+          <template v-slot:prepend>
+            <v-icon :icon="getStatusIcon(item)" :class="getStatusIconClasses(item)"></v-icon>
+          </template>
+        </v-list-item>
+      </template>
+      <template v-slot:chip="{ item, props }">
+        <v-chip v-bind="props">
+          <template v-slot:prepend>
+            <v-icon :icon="getStatusIcon(item)" :class="getStatusIconClasses(item)" size="small"></v-icon>
+          </template>
+          {{ item }}
+        </v-chip>
+      </template>
+    </v-select>
     <v-select chips clearable closable-chips hide-details :items="statuses" :label="$t('excluded-statuses')" multiple
-      v-model="specification.excludedStatuses"></v-select>
+      v-model="specification.excludedStatuses">
+      <template v-slot:item="{ item, props }">
+        <v-list-item v-bind="props">
+          <template v-slot:prepend>
+            <v-icon :icon="getStatusIcon(item)" :class="getStatusIconClasses(item)"></v-icon>
+          </template>
+        </v-list-item>
+      </template>
+      <template v-slot:chip="{ item, props }">
+        <v-chip v-bind="props">
+          <template v-slot:prepend>
+            <v-icon :icon="getStatusIcon(item)" :class="getStatusIconClasses(item)" size="small"></v-icon>
+          </template>
+          {{ item }}
+        </v-chip>
+      </template>
+    </v-select>
     <s-maximum-rows v-model="specification.maximumRows" />
   </s-filter-drawer>
   <v-card flat v-if="drawerStore.size != 'full'">
