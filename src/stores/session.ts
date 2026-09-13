@@ -148,15 +148,47 @@ export const useSessionStore = defineStore("session", () => {
 
   const activePermissions = computed(() => {
     return sessionPermissions.value.filter(
-      (item) =>
-        item.tenantId === tenantId.value &&
-        (!item.name.startsWith("access://tenants/") ||
-          tenantId.value === configuration.accessSystemTenantId),
+      (item) => item.tenantId === tenantId.value,
     );
   });
 
+  // Identities, tenants, sessions and permissions are not owned by any one tenant, so managing them (unlike, say,
+  // managing an identity's roles) is restricted to callers currently working in the system tenant.  Viewing
+  // identities/sessions/permissions remains available from any tenant (permissions in particular must stay
+  // viewable everywhere, since assigning them to a role happens from within that role's own tenant); tenants are
+  // only ever visible from the system tenant.  This is checked against the permission being *asked for*, not
+  // against how it happens to be granted (a wildcard such as "access://*" would otherwise slip straight past a
+  // check keyed on the granted permission's own name).
+  const systemTenantOnlyPrefixes = [
+    "access://tenants/",
+    "access://identities/",
+    "access://sessions/",
+    "access://permissions/",
+  ];
+  const systemTenantViewablePermissions = [
+    "access://identities/view",
+    "access://sessions/view",
+    "access://permissions/view",
+  ];
+
+  const requiresSystemTenant = (permission: string) => {
+    const name = permission.toLowerCase();
+
+    return (
+      systemTenantOnlyPrefixes.some((prefix) => name.startsWith(prefix)) &&
+      !systemTenantViewablePermissions.includes(name)
+    );
+  };
+
   const hasPermission = (permission: string) => {
     if (!tenantId.value) {
+      return false;
+    }
+
+    if (
+      requiresSystemTenant(permission) &&
+      tenantId.value !== configuration.accessSystemTenantId
+    ) {
       return false;
     }
 

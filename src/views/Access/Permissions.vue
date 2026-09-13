@@ -24,13 +24,13 @@
       mobile-breakpoint="md"
       v-model:search="search"
       :loading="busy"
-      show-select
+      :show-select="sessionStore.hasPermission(Permissions.Permissions.Manage)"
       v-model="selected"
     >
       <template v-slot:header.action="">
         <div
           class="flex flex-row items-center gap-2"
-          v-if="sessionStore.hasPermission(Permissions.Roles.Manage)"
+          v-if="sessionStore.hasPermission(Permissions.Permissions.Manage)"
         >
           <s-btn-add @click="add"></s-btn-add>
           <v-btn :icon="mdiUpload" size="x-small" @click="upload"></v-btn>
@@ -67,13 +67,21 @@
       <template v-slot:item.name="{ item }">
         <div class="flex items-center">
           <div class="grow">{{ item.name }}</div>
-          <s-btn-edit @click.stop="rename(item)" class="flex-none" />
+          <s-btn-edit
+            v-if="sessionStore.hasPermission(Permissions.Permissions.Manage)"
+            @click.stop="rename(item)"
+            class="flex-none"
+          />
         </div>
       </template>
       <template v-slot:item.description="{ item }">
         <div class="flex items-center">
           <div class="grow">{{ item.description }}</div>
-          <s-btn-edit @click.stop="description(item)" class="flex-none" />
+          <s-btn-edit
+            v-if="sessionStore.hasPermission(Permissions.Permissions.Manage)"
+            @click.stop="description(item)"
+            class="flex-none"
+          />
         </div>
       </template>
     </s-data-table>

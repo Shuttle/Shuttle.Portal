@@ -49,9 +49,11 @@ import { useRoute } from "vue-router";
 import { mdiTimerSand, mdiMagnify, mdiRefresh } from "@mdi/js";
 import type { IdentifierAvailability } from "@/portal";
 import { useSnackbarStore } from "@/stores/snackbar";
+import { useSessionStore } from "@/stores/session";
 
 const { t } = useI18n({ useScope: "global" });
 const snackbarStore = useSnackbarStore();
+const sessionStore = useSessionStore();
 
 const id: Ref<string | string[]> = ref(useRoute().params.id);
 const name: Ref<string> = ref("");
@@ -86,16 +88,18 @@ export type RoleItem = {
 const items = computed(() => {
   const result: RoleItem[] = [];
 
-  identityRoles.value.forEach((item: any) => {
-    result.push(
-      reactive({
-        roleId: item.id,
-        roleName: item.name,
-        active: true,
-        working: false,
-      }),
-    );
-  });
+  identityRoles.value
+    .filter((item: any) => item.tenantId === sessionStore.tenantId)
+    .forEach((item: any) => {
+      result.push(
+        reactive({
+          roleId: item.id,
+          roleName: item.name,
+          active: true,
+          working: false,
+        }),
+      );
+    });
 
   roles.value
     .filter((item: any) => {

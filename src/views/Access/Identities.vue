@@ -58,13 +58,21 @@
       <template v-slot:item.name="{ item }">
         <div class="flex items-center">
           <div class="grow">{{ item.name }}</div>
-          <s-btn-edit @click.stop="rename(item)" class="flex-none" />
+          <s-btn-edit
+            v-if="sessionStore.hasPermission(Permissions.Identities.Manage)"
+            @click.stop="rename(item)"
+            class="flex-none"
+          />
         </div>
       </template>
       <template v-slot:item.description="{ item }">
         <div class="flex items-center">
           <div class="grow">{{ item.description }}</div>
-          <s-btn-edit @click.stop="description(item)" class="flex-none" />
+          <s-btn-edit
+            v-if="sessionStore.hasPermission(Permissions.Identities.Manage)"
+            @click.stop="description(item)"
+            class="flex-none"
+          />
         </div>
       </template>
       <template #expanded-row="{ columns, item }">

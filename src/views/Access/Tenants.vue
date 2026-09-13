@@ -31,7 +31,12 @@
         </s-strip>
       </template>
       <template v-slot:item.action="{ item }">
-        <v-btn :icon="mdiDelete" size="x-small" @click.stop="remove(item)" />
+        <v-btn
+          v-if="sessionStore.hasPermission(Permissions.Tenants.Manage)"
+          :icon="mdiDelete"
+          size="x-small"
+          @click.stop="remove(item)"
+        />
       </template>
       <template v-slot:item.status="{ item }">
         <v-switch
@@ -77,6 +82,7 @@ const headers = useSecureTableHeaders([
     headerProps: {
       class: "w-1",
     },
+    permission: Permissions.Tenants.Manage,
     filterable: false,
   },
   {

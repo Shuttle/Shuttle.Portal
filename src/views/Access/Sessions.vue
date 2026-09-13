@@ -38,7 +38,12 @@
         ></v-btn>
       </template>
       <template v-slot:item.action="{ item }">
-        <v-btn :icon="mdiDelete" size="x-small" @click.stop="remove(item)" />
+        <v-btn
+          v-if="sessionStore.hasPermission(Permissions.Sessions.Manage)"
+          :icon="mdiDelete"
+          size="x-small"
+          @click.stop="remove(item)"
+        />
       </template>
       <template #expanded-row="{ columns, item }">
         <tr>
@@ -48,21 +53,24 @@
                 <v-tab value="permissions">
                   <span>{{ $t("permissions") }}</span>
                 </v-tab>
-                <v-tab value="tokens">
+                <v-tab value="tokens" v-if="sessionStore.systemTenantActive">
                   <span>{{ $t("tokens") }}</span>
                 </v-tab>
               </v-tabs>
               <v-tabs-window v-model="item.tab">
                 <v-tabs-window-item value="permissions">
                   <s-data-table
-                    :items="item.permissions"
+                    :items="getVisiblePermissions(item)"
                     :headers="permissionHeaders"
                     :mobile="null"
                     mobile-breakpoint="md"
                   >
                   </s-data-table>
                 </v-tabs-window-item>
-                <v-tabs-window-item value="tokens">
+                <v-tabs-window-item
+                  value="tokens"
+                  v-if="sessionStore.systemTenantActive"
+                >
                   <s-data-table
                     :items="item.tokens"
                     :headers="tokenHeaders"
@@ -193,6 +201,14 @@ const tokenHeaders = useSecureTableHeaders([
 ]);
 
 const items: Ref<Session[]> = ref([]);
+
+const getVisiblePermissions = (item: Session) => {
+  return sessionStore.systemTenantActive
+    ? item.permissions
+    : item.permissions.filter(
+        (permission) => permission.tenantId === sessionStore.tenantId,
+      );
+};
 
 const getSelectedTab = (id: string) => {
   return items.value.find((item) => item.id === id)?.tab || "permissions";
