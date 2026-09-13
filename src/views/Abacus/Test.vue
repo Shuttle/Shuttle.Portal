@@ -9,13 +9,13 @@
     >
     </v-text-field>
     <v-autocomplete
-      v-model="state.formulaId"
-      :label="$t('formula')"
-      :items="formulas"
+      v-model="state.algorithmId"
+      :label="$t('algorithm')"
+      :items="algorithms"
       item-title="name"
       item-value="id"
       class="mb-2"
-      :error-messages="validation.message('formulaId')"
+      :error-messages="validation.message('algorithmId')"
     >
     </v-autocomplete>
     <v-select
@@ -56,18 +56,18 @@ import { useValidation } from "@/composables/useValidation";
 import { abacusApi } from "@/api";
 import { useDrawerStore } from "@/stores/drawer";
 import { useSnackbarStore } from "@/stores/snackbar";
-import type { Formula } from "@/portal";
+import type { Algorithm } from "@/portal";
 
 const drawerStore = useDrawerStore();
 
 const busy: Ref<boolean> = ref(false);
-const formulas: Ref<Formula[]> = ref([]);
+const algorithms: Ref<Algorithm[]> = ref([]);
 const dataTypes = ["Boolean", "DateTime", "Decimal", "Integer", "Text"];
 const comparisons = ["==", "!=", ">=", ">", "<=", "<"];
 
 type State = {
   name: string;
-  formulaId: string;
+  algorithmId: string;
   expectedResultDataTypeName: string;
   comparison: string;
   expectedResult: string;
@@ -75,7 +75,7 @@ type State = {
 
 const state: Reactive<State> = reactive({
   name: "",
-  formulaId: "",
+  algorithmId: "",
   expectedResultDataTypeName: "Decimal",
   comparison: "==",
   expectedResult: "",
@@ -86,7 +86,7 @@ const rules = computed(() => {
     name: {
       required,
     },
-    formulaId: {
+    algorithmId: {
       required,
     },
     expectedResultDataTypeName: {
@@ -115,7 +115,7 @@ const submit = async () => {
   try {
     await abacusApi.post("v1/tests", {
       name: state.name,
-      formulaId: state.formulaId,
+      algorithmId: state.algorithmId,
       expectedResultDataTypeName: state.expectedResultDataTypeName,
       comparison: state.comparison,
       expectedResult: state.expectedResult,
@@ -130,8 +130,8 @@ const submit = async () => {
 };
 
 onMounted(async () => {
-  const { data } = await abacusApi.post<Formula[]>("v1/formulas/search", {});
+  const { data } = await abacusApi.post<Algorithm[]>("v1/algorithms/search", {});
 
-  formulas.value = data;
+  algorithms.value = data;
 });
 </script>

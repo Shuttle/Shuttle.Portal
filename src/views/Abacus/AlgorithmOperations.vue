@@ -61,7 +61,7 @@ import { computed, onMounted, reactive, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 import { mdiDelete, mdiPlus, mdiRefresh } from "@mdi/js";
-import type { Formula, FormulaOperation } from "@/portal";
+import type { Algorithm, AlgorithmOperation } from "@/portal";
 import { useSnackbarStore } from "@/stores/snackbar";
 
 const props = defineProps<{ id: string }>();
@@ -71,12 +71,12 @@ const id = props.id ?? (route.params.id as string);
 const { t } = useI18n({ useScope: "global" });
 
 const name: Ref<string> = ref("");
-const items: Ref<FormulaOperation[]> = ref([]);
+const items: Ref<AlgorithmOperation[]> = ref([]);
 const busy: Ref<boolean> = ref(false);
 const referenceItems: Ref<{ id: string; name: string }[]> = ref([]);
 
 const operationTypes = ["Addition", "Subtraction", "Multiplication", "Division", "Rounding"];
-const valueProviderTypes = ["Argument", "Decimal", "Matrix", "Formula", "Result"];
+const valueProviderTypes = ["Argument", "Decimal", "Matrix", "Algorithm", "Result"];
 
 const newItem = reactive({
   operation: "Addition",
@@ -85,7 +85,7 @@ const newItem = reactive({
 });
 
 const isReferenceProvider = computed(() =>
-  ["Argument", "Matrix", "Formula"].includes(newItem.valueProviderName),
+  ["Argument", "Matrix", "Algorithm"].includes(newItem.valueProviderName),
 );
 
 const canAdd = computed(() => !!newItem.operation && !!newItem.valueProviderName && !!newItem.inputParameter);
@@ -118,8 +118,8 @@ const searchPath = (providerName: string) => {
       return "v1/arguments/search";
     case "Matrix":
       return "v1/matrices/search";
-    case "Formula":
-      return "v1/formulas/search";
+    case "Algorithm":
+      return "v1/algorithms/search";
     default:
       return null;
   }
@@ -144,11 +144,11 @@ const refresh = async () => {
   busy.value = true;
 
   try {
-    const formulaResponse = await abacusApi.get<Formula>(`v1/formulas/${id}`);
+    const algorithmResponse = await abacusApi.get<Algorithm>(`v1/algorithms/${id}`);
 
-    name.value = formulaResponse.data.name;
+    name.value = algorithmResponse.data.name;
 
-    const operationsResponse = await abacusApi.get<FormulaOperation[]>(`v1/formulas/${id}/operations`);
+    const operationsResponse = await abacusApi.get<AlgorithmOperation[]>(`v1/algorithms/${id}/operations`);
 
     items.value = operationsResponse.data;
   } finally {
@@ -164,7 +164,7 @@ const add = async () => {
   busy.value = true;
 
   try {
-    await abacusApi.post(`v1/formulas/${id}/operations`, {
+    await abacusApi.post(`v1/algorithms/${id}/operations`, {
       operation: newItem.operation,
       valueProviderName: newItem.valueProviderName,
       inputParameter: newItem.inputParameter,
@@ -180,11 +180,11 @@ const add = async () => {
   }
 };
 
-const remove = async (item: FormulaOperation) => {
+const remove = async (item: AlgorithmOperation) => {
   busy.value = true;
 
   try {
-    await abacusApi.delete(`v1/formulas/${id}/operations/${item.id}`);
+    await abacusApi.delete(`v1/algorithms/${id}/operations/${item.id}`);
 
     useSnackbarStore().requestSent();
 

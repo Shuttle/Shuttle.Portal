@@ -104,9 +104,9 @@ const map: NavigationItem[] = [
   },
   {
     section: "abacus",
-    to: "/formulas",
-    title: "formulas",
-    permission: Permissions.Formulas.Manage,
+    to: "/algorithms",
+    title: "algorithms",
+    permission: Permissions.Algorithms.Manage,
     icon: mdiFunctionVariant,
   },
   {

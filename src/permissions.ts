@@ -55,8 +55,8 @@ const Permissions = {
   Arguments: {
     Manage: "abacus://arguments/manage",
   },
-  Formulas: {
-    Manage: "abacus://formulas/manage",
+  Algorithms: {
+    Manage: "abacus://algorithms/manage",
   },
   Matrices: {
     Manage: "abacus://matrices/manage",

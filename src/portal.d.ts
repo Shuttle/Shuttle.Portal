@@ -317,19 +317,19 @@ export type ArgumentValue = {
   value: string;
 };
 
-export type Formula = {
+export type Algorithm = {
   id: string;
   name: string;
 };
 
-export type FormulaOperation = {
+export type AlgorithmOperation = {
   id?: string;
   operation: string;
   valueProviderName: string;
   inputParameter: string;
 };
 
-export type FormulaConstraint = {
+export type AlgorithmConstraint = {
   id?: string;
   argumentId: string;
   comparison: string;
@@ -360,7 +360,7 @@ export type MatrixElement = {
 export type AbacusTest = {
   id: string;
   name: string;
-  formulaId: string;
+  algorithmId: string;
   expectedResult: string;
   expectedResultDataTypeName: string;
   comparison: string;
@@ -376,7 +376,7 @@ export type TestRunResult = {
   exception?: string | null;
   result: number;
   logLines: { indent: number; text: string }[];
-  results: { formulaName: string; value: number; depth: number }[];
+  results: { algorithmName: string; value: number; depth: number }[];
 };
 
 export type Tenant = {

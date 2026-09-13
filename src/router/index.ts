@@ -329,28 +329,28 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: "/formulas",
-    name: "formulas",
-    component: () => import("../views/Abacus/Formulas.vue"),
+    path: "/algorithms",
+    name: "algorithms",
+    component: () => import("../views/Abacus/Algorithms.vue"),
     meta: {
-      permission: Permissions.Formulas.Manage,
+      permission: Permissions.Algorithms.Manage,
     },
     children: [
       {
-        path: "formula",
-        name: "formula",
-        component: () => import("../views/Abacus/Formula.vue"),
+        path: "algorithm",
+        name: "algorithm",
+        component: () => import("../views/Abacus/Algorithm.vue"),
         meta: {
-          permission: Permissions.Formulas.Manage,
+          permission: Permissions.Algorithms.Manage,
         },
       },
       {
-        path: "formula/:id/rename",
-        name: "formula-rename",
-        component: () => import("../views/Abacus/FormulaRename.vue"),
+        path: "algorithm/:id/rename",
+        name: "algorithm-rename",
+        component: () => import("../views/Abacus/AlgorithmRename.vue"),
         props: true,
         meta: {
-          permission: Permissions.Formulas.Manage,
+          permission: Permissions.Algorithms.Manage,
         },
       },
     ],
@@ -392,21 +392,21 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: "/formulas/:id/operations",
-    name: "formula-operations",
+    path: "/algorithms/:id/operations",
+    name: "algorithm-operations",
     props: true,
-    component: () => import("../views/Abacus/FormulaOperations.vue"),
+    component: () => import("../views/Abacus/AlgorithmOperations.vue"),
     meta: {
-      permission: Permissions.Formulas.Manage,
+      permission: Permissions.Algorithms.Manage,
     },
   },
   {
-    path: "/formulas/:id/constraints",
-    name: "formula-constraints",
+    path: "/algorithms/:id/constraints",
+    name: "algorithm-constraints",
     props: true,
-    component: () => import("../views/Abacus/FormulaConstraints.vue"),
+    component: () => import("../views/Abacus/AlgorithmConstraints.vue"),
     meta: {
-      permission: Permissions.Formulas.Manage,
+      permission: Permissions.Algorithms.Manage,
     },
   },
   {

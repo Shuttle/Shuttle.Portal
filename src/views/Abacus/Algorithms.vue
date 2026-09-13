@@ -1,7 +1,7 @@
 <template>
   <v-card flat>
     <v-card-title class="sv-card-title">
-      <s-title :title="$t('formulas')" />
+      <s-title :title="$t('algorithms')" />
       <s-strip>
         <v-btn :icon="mdiRefresh" size="x-small" @click="refresh"></v-btn>
         <v-text-field
@@ -52,7 +52,7 @@ import { useRouter } from "vue-router";
 import { useConfirmationStore } from "@/stores/confirmation";
 import { useSecureTableHeaders } from "@/composables/useSecureTableHeaders";
 import Permissions from "@/permissions";
-import type { Formula } from "@/portal";
+import type { Algorithm } from "@/portal";
 import { useDrawerStore } from "@/stores/drawer";
 import { useSnackbarStore } from "@/stores/snackbar";
 
@@ -62,7 +62,7 @@ const { t } = useI18n({ useScope: "global" });
 const router = useRouter();
 
 const busy: Ref<boolean> = ref(false);
-const items: Ref<Formula[]> = ref([]);
+const items: Ref<Algorithm[]> = ref([]);
 const search: Ref<string> = ref("");
 
 const headers = useSecureTableHeaders([
@@ -71,11 +71,11 @@ const headers = useSecureTableHeaders([
     headerProps: {
       class: "w-1",
     },
-    permission: Permissions.Formulas.Manage,
+    permission: Permissions.Algorithms.Manage,
     filterable: false,
   },
   {
-    title: t("formula-name"),
+    title: t("algorithm-name"),
     value: "name",
   },
 ]);
@@ -84,14 +84,14 @@ const refresh = async () => {
   busy.value = true;
 
   try {
-    const { data } = await abacusApi.post<Formula[]>("v1/formulas/search", {});
+    const { data } = await abacusApi.post<Algorithm[]>("v1/algorithms/search", {});
     items.value = data;
   } finally {
     busy.value = false;
   }
 };
 
-const remove = async (item: Formula) => {
+const remove = async (item: Algorithm) => {
   if (
     !(await confirmationStore.show({ messageKey: "_confirmation.remove" })).confirmed
   ) {
@@ -101,7 +101,7 @@ const remove = async (item: Formula) => {
   busy.value = true;
 
   try {
-    await abacusApi.delete(`v1/formulas/${item.id}`);
+    await abacusApi.delete(`v1/algorithms/${item.id}`);
 
     useSnackbarStore().requestSent();
 
@@ -112,19 +112,19 @@ const remove = async (item: Formula) => {
 };
 
 const add = () => {
-  router.push({ name: "formula" });
+  router.push({ name: "algorithm" });
 };
 
-const rename = (item: Formula) => {
-  router.push({ name: "formula-rename", params: { id: item.id } });
+const rename = (item: Algorithm) => {
+  router.push({ name: "algorithm-rename", params: { id: item.id } });
 };
 
-const operations = (item: Formula) => {
-  router.push({ name: "formula-operations", params: { id: item.id } });
+const operations = (item: Algorithm) => {
+  router.push({ name: "algorithm-operations", params: { id: item.id } });
 };
 
-const constraints = (item: Formula) => {
-  router.push({ name: "formula-constraints", params: { id: item.id } });
+const constraints = (item: Algorithm) => {
+  router.push({ name: "algorithm-constraints", params: { id: item.id } });
 };
 
 onMounted(() => {
@@ -132,7 +132,7 @@ onMounted(() => {
 
   drawerStore.initialize({
     refresh: refresh,
-    parentPath: "/formulas",
+    parentPath: "/algorithms",
   });
 });
 </script>
