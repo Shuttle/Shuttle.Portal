@@ -429,19 +429,10 @@ const routes: Array<RouteRecordRaw> = [
     ],
   },
   {
-    path: "/matrices/:id/constraints",
-    name: "matrix-constraints",
+    path: "/matrices/:id/grid",
+    name: "matrix-grid",
     props: true,
-    component: () => import("../views/Abacus/MatrixConstraints.vue"),
-    meta: {
-      permission: Permissions.Matrices.Manage,
-    },
-  },
-  {
-    path: "/matrices/:id/elements",
-    name: "matrix-elements",
-    props: true,
-    component: () => import("../views/Abacus/MatrixElements.vue"),
+    component: () => import("../views/Abacus/MatrixGrid.vue"),
     meta: {
       permission: Permissions.Matrices.Manage,
     },

@@ -24,6 +24,7 @@ export type Configuration = {
   isAccessAvailable: () => boolean;
   isRecallAvailable: () => boolean;
   isWorkflowAvailable: () => boolean;
+  isModuleEnabled: (name: string) => boolean;
   isAccessPasswordAuthenticationAllowed: () => boolean;
   isDebugging: () => boolean;
   getApiUrl: (api: Api, path: string) => string;

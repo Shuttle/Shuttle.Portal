@@ -77,6 +77,25 @@ const getConfiguration = (): Configuration => {
     isAbacusAvailable() {
       return isOk && !!values.VITE_ABACUS_API_URL;
     },
+    isModuleEnabled(name: string) {
+      switch (name.toLowerCase()) {
+        case "access": {
+          return this.isAccessAvailable();
+        }
+        case "recall": {
+          return this.isRecallAvailable();
+        }
+        case "workflow": {
+          return this.isWorkflowAvailable();
+        }
+        case "abacus": {
+          return this.isAbacusAvailable();
+        }
+        default: {
+          return false;
+        }
+      }
+    },
     isAccessPasswordAuthenticationAllowed() {
       return this.isAccessAvailable()
         ? accessServerConfiguration.allowPasswordAuthentication

@@ -32,8 +32,7 @@
       </template>
       <template v-slot:item.action="{ item }">
         <s-strip>
-          <v-btn :icon="mdiFilterVariant" size="x-small" @click.stop="constraints(item)" />
-          <v-btn :icon="mdiGrid" size="x-small" @click.stop="elements(item)" />
+          <v-btn :icon="mdiGrid" size="x-small" @click.stop="grid(item)" />
           <s-btn-edit @click.stop="edit(item)" />
         </s-strip>
       </template>
@@ -46,7 +45,7 @@
 import { abacusApi } from "@/api";
 import { onMounted, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { mdiFilterVariant, mdiGrid, mdiMagnify, mdiRefresh } from "@mdi/js";
+import { mdiGrid, mdiMagnify, mdiRefresh } from "@mdi/js";
 import { useRouter } from "vue-router";
 import { useSecureTableHeaders } from "@/composables/useSecureTableHeaders";
 import Permissions from "@/permissions";
@@ -99,12 +98,8 @@ const edit = (item: Matrix) => {
   router.push({ name: "matrix", params: { id: item.id } });
 };
 
-const constraints = (item: Matrix) => {
-  router.push({ name: "matrix-constraints", params: { id: item.id } });
-};
-
-const elements = (item: Matrix) => {
-  router.push({ name: "matrix-elements", params: { id: item.id } });
+const grid = (item: Matrix) => {
+  router.push({ name: "matrix-grid", params: { id: item.id } });
 };
 
 onMounted(() => {

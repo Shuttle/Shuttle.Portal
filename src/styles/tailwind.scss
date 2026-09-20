@@ -1,5 +1,13 @@
 @tailwind utilities;
 
+/* Static so the variables are always emitted; they are consumed with var() rather than utility classes. */
+@theme static {
+  --color-matrix-row: oklch(0.55 0.13 250);
+  --color-matrix-row-muted: oklch(0.55 0.13 250 / 0.25);
+  --color-matrix-column: oklch(0.55 0.13 165);
+  --color-matrix-column-muted: oklch(0.55 0.13 165 / 0.25);
+}
+
 @layer components {
   /* Card */
   .sv-card {

@@ -11,6 +11,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AbacusValueInput: typeof import('./src/components/AbacusValueInput.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     ShuttleButton: typeof import('./src/components/ShuttleButton.vue')['default']

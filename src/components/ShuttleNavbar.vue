@@ -147,6 +147,7 @@ const sections = computed(() => {
   const order = ["access", "abacus", "recall", "workflow"];
 
   return order
+    .filter((name) => configuration.isModuleEnabled(name))
     .map((name) => ({
       name,
       items: items.value.filter((item) => item.section === name),
