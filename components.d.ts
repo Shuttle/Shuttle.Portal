@@ -22,6 +22,7 @@ declare module 'vue' {
     ShuttleContainer: typeof import('./src/components/ShuttleContainer.vue')['default']
     ShuttleDataTable: typeof import('./src/components/ShuttleDataTable.vue')['default']
     ShuttleDateInput: typeof import('./src/components/ShuttleDateInput.vue')['default']
+    ShuttleDateRangeFilter: typeof import('./src/components/ShuttleDateRangeFilter.vue')['default']
     ShuttleDrawer: typeof import('./src/components/ShuttleDrawer.vue')['default']
     ShuttleFilterDrawer: typeof import('./src/components/ShuttleFilterDrawer.vue')['default']
     ShuttleFilterToggle: typeof import('./src/components/ShuttleFilterToggle.vue')['default']
