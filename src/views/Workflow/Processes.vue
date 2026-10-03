@@ -4,114 +4,67 @@
       <s-title :title="$t('processes')" />
     </v-card-title>
     <v-divider></v-divider>
-    <!-- The horizontal padding matches the card title and the table cells so that everything lines up. -->
-    <div class="flex flex-col gap-3 px-4 py-3">
-      <div class="flex items-center flex-wrap gap-3">
+    <s-filter-bar :bar="filterBar" :describe="describeFilter" @refresh="refresh">
+      <template v-slot:presets>
         <v-chip-group :model-value="preset" mandatory filter color="primary" @update:model-value="applyPreset">
           <v-chip v-for="item in presets" :key="item.value" :value="item.value" variant="outlined" density="compact"
             :prepend-icon="item.icon">
             {{ item.title }}
           </v-chip>
         </v-chip-group>
-        <v-spacer></v-spacer>
-        <v-menu :close-on-content-click="false" location="bottom end">
-          <template v-slot:activator="{ props: menuProps }">
-            <v-btn v-bind="menuProps" :icon="mdiTune" size="x-small" v-tooltip="t('options')" />
-          </template>
-          <v-card min-width="240" class="p-3">
-            <s-maximum-rows v-model="specification.maximumRows" />
-          </v-card>
-        </v-menu>
-        <v-btn :icon="mdiRefresh" size="x-small" @click="refresh" v-tooltip="t('refresh')" />
-      </div>
-      <div class="flex items-center flex-wrap gap-3">
+      </template>
+      <template v-slot:chips>
         <v-chip v-if="showActiveOnlyChip" closable :prepend-icon="mdiPlayCircleOutline" variant="tonal" color="primary"
           @click:close="specification.activeOnly = false">
           {{ t("active-only") }}
         </v-chip>
-        <v-menu v-for="filter in visibleFilters" :key="filter.key" v-model="menus[filter.key]"
-          :close-on-content-click="false" location="bottom start">
-          <template v-slot:activator="{ props: menuProps }">
-            <v-chip v-bind="menuProps" closable :prepend-icon="filter.icon" variant="tonal" color="primary"
-              @click:close="clearFilter(filter.key)">
-              {{ describeFilter(filter) }}
+      </template>
+      <template v-slot:options>
+        <s-maximum-rows v-model="specification.maximumRows" />
+      </template>
+      <template v-slot:editor="{ filter }">
+        <div v-if="filter.key === 'name'" class="p-3">
+          <WorkflowProcessDefinition v-model="specification.name" density="compact" variant="solo-filled" flat
+            hide-details clearable></WorkflowProcessDefinition>
+        </div>
+        <div v-else-if="filter.key === 'key'" class="p-3">
+          <v-text-field v-model="specification.keyMatch" :label="t('key')" density="compact" variant="solo-filled"
+            flat hide-details clearable autofocus></v-text-field>
+        </div>
+        <div v-else-if="filter.key === 'ids'" class="p-3">
+          <v-combobox v-model="specification.ids" :label="t('ids')" density="compact" variant="solo-filled" multiple
+            chips closable-chips flat hide-details></v-combobox>
+        </div>
+        <s-date-range-filter v-else-if="filter.key === 'registered'"
+          v-model:from="specification.fromDateRegisteredInclusive"
+          v-model:to="specification.toDateRegisteredExclusive" to-exclusive :precision="registeredPrecision" />
+        <s-date-range-filter v-else-if="filter.key === 'completed'"
+          v-model:from="specification.fromDateCompletedInclusive"
+          v-model:to="specification.toDateCompletedExclusive" to-exclusive :precision="completedPrecision" />
+        <div v-else-if="filter.key === 'statuses'" class="p-3">
+          <div class="flex flex-wrap gap-2">
+            <v-chip v-for="status in statuses" :key="status"
+              :variant="getStatusState(status) === 'none' ? 'outlined' : 'flat'"
+              :color="getStatusState(status) === 'included' ? 'primary' : getStatusState(status) === 'excluded' ? 'error' : undefined"
+              :class="{ 'text-decoration-line-through': getStatusState(status) === 'excluded' }"
+              :prepend-icon="getStatusState(status) === 'included' ? mdiCheck : getStatusState(status) === 'excluded' ? mdiClose : getStatusIcon(status)"
+              @click="cycleStatus(status)">
+              {{ status }}
             </v-chip>
-          </template>
-          <v-card min-width="300" max-width="360">
-            <div v-if="filter.key === 'name'" class="p-3">
-              <WorkflowProcessDefinition v-model="specification.name" density="compact" variant="solo-filled" flat
-                hide-details clearable></WorkflowProcessDefinition>
-            </div>
-            <div v-else-if="filter.key === 'key'" class="p-3">
-              <v-text-field v-model="specification.keyMatch" :label="t('key')" density="compact" variant="solo-filled"
-                flat hide-details clearable autofocus></v-text-field>
-            </div>
-            <div v-else-if="filter.key === 'ids'" class="p-3">
-              <v-combobox v-model="specification.ids" :label="t('ids')" density="compact" variant="solo-filled" multiple
-                chips closable-chips flat hide-details></v-combobox>
-            </div>
-            <s-date-range-filter v-else-if="filter.key === 'registered'"
-              v-model:from="specification.fromDateRegisteredInclusive"
-              v-model:to="specification.toDateRegisteredExclusive" />
-            <s-date-range-filter v-else-if="filter.key === 'completed'"
-              v-model:from="specification.fromDateCompletedInclusive"
-              v-model:to="specification.toDateCompletedExclusive" />
-            <div v-else-if="filter.key === 'statuses'" class="p-3">
-              <div class="flex flex-wrap gap-2">
-                <v-chip v-for="status in statuses" :key="status"
-                  :variant="getStatusState(status) === 'none' ? 'outlined' : 'flat'"
-                  :color="getStatusState(status) === 'included' ? 'primary' : getStatusState(status) === 'excluded' ? 'error' : undefined"
-                  :class="{ 'text-decoration-line-through': getStatusState(status) === 'excluded' }"
-                  :prepend-icon="getStatusState(status) === 'included' ? mdiCheck : getStatusState(status) === 'excluded' ? mdiClose : getStatusIcon(status)"
-                  @click="cycleStatus(status)">
-                  {{ status }}
-                </v-chip>
-              </div>
-              <div class="text-caption text-medium-emphasis mt-2">{{ t("status-filter-hint") }}</div>
-            </div>
-          </v-card>
-        </v-menu>
-        <v-menu v-if="availableFilters.length > 0" location="bottom start">
-          <template v-slot:activator="{ props: menuProps }">
-            <v-btn v-bind="menuProps" :prepend-icon="mdiFilterPlusOutline" size="small" variant="outlined"
-              rounded="pill">
-              {{ t("add-filter") }}
-            </v-btn>
-          </template>
-          <v-list density="compact">
-            <v-list-item v-for="filter in availableFilters" :key="filter.key" :prepend-icon="filter.icon"
-              :title="filter.title" @click="addFilter(filter.key)" />
-          </v-list>
-        </v-menu>
-        <v-btn v-if="hasNonDefaultFilters" :prepend-icon="mdiFilterRemoveOutline" size="small" variant="text"
-          @click="clearFilters">
-          {{ t("clear-filters") }}
-        </v-btn>
-      </div>
-    </div>
+          </div>
+          <div class="text-caption text-medium-emphasis mt-2">{{ t("status-filter-hint") }}</div>
+        </div>
+      </template>
+    </s-filter-bar>
     <v-divider></v-divider>
-    <div class="flex items-center flex-wrap gap-3 px-4 py-3">
-      <v-text-field v-model="search" density="compact" :label="t('find-in-results')" :prepend-inner-icon="mdiTextSearch"
-        variant="solo-filled" flat hide-details single-line clearable style="max-width: 420px"></v-text-field>
-      <span class="text-caption text-medium-emphasis">
-        {{
-          searchText
-            ? t("result-count-of", { count: displayedItems.length, total: items.length })
-            : t("result-count", items.length)
-        }}
-      </span>
-    </div>
-    <v-alert v-if="limitReached" type="info" variant="tonal" density="compact" class="mx-4 mb-3">
-      {{ t("maximum-rows-reached", { count: specification.maximumRows }) }}
-    </v-alert>
+    <s-find-in-results v-model="search" :count="displayedItems.length" :total="items.length"
+      :maximum-rows="specification.maximumRows" />
     <s-data-table :items="displayedItems" :headers="headers" :mobile="null" mobile-breakpoint="md" :loading="busy"
       show-expand expand-on-click v-model:expanded="expanded">
       <template v-slot:no-data>
         <div class="p-4 text-center">
           <div>{{ t("table-empty") }}</div>
-          <v-btn v-if="hasNonDefaultFilters" class="mt-2" size="small" variant="text" @click="clearFilters">
-            {{ t("clear-filters") }}
-          </v-btn>
+          <s-clear-filters v-if="filterBar.hasNonDefaultFilters" class="mt-2" :bar="filterBar" />
         </div>
       </template>
       <template v-slot:header.action="">
@@ -207,25 +160,22 @@ import {
   mdiContentCopy,
   mdiDebugStepOver,
   mdiFileTree,
-  mdiFilterPlusOutline,
-  mdiFilterRemoveOutline,
   mdiIdentifier,
   mdiKeyOutline,
   mdiLinkVariant,
   mdiListStatus,
-  mdiTextSearch,
   mdiPlayCircleOutline,
   mdiPlayOutline,
-  mdiRefresh,
   mdiTableEdit,
   mdiTimerPauseOutline,
   mdiTimerSand,
-  mdiTune,
 } from "@mdi/js";
 import { useDebounceFn } from "@vueuse/core";
 import { useSecureTableHeaders } from "@/composables/useSecureTableHeaders";
 import { useDateFormatter, isOpenEnded } from "@/composables/useDateFormatter";
-import { describeDateRange } from "@/composables/useDateRange";
+import { describeDateRange, type TimePrecision } from "@/composables/useDateRange";
+import { useFilterBar, type FilterDefinition } from "@/composables/useFilterBar";
+import { useFindInResults } from "@/composables/useFindInResults";
 import { useDrawerStore } from "@/stores/drawer";
 import type {
   WorkflowProcess,
@@ -245,9 +195,6 @@ const sessionStore = useSessionStore();
 const router = useRouter();
 
 const busy = ref(false);
-// Narrows the rows that have already been loaded; it does not query the server.
-const search = ref<string | null>("");
-const searchText = computed(() => (search.value ?? "").trim().toLowerCase());
 const expanded: Ref<string[]> = ref([]);
 const specification = reactive<WorkflowProcessSpecification>({
   activeOnly: true,
@@ -275,24 +222,9 @@ type FilterKey =
   | "completed"
   | "statuses";
 
-type FilterDefinition = {
-  key: FilterKey;
-  title: string;
-  icon: string;
-};
-
-const filterDefinitions: FilterDefinition[] = [
-  { key: "name", title: t("process-definition"), icon: mdiFileTree },
-  { key: "key", title: t("key"), icon: mdiKeyOutline },
-  { key: "ids", title: t("ids"), icon: mdiIdentifier },
-  { key: "registered", title: t("date-registered"), icon: mdiCalendarPlus },
-  { key: "completed", title: t("date-completed"), icon: mdiCalendarCheck },
-  { key: "statuses", title: t("status"), icon: mdiListStatus },
-];
-
-// Filters that have been added but do not have a value yet, so that they remain visible while being edited.
-const addedFilters = ref<FilterKey[]>([]);
-const menus = reactive<Record<string, boolean>>({});
+// Used by both the date range editors and the chip text so that they cannot drift apart.
+const registeredPrecision: TimePrecision = "Second";
+const completedPrecision: TimePrecision = "Minute";
 
 const hasValue = (key: FilterKey) => {
   switch (key) {
@@ -326,19 +258,7 @@ const hasValue = (key: FilterKey) => {
   }
 };
 
-const visibleFilters = computed(() =>
-  filterDefinitions.filter(
-    (filter) => addedFilters.value.includes(filter.key) || hasValue(filter.key),
-  ),
-);
-
-const availableFilters = computed(() =>
-  filterDefinitions.filter(
-    (filter) => !visibleFilters.value.some((item) => item.key === filter.key),
-  ),
-);
-
-const describeFilter = (filter: FilterDefinition) => {
+const describeFilter = (filter: FilterDefinition<FilterKey>) => {
   let value = "";
 
   switch (filter.key) {
@@ -358,6 +278,7 @@ const describeFilter = (filter: FilterDefinition) => {
       value = describeDateRange(
         specification.fromDateRegisteredInclusive,
         specification.toDateRegisteredExclusive,
+        { precision: registeredPrecision, toExclusive: true },
       );
       break;
     }
@@ -365,6 +286,7 @@ const describeFilter = (filter: FilterDefinition) => {
       value = describeDateRange(
         specification.fromDateCompletedInclusive,
         specification.toDateCompletedExclusive,
+        { precision: completedPrecision, toExclusive: true },
       );
       break;
     }
@@ -382,16 +304,7 @@ const describeFilter = (filter: FilterDefinition) => {
   return value ? `${filter.title}: ${value}` : filter.title;
 };
 
-const addFilter = async (key: FilterKey) => {
-  addedFilters.value.push(key);
-
-  // The chip (and its menu) needs to be rendered before the menu can be opened.
-  await nextTick();
-
-  menus[key] = true;
-};
-
-const clearFilter = (key: FilterKey) => {
+const clear = (key: FilterKey) => {
   switch (key) {
     case "name": {
       specification.name = "";
@@ -421,9 +334,6 @@ const clearFilter = (key: FilterKey) => {
       break;
     }
   }
-
-  menus[key] = false;
-  addedFilters.value = addedFilters.value.filter((item) => item !== key);
 };
 
 type PresetValue = "active" | "all" | "Deferred" | "Failed" | "Completed";
@@ -473,14 +383,30 @@ const showActiveOnlyChip = computed(
   () => !!specification.activeOnly && preset.value !== "active",
 );
 
-const hasNonDefaultFilters = computed(
-  () => preset.value !== "active" || visibleFilters.value.length > 0,
-);
-
-const clearFilters = () => {
-  filterDefinitions.forEach((filter) => clearFilter(filter.key));
-  applyPreset("active");
-};
+const filterBar = useFilterBar<FilterKey>({
+  definitions: [
+    { key: "name", title: t("process-definition"), icon: mdiFileTree },
+    { key: "key", title: t("key"), icon: mdiKeyOutline },
+    { key: "ids", title: t("ids"), icon: mdiIdentifier },
+    {
+      key: "registered",
+      title: t("date-registered"),
+      icon: mdiCalendarPlus,
+      wide: true,
+    },
+    {
+      key: "completed",
+      title: t("date-completed"),
+      icon: mdiCalendarCheck,
+      wide: true,
+    },
+    { key: "statuses", title: t("status"), icon: mdiListStatus },
+  ],
+  hasValue,
+  clear,
+  reset: () => applyPreset("active"),
+  isDefault: () => preset.value === "active",
+});
 
 const getStatusState = (status: string) => {
   if (specification.includedStatuses?.includes(status)) {
@@ -711,34 +637,7 @@ const messageHeaders = [
 
 const items: Ref<WorkflowProcess[]> = ref([]);
 
-// Matches against the displayed (formatted) column values, the same as the data table would.
-const matchesSearch = (item: WorkflowProcess) =>
-  headers.value.some((header) => {
-    if (header.filterable === false || !header.value) {
-      return false;
-    }
-
-    const value =
-      typeof header.value === "function"
-        ? header.value(item)
-        : (item as Record<string, unknown>)[header.value];
-
-    return (
-      value !== null &&
-      value !== undefined &&
-      String(value).toLowerCase().includes(searchText.value)
-    );
-  });
-
-const displayedItems = computed(() =>
-  searchText.value ? items.value.filter(matchesSearch) : items.value,
-);
-
-const limitReached = computed(
-  () =>
-    specification.maximumRows > 0 &&
-    items.value.length >= specification.maximumRows,
-);
+const { search, displayedItems } = useFindInResults(items, headers);
 
 const copyIdToClipboard = async (item: WorkflowProcess) => {
   if (!item.id) {

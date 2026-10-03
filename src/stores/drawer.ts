@@ -17,7 +17,6 @@ export const useDrawerStore = defineStore("drawer", () => {
   const sizeToggleVisible = ref(false);
   const showNavigationDrawer = ref(false);
   const showProfileDrawer = ref(false);
-  const filterDrawerVisible = ref(true);
 
   const setSize = (drawerSize: DrawerSize) => {
     size.value = drawerSize;
@@ -53,10 +52,6 @@ export const useDrawerStore = defineStore("drawer", () => {
     }
   };
 
-  const toggleFilterDrawer = () => {
-    filterDrawerVisible.value = !filterDrawerVisible.value;
-  };
-
   const refresh = async () => {
     await drawerOptions.value.refresh();
   };
@@ -71,8 +66,6 @@ export const useDrawerStore = defineStore("drawer", () => {
     isOpen,
     close,
     initialize,
-    filterDrawerVisible,
-    toggleFilterDrawer,
     refresh,
   };
 });

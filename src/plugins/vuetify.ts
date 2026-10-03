@@ -26,22 +26,32 @@ const colors = {
   "primary--active": "#eb7826",
   "primary-text--hover": "#f9f9f9",
   "primary-text--active": "#d1d1d1",
-  secondary: "#444444",
-  "secondary-darken-1": "#383838",
   error: "#bb4445",
   info: "#2196F3",
   success: "#4caf50",
   warning: "#fb8c00",
 };
 
+// The secondary colour is a slate blue that contrasts with the orange primary; it is lighter on the dark
+// background and darker on the light background so that it remains legible in both themes.
 const darkTheme: ThemeDefinition = {
   dark: true,
-  colors: colors,
+  colors: {
+    ...colors,
+    secondary: "#7FA8D6",
+    "secondary--hover": "#93B6DD",
+    "secondary-darken-1": "#6690BF",
+  },
 };
 
 const lightTheme: ThemeDefinition = {
   dark: false,
-  colors: colors,
+  colors: {
+    ...colors,
+    secondary: "#3B6EA8",
+    "secondary--hover": "#4A7EB8",
+    "secondary-darken-1": "#2F5A8C",
+  },
 };
 
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
@@ -60,6 +70,9 @@ export default createVuetify({
     VBtnPrimary: {
       variant: "tonal",
       color: "primary",
+    },
+    VTimePicker: {
+      format: "24hr",
     },
   },
   locale: {

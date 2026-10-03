@@ -1,27 +1,55 @@
 <template>
-  <s-filter-drawer @filter="refreshProjections">
-    <v-select v-model="eventStoreName" :label="$t('event-store')" :items="recallStore.eventStores" item-title="name"
-      item-value="name" :item-props="(item: EventStore) => ({ disabled: !item.hasAccess })" hide-details></v-select>
-    <v-text-field :label="$t('name')" v-model="specification.nameMatch" hide-details></v-text-field>
-    <v-text-field :label="$t('sequence-number-start')" v-model="specification.sequenceNumberStart"
-      hide-details></v-text-field>
-    <v-text-field :label="$t('failure-count-start')" v-model="specification.failureCountStart"
-      hide-details></v-text-field>
-    <v-select v-model="specification.deferred" :label="$t('deferred')" :items="deferredOptions" item-title="title"
-      item-value="value" hide-details clearable></v-select>
-    <v-text-field :label="$t('maximum-rows')" v-model="specification.maximumRows" hide-details></v-text-field>
-  </s-filter-drawer>
   <v-card flat>
-    <v-card-title>
+    <v-card-title class="sv-card-title">
       <s-title :title="$t('projections')"></s-title>
-      <div class="mb-2">
-        <v-text-field v-model="search" :label="$t('search')" :prepend-inner-icon="mdiMagnify" flat hide-details
-          density="compact" single-line></v-text-field>
-      </div>
     </v-card-title>
     <v-divider></v-divider>
-    <v-data-table :items="projections" :headers="headers" :mobile="null" mobile-breakpoint="md" v-model:search="search"
-      :loading="busy">
+    <s-filter-bar :bar="filterBar" :describe="describeFilter" @refresh="refreshProjections">
+      <template v-slot:presets>
+        <div class="w-64">
+          <v-select v-model="eventStoreName" :label="t('event-store')" :items="recallStore.eventStores"
+            item-title="name" item-value="name" :item-props="(item: EventStore) => ({ disabled: !item.hasAccess })"
+            density="compact" variant="solo-filled" flat hide-details></v-select>
+        </div>
+        <v-chip-group :model-value="preset" mandatory filter color="primary" @update:model-value="applyPreset">
+          <v-chip v-for="item in presets" :key="item.value" :value="item.value" variant="outlined" density="compact"
+            :prepend-icon="item.icon">
+            {{ item.title }}
+          </v-chip>
+        </v-chip-group>
+      </template>
+      <template v-slot:options>
+        <s-maximum-rows v-model="specification.maximumRows" />
+      </template>
+      <template v-slot:editor="{ filter }">
+        <div v-if="filter.key === 'name'" class="p-3">
+          <v-text-field v-model="specification.nameMatch" :label="t('name')" density="compact" variant="solo-filled"
+            flat hide-details clearable autofocus></v-text-field>
+        </div>
+        <div v-else-if="filter.key === 'sequenceNumber'" class="p-3">
+          <s-number-input v-model="specification.sequenceNumberStart" :label="t('sequence-number-start')" :min="0"
+            clearable autofocus filter></s-number-input>
+        </div>
+        <div v-else-if="filter.key === 'failureCount'" class="p-3">
+          <s-number-input v-model="specification.failureCountStart" :label="t('failure-count-start')" :min="0"
+            clearable autofocus filter></s-number-input>
+        </div>
+      </template>
+    </s-filter-bar>
+    <v-divider></v-divider>
+    <s-find-in-results v-model="search" :count="displayedItems.length" :total="projections.length"
+      :maximum-rows="specification.maximumRows" />
+    <v-data-table :items="displayedItems" :headers="headers" :mobile="null" mobile-breakpoint="md" :loading="busy">
+      <template v-slot:no-data>
+        <div class="p-4 text-center">
+          <div>{{ t("table-empty") }}</div>
+          <s-clear-filters v-if="filterBar.hasNonDefaultFilters" class="mt-2" :bar="filterBar" />
+        </div>
+      </template>
+      <template v-slot:item.name="{ item }">
+        <span class="cursor-pointer" v-tooltip="t('filter-by-value', { value: item.name })"
+          @click.stop="specification.nameMatch = item.name">{{ item.name }}</span>
+      </template>
       <template v-slot:item.action="{ item }">
         <s-btn-edit @click.stop="edit(item)" />
       </template>
@@ -52,8 +80,15 @@
 </template>
 
 <script setup lang="ts">
-import { mdiMagnify } from "@mdi/js";
+import {
+  mdiAlertCircleOutline,
+  mdiCounter,
+  mdiFormTextbox,
+  mdiPlayCircleOutline,
+  mdiTimerSand,
+} from "@mdi/js";
 import { reactive, type Reactive } from "vue";
+import { useDebounceFn } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import { minValue, required } from "@vuelidate/validators";
 import { recallApi } from "@/api";
@@ -65,6 +100,8 @@ import type {
 } from "@/portal";
 import { useRecallStore } from "@/stores/recall";
 import { useDateFormatter } from "@/composables/useDateFormatter";
+import { useFilterBar, type FilterDefinition } from "@/composables/useFilterBar";
+import { useFindInResults } from "@/composables/useFindInResults";
 import { useValidation } from "@/composables/useValidation";
 import { useSnackbarStore } from "@/stores/snackbar";
 
@@ -80,15 +117,125 @@ const eventStoreName = computed({
 });
 
 const { t } = useI18n({ useScope: "global" });
-const search = ref("");
 const busy = ref(false);
-const specification: Ref<ProjectionSpecification> = ref({});
+const specification = reactive<ProjectionSpecification>({
+  nameMatch: "",
+  maximumRows: 100,
+});
 const projections: Ref<Projection[]> = ref([]);
 
-const deferredOptions = [
-  { title: t("yes"), value: true },
-  { title: t("no"), value: false },
+type FilterKey = "name" | "sequenceNumber" | "failureCount";
+
+// A clearable number input sets its model to null.
+const hasNumber = (value?: number | null) =>
+  value !== null && value !== undefined;
+
+type PresetValue = "all" | "deferred" | "not-deferred";
+
+const presets: { value: PresetValue; title: string; icon?: string }[] = [
+  { value: "all", title: t("all") },
+  { value: "deferred", title: t("deferred"), icon: mdiTimerSand },
+  {
+    value: "not-deferred",
+    title: t("not-deferred"),
+    icon: mdiPlayCircleOutline,
+  },
 ];
+
+// The selected preset is derived from the specification so that it is never out of step with it.
+const preset = computed<PresetValue>(() => {
+  switch (specification.deferred) {
+    case true: {
+      return "deferred";
+    }
+    case false: {
+      return "not-deferred";
+    }
+    default: {
+      return "all";
+    }
+  }
+});
+
+const applyPreset = (value: PresetValue | undefined) => {
+  if (!value) {
+    return;
+  }
+
+  specification.deferred = value === "all" ? undefined : value === "deferred";
+};
+
+const filterBar = useFilterBar<FilterKey>({
+  definitions: [
+    { key: "name", title: t("name"), icon: mdiFormTextbox },
+    {
+      key: "sequenceNumber",
+      title: t("sequence-number-start"),
+      icon: mdiCounter,
+    },
+    {
+      key: "failureCount",
+      title: t("failure-count-start"),
+      icon: mdiAlertCircleOutline,
+    },
+  ],
+  hasValue: (key) => {
+    switch (key) {
+      case "name": {
+        return !!specification.nameMatch;
+      }
+      case "sequenceNumber": {
+        return hasNumber(specification.sequenceNumberStart);
+      }
+      case "failureCount": {
+        return hasNumber(specification.failureCountStart);
+      }
+    }
+  },
+  clear: (key) => {
+    switch (key) {
+      case "name": {
+        specification.nameMatch = "";
+        break;
+      }
+      case "sequenceNumber": {
+        specification.sequenceNumberStart = undefined;
+        break;
+      }
+      case "failureCount": {
+        specification.failureCountStart = undefined;
+        break;
+      }
+    }
+  },
+  reset: () => applyPreset("all"),
+  isDefault: () => preset.value === "all",
+});
+
+const describeFilter = (filter: FilterDefinition<FilterKey>) => {
+  let value = "";
+
+  switch (filter.key) {
+    case "name": {
+      value = specification.nameMatch ?? "";
+      break;
+    }
+    case "sequenceNumber": {
+      value = hasNumber(specification.sequenceNumberStart)
+        ? `${specification.sequenceNumberStart}`
+        : "";
+      break;
+    }
+    case "failureCount": {
+      value = hasNumber(specification.failureCountStart)
+        ? `${specification.failureCountStart}`
+        : "";
+      break;
+    }
+  }
+
+  return value ? `${filter.title}: ${value}` : filter.title;
+};
 
 const headers: any = [
   {
@@ -118,22 +265,37 @@ const headers: any = [
   },
 ];
 
-const refreshProjections = async () => {
-  busy.value = true;
+const { search, displayedItems } = useFindInResults(projections, headers);
 
-  projections.value = [];
+let latestRequest = 0;
+
+const refreshProjections = async () => {
+  const request = ++latestRequest;
+
+  busy.value = true;
 
   try {
     const { data } = await recallApi.post<EventStoreResponse<Projection>>(
       "/projections/search",
-      specification.value,
+      specification,
     );
+
+    // Filters are applied as they change, so a slower, earlier response should not replace a later one.
+    if (request !== latestRequest) {
+      return;
+    }
 
     projections.value = data.items;
   } finally {
-    busy.value = false;
+    if (request === latestRequest) {
+      busy.value = false;
+    }
   }
 };
+
+const refreshDebounced = useDebounceFn(refreshProjections, 400);
+
+watch(specification, refreshDebounced, { deep: true });
 
 watch(
   () => recallStore.name,

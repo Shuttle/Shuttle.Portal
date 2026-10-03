@@ -527,9 +527,9 @@ export type WorkflowStateItemMatch = {
 export type WorkflowStateSpecification = {
   key?: string;
   id?: string;
-  itemEffectiveDate?: Date;
-  itemStartEffectiveDate?: Date;
-  itemEndEffectiveDateExclusive?: Date;
+  itemEffectiveDate?: string;
+  itemStartEffectiveDate?: string;
+  itemEndEffectiveDateExclusive?: string;
   itemMatches?: WorkflowStateItemMatch[];
   keyMatch?: string;
   maximumRows: number;

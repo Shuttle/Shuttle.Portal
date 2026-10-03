@@ -11,6 +11,7 @@
 
   <v-text-field
     v-else
+    v-bind="fieldProps"
     :model-value="model"
     :label="label"
     :prepend-inner-icon="mdiClockTimeFourOutline"
@@ -51,6 +52,7 @@ type Props = {
   label?: string;
   errorMessages?: string | string[];
   type?: PickerType;
+  filter?: boolean;
 };
 
 defineOptions({
@@ -59,7 +61,20 @@ defineOptions({
 
 const props = withDefaults(defineProps<Props>(), {
   type: "Menu",
+  filter: false,
 });
+
+// The same compact appearance as a date input with "filter" set.
+const fieldProps = computed(() =>
+  props.filter
+    ? ({
+        density: "compact",
+        variant: "solo-filled",
+        flat: true,
+        hideDetails: true,
+      } as const)
+    : {},
+);
 
 const model = defineModel<string | null>();
 
@@ -69,7 +84,7 @@ const showOverlay = ref(false);
 
 const baseDefaults = computed(() => {
   return props.type === "Default"
-    ? ({ format: "24hr", variant: "input", hideHeader: true } as const)
+    ? ({ variant: "input", hideHeader: true } as const)
     : ({} as const);
 });
 

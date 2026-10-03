@@ -2,6 +2,8 @@ import { useDateFormatter } from "@/composables/useDateFormatter";
 
 export type DateRangePreset = "today" | "last7" | "last30" | "thisMonth";
 
+export type TimePrecision = "Day" | "Hour" | "Minute" | "Second";
+
 export type DateRange = {
   from: Date;
   toExclusive: Date;
@@ -14,8 +16,6 @@ export const dateRangePresets: DateRangePreset[] = [
   "thisMonth",
 ];
 
-const maximumPickerDays = 3660;
-
 const startOfDay = (value: Date) =>
   new Date(value.getFullYear(), value.getMonth(), value.getDate());
 
@@ -25,6 +25,90 @@ const addDays = (value: Date, days: number) => {
   result.setDate(result.getDate() + days);
 
   return result;
+};
+
+// Removes everything smaller than the precision, e.g. "Minute" removes the seconds and milliseconds.
+export const truncateToPrecision = (
+  value: Date,
+  precision: TimePrecision,
+): Date => {
+  const result = new Date(value);
+
+  switch (precision) {
+    case "Hour": {
+      result.setMinutes(0, 0, 0);
+      break;
+    }
+    case "Minute": {
+      result.setSeconds(0, 0);
+      break;
+    }
+    case "Second": {
+      result.setMilliseconds(0);
+      break;
+    }
+    default: {
+      result.setHours(0, 0, 0, 0);
+    }
+  }
+
+  return result;
+};
+
+export const addPrecisionUnits = (
+  value: Date,
+  precision: TimePrecision,
+  units: number,
+): Date => {
+  const result = new Date(value);
+
+  switch (precision) {
+    case "Hour": {
+      result.setHours(result.getHours() + units);
+      break;
+    }
+    case "Minute": {
+      result.setMinutes(result.getMinutes() + units);
+      break;
+    }
+    case "Second": {
+      result.setSeconds(result.getSeconds() + units);
+      break;
+    }
+    default: {
+      result.setDate(result.getDate() + units);
+    }
+  }
+
+  return result;
+};
+
+export const toPrecision = (
+  value: Date | string | null | undefined,
+  precision: TimePrecision,
+): Date | undefined =>
+  value ? truncateToPrecision(new Date(value), precision) : undefined;
+
+// Converts the stored end into the inclusive end shown to the user; an exclusive end is one unit after it.
+export const toInclusiveEnd = (
+  value: Date | string | null | undefined,
+  precision: TimePrecision,
+  exclusive: boolean,
+): Date | undefined => {
+  const end = toPrecision(value, precision);
+
+  return end && exclusive ? addPrecisionUnits(end, precision, -1) : end;
+};
+
+// Converts the inclusive end selected by the user into the value to store.
+export const toStoredEnd = (
+  value: Date,
+  precision: TimePrecision,
+  exclusive: boolean,
+): Date => {
+  const end = truncateToPrecision(value, precision);
+
+  return exclusive ? addPrecisionUnits(end, precision, 1) : end;
 };
 
 export const presetToRange = (
@@ -53,58 +137,46 @@ export const presetToRange = (
   }
 };
 
-// The picker selects whole days with an inclusive end date, whereas the specification
-// uses an inclusive start and an exclusive end.
-export const pickerDatesToRange = (
-  dates: Date[] | null | undefined,
-): DateRange | undefined => {
-  if (!dates || dates.length === 0) {
-    return undefined;
+export const formatToPrecision = (
+  value: Date | string | null | undefined,
+  precision: TimePrecision,
+): string | null => {
+  const formatter = useDateFormatter(value);
+
+  switch (precision) {
+    case "Hour": {
+      const dateTime = formatter.dateTime();
+
+      return dateTime ? `${dateTime.slice(0, 13)}:00` : null;
+    }
+    case "Minute": {
+      return formatter.dateTime()?.slice(0, 16) ?? null;
+    }
+    case "Second": {
+      return formatter.dateTime();
+    }
+    default: {
+      return formatter.date();
+    }
   }
-
-  const sorted = [...dates].sort((a, b) => a.getTime() - b.getTime());
-
-  return {
-    from: startOfDay(sorted[0]!),
-    toExclusive: addDays(startOfDay(sorted[sorted.length - 1]!), 1),
-  };
 };
 
-export const rangeToPickerDates = (
-  from: Date | string | null | undefined,
-  toExclusive: Date | string | null | undefined,
-): Date[] => {
-  if (!from && !toExclusive) {
-    return [];
-  }
-
-  const start = startOfDay(
-    from ? new Date(from) : addDays(new Date(toExclusive!), -1),
-  );
-  const end = toExclusive
-    ? addDays(startOfDay(new Date(toExclusive)), -1)
-    : start;
-  const result: Date[] = [];
-
-  for (
-    let day = start;
-    day <= end && result.length < maximumPickerDays;
-    day = addDays(day, 1)
-  ) {
-    result.push(day);
-  }
-
-  return result.length > 0 ? result : [start];
+export type DescribeDateRangeOptions = {
+  precision?: TimePrecision;
+  toExclusive?: boolean;
 };
 
 export const describeDateRange = (
   from: Date | string | null | undefined,
-  toExclusive: Date | string | null | undefined,
+  to: Date | string | null | undefined,
+  options: DescribeDateRangeOptions = {},
 ): string => {
-  const start = useDateFormatter(from).date();
-  const end = toExclusive
-    ? useDateFormatter(addDays(new Date(toExclusive), -1)).date()
-    : null;
+  const precision = options.precision ?? "Day";
+  const start = formatToPrecision(from, precision);
+  const end = formatToPrecision(
+    toInclusiveEnd(to, precision, options.toExclusive ?? false),
+    precision,
+  );
 
   if (start && end) {
     return start === end ? start : `${start} – ${end}`;

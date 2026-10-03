@@ -1,24 +1,41 @@
 <template>
-  <s-filter-drawer @filter="refresh">
-    <v-text-field v-model="specification.keyMatch" :label="$t('key')" density="compact" variant="solo-filled" flat
-      hide-details></v-text-field>
-    <s-maximum-rows v-model="specification.maximumRows" />
-  </s-filter-drawer>
   <v-card flat>
     <v-card-title class="sv-card-title">
       <s-title :title="$t('semaphores')" />
-      <s-strip>
-        <v-text-field v-model="search" density="compact" :label="$t('search')" :prepend-inner-icon="mdiMagnify"
-          variant="solo-filled" flat hide-details single-line></v-text-field>
-      </s-strip>
     </v-card-title>
     <v-divider></v-divider>
-    <s-data-table :items="items" :headers="headers" :mobile="null" mobile-breakpoint="md" v-model:search="search"
-      :loading="busy">
-      <template v-slot:header.action="">
-        <s-strip>
-          <s-filter-toggle />
-        </s-strip>
+    <s-filter-bar :bar="filterBar" :describe="describeFilter" @refresh="refresh">
+      <template v-slot:options>
+        <s-maximum-rows v-model="specification.maximumRows" />
+      </template>
+      <template v-slot:editor="{ filter }">
+        <div v-if="filter.key === 'key'" class="p-3">
+          <v-text-field v-model="specification.keyMatch" :label="t('key')" density="compact" variant="solo-filled"
+            flat hide-details clearable autofocus></v-text-field>
+        </div>
+        <div v-else-if="filter.key === 'owner'" class="p-3">
+          <v-text-field v-model="specification.ownerMatch" :label="t('owner')" density="compact"
+            variant="solo-filled" flat hide-details clearable autofocus></v-text-field>
+        </div>
+      </template>
+    </s-filter-bar>
+    <v-divider></v-divider>
+    <s-find-in-results v-model="search" :count="displayedItems.length" :total="items.length"
+      :maximum-rows="specification.maximumRows" />
+    <s-data-table :items="displayedItems" :headers="headers" :mobile="null" mobile-breakpoint="md" :loading="busy">
+      <template v-slot:no-data>
+        <div class="p-4 text-center">
+          <div>{{ t("table-empty") }}</div>
+          <s-clear-filters v-if="filterBar.hasNonDefaultFilters" class="mt-2" :bar="filterBar" />
+        </div>
+      </template>
+      <template v-slot:item.key="{ item }">
+        <span class="cursor-pointer" v-tooltip="t('filter-by-value', { value: item.key })"
+          @click.stop="specification.keyMatch = item.key">{{ item.key }}</span>
+      </template>
+      <template v-slot:item.owner="{ item }">
+        <span class="cursor-pointer" v-tooltip="t('filter-by-value', { value: item.owner })"
+          @click.stop="specification.ownerMatch = item.owner">{{ item.owner }}</span>
       </template>
       <template v-slot:item.action="{ item }">
         <s-strip>
@@ -34,19 +51,21 @@
 import Permissions from "@/permissions";
 import { workflowApi } from "@/api";
 import { useI18n } from "vue-i18n";
-import { mdiMagnify, mdiTrashCanOutline } from "@mdi/js";
+import { mdiAccountOutline, mdiKeyOutline, mdiTrashCanOutline } from "@mdi/js";
+import { useDebounceFn } from "@vueuse/core";
 import { useSecureTableHeaders } from "@/composables/useSecureTableHeaders";
 import type { WorkflowSemaphore, WorkflowSemaphoreSpecification } from "@/portal";
 import { useSessionStore } from "@/stores/session";
 import { useConfirmationStore } from "@/stores/confirmation";
 import { useDateFormatter } from "@/composables/useDateFormatter";
+import { useFilterBar, type FilterDefinition } from "@/composables/useFilterBar";
+import { useFindInResults } from "@/composables/useFindInResults";
 
 const { t } = useI18n({ useScope: "global" });
 const sessionStore = useSessionStore();
 const confirmationStore = useConfirmationStore();
 
 const busy = ref(false);
-const search = ref("");
 const specification = reactive<WorkflowSemaphoreSpecification>({
   key: "",
   keyMatch: "",
@@ -54,6 +73,44 @@ const specification = reactive<WorkflowSemaphoreSpecification>({
   ownerMatch: "",
   maximumRows: 100,
 });
+
+type FilterKey = "key" | "owner";
+
+const filterBar = useFilterBar<FilterKey>({
+  definitions: [
+    { key: "key", title: t("key"), icon: mdiKeyOutline },
+    { key: "owner", title: t("owner"), icon: mdiAccountOutline },
+  ],
+  hasValue: (key) => {
+    switch (key) {
+      case "key": {
+        return !!specification.keyMatch;
+      }
+      case "owner": {
+        return !!specification.ownerMatch;
+      }
+    }
+  },
+  clear: (key) => {
+    switch (key) {
+      case "key": {
+        specification.keyMatch = "";
+        break;
+      }
+      case "owner": {
+        specification.ownerMatch = "";
+        break;
+      }
+    }
+  },
+});
+
+const describeFilter = (filter: FilterDefinition<FilterKey>) => {
+  const value =
+    filter.key === "key" ? specification.keyMatch : specification.ownerMatch;
+
+  return value ? `${filter.title}: ${value}` : filter.title;
+};
 
 const headers = useSecureTableHeaders([
   {
@@ -88,7 +145,13 @@ const headers = useSecureTableHeaders([
 
 const items: Ref<WorkflowSemaphore[]> = ref([]);
 
+const { search, displayedItems } = useFindInResults(items, headers);
+
+let latestRequest = 0;
+
 const refresh = async () => {
+  const request = ++latestRequest;
+
   busy.value = true;
 
   try {
@@ -97,15 +160,22 @@ const refresh = async () => {
       specification,
     );
 
-    if (!response || !response.data) {
+    // Filters are applied as they change, so a slower, earlier response should not replace a later one.
+    if (request !== latestRequest || !response || !response.data) {
       return;
     }
 
     items.value = response.data;
   } finally {
-    busy.value = false;
+    if (request === latestRequest) {
+      busy.value = false;
+    }
   }
 };
+
+const refreshDebounced = useDebounceFn(refresh, 400);
+
+watch(specification, refreshDebounced, { deep: true });
 
 const remove = async (item: WorkflowSemaphore) => {
   if (

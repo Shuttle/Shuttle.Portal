@@ -1,25 +1,43 @@
 <template>
-  <s-filter-drawer @filter="refresh">
-    <v-text-field v-model="specification.keyMatch" :label="$t('key')" density="compact" variant="solo-filled" flat
-      hide-details></v-text-field>
-    <s-maximum-rows v-model="specification.maximumRows" />
-  </s-filter-drawer>
   <v-card flat v-if="drawerStore.size != 'full'">
     <v-card-title class="sv-card-title">
       <s-title :title="$t('states')" />
-      <s-strip>
-        <v-text-field v-model="search" density="compact" :label="$t('search')" :prepend-inner-icon="mdiMagnify"
-          variant="solo-filled" flat hide-details single-line></v-text-field>
-      </s-strip>
     </v-card-title>
     <v-divider></v-divider>
-    <s-data-table :items="items" :headers="headers" :mobile="null" mobile-breakpoint="md" v-model:search="search"
-      :loading="busy" show-expand expand-on-click v-model:expanded="expanded">
+    <s-filter-bar :bar="filterBar" :describe="describeFilter" @refresh="refresh">
+      <template v-slot:options>
+        <s-maximum-rows v-model="specification.maximumRows" />
+      </template>
+      <template v-slot:editor="{ filter }">
+        <div v-if="filter.key === 'key'" class="p-3">
+          <v-text-field v-model="specification.keyMatch" :label="t('key')" density="compact" variant="solo-filled"
+            flat hide-details clearable autofocus></v-text-field>
+        </div>
+        <s-date-range-filter v-else-if="filter.key === 'itemsEffective'"
+          v-model:from="specification.itemStartEffectiveDate"
+          v-model:to="specification.itemEndEffectiveDateExclusive" to-exclusive :precision="itemsEffectivePrecision"
+          :max="null" />
+      </template>
+    </s-filter-bar>
+    <v-divider></v-divider>
+    <s-find-in-results v-model="search" :count="displayedItems.length" :total="items.length"
+      :maximum-rows="specification.maximumRows" />
+    <s-data-table :items="displayedItems" :headers="headers" :mobile="null" mobile-breakpoint="md" :loading="busy"
+      show-expand expand-on-click v-model:expanded="expanded">
+      <template v-slot:no-data>
+        <div class="p-4 text-center">
+          <div>{{ t("table-empty") }}</div>
+          <s-clear-filters v-if="filterBar.hasNonDefaultFilters" class="mt-2" :bar="filterBar" />
+        </div>
+      </template>
       <template v-slot:header.action="">
         <s-strip>
           <s-btn-add :permission="Permissions.Workflow.States.Manage" @click="show(null)"></s-btn-add>
-          <s-filter-toggle />
         </s-strip>
+      </template>
+      <template v-slot:item.key="{ item }">
+        <span class="cursor-pointer" v-tooltip="t('filter-by-value', { value: item.key })"
+          @click.stop="specification.keyMatch = item.key">{{ item.key }}</span>
       </template>
       <template v-slot:item.action="{ item }">
         <s-strip>
@@ -70,9 +88,18 @@ import Permissions from "@/permissions";
 import { workflowApi } from "@/api";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
-import { mdiMagnify, mdiTableEdit, mdiTimerOffOutline } from "@mdi/js";
+import {
+  mdiCalendarRange,
+  mdiKeyOutline,
+  mdiTableEdit,
+  mdiTimerOffOutline,
+} from "@mdi/js";
+import { useDebounceFn } from "@vueuse/core";
 import { useSecureTableHeaders } from "@/composables/useSecureTableHeaders";
 import { useDateFormatter, isOpenEnded } from "@/composables/useDateFormatter";
+import { describeDateRange, type TimePrecision } from "@/composables/useDateRange";
+import { useFilterBar, type FilterDefinition } from "@/composables/useFilterBar";
+import { useFindInResults } from "@/composables/useFindInResults";
 import { useDrawerStore } from "@/stores/drawer";
 import type {
   WorkflowState,
@@ -90,12 +117,76 @@ const sessionStore = useSessionStore();
 const router = useRouter();
 
 const busy = ref(false);
-const search = ref("");
 const expanded: Ref<string[]> = ref([]);
 
 const specification = reactive<WorkflowStateSpecification>({
+  keyMatch: "",
   maximumRows: 100,
 });
+
+// Used by both the date range editor and the chip text so that they cannot drift apart.
+const itemsEffectivePrecision: TimePrecision = "Second";
+
+type FilterKey = "key" | "itemsEffective";
+
+const filterBar = useFilterBar<FilterKey>({
+  definitions: [
+    { key: "key", title: t("key"), icon: mdiKeyOutline },
+    {
+      key: "itemsEffective",
+      title: t("items-effective"),
+      icon: mdiCalendarRange,
+      wide: true,
+    },
+  ],
+  hasValue: (key) => {
+    switch (key) {
+      case "key": {
+        return !!specification.keyMatch;
+      }
+      case "itemsEffective": {
+        return (
+          !!specification.itemStartEffectiveDate ||
+          !!specification.itemEndEffectiveDateExclusive
+        );
+      }
+    }
+  },
+  clear: (key) => {
+    switch (key) {
+      case "key": {
+        specification.keyMatch = "";
+        break;
+      }
+      case "itemsEffective": {
+        specification.itemStartEffectiveDate = undefined;
+        specification.itemEndEffectiveDateExclusive = undefined;
+        break;
+      }
+    }
+  },
+});
+
+const describeFilter = (filter: FilterDefinition<FilterKey>) => {
+  let value = "";
+
+  switch (filter.key) {
+    case "key": {
+      value = specification.keyMatch ?? "";
+      break;
+    }
+    case "itemsEffective": {
+      value = describeDateRange(
+        specification.itemStartEffectiveDate,
+        specification.itemEndEffectiveDateExclusive,
+        { precision: itemsEffectivePrecision, toExclusive: true },
+      );
+      break;
+    }
+  }
+
+  return value ? `${filter.title}: ${value}` : filter.title;
+};
 
 const headers = useSecureTableHeaders([
   {
@@ -156,11 +247,17 @@ const itemHeaders = useSecureTableHeaders([
 
 const items: Ref<WorkflowState[]> = ref([]);
 
+const { search, displayedItems } = useFindInResults(items, headers);
+
 const getSelectedTab = (id: string) => {
   return items.value.find((item) => item.id === id)?.tab || "items";
 };
 
+let latestRequest = 0;
+
 const refresh = async () => {
+  const request = ++latestRequest;
+
   busy.value = true;
 
   try {
@@ -169,7 +266,8 @@ const refresh = async () => {
       specification,
     );
 
-    if (!response || !response.data) {
+    // Filters are applied as they change, so a slower, earlier response should not replace a later one.
+    if (request !== latestRequest || !response || !response.data) {
       return;
     }
 
@@ -179,9 +277,15 @@ const refresh = async () => {
 
     items.value = response.data;
   } finally {
-    busy.value = false;
+    if (request === latestRequest) {
+      busy.value = false;
+    }
   }
 };
+
+const refreshDebounced = useDebounceFn(refresh, 400);
+
+watch(specification, refreshDebounced, { deep: true });
 
 const show = (item: WorkflowState | null) => {
   router.push({ name: "workflow-state", params: { id: item?.id } });
