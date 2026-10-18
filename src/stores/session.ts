@@ -180,18 +180,7 @@ export const useSessionStore = defineStore("session", () => {
     );
   };
 
-  const hasPermission = (permission: string) => {
-    if (!tenantId.value) {
-      return false;
-    }
-
-    if (
-      requiresSystemTenant(permission) &&
-      tenantId.value !== configuration.accessSystemTenantId
-    ) {
-      return false;
-    }
-
+  const matchesActivePermission = (permission: string) => {
     const required = permission.toLowerCase();
 
     let result = false;
@@ -220,6 +209,33 @@ export const useSessionStore = defineStore("session", () => {
     });
 
     return result;
+  };
+
+  const hasPermission = (permission: string) => {
+    if (!tenantId.value) {
+      return false;
+    }
+
+    if (
+      requiresSystemTenant(permission) &&
+      tenantId.value !== configuration.accessSystemTenantId
+    ) {
+      return false;
+    }
+
+    return matchesActivePermission(permission);
+  };
+
+  // Some identity actions (role assignment) are checked by the back end against the caller's
+  // *current* tenant rather than the system tenant, even though the permission shares a name with other identity
+  // actions that are system-tenant-only (see requiresSystemTenant above). This stays scoped to the current tenant
+  // regardless of that forced system-tenant list, matching those back-end checks.
+  const hasTenantPermission = (permission: string) => {
+    if (!tenantId.value) {
+      return false;
+    }
+
+    return matchesActivePermission(permission);
   };
 
   const systemTenantActive = computed(() => {
@@ -253,6 +269,7 @@ export const useSessionStore = defineStore("session", () => {
     oauth,
     hasSession,
     hasPermission,
+    hasTenantPermission,
     selectTenantId,
     getTenantName,
   };

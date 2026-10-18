@@ -8,7 +8,7 @@
       />
       <s-strip>
         <v-btn :icon="mdiRefresh" size="small" @click="refresh"></v-btn>
-        <v-text-field
+        <s-text-field
           v-model="search"
           density="compact"
           :label="$t('search')"
@@ -17,7 +17,7 @@
           flat
           hide-details
           single-line
-        ></v-text-field>
+        ></s-text-field>
       </s-strip>
     </v-card-title>
     <v-divider></v-divider>

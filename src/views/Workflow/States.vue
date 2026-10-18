@@ -10,8 +10,8 @@
       </template>
       <template v-slot:editor="{ filter }">
         <div v-if="filter.key === 'key'" class="p-3">
-          <v-text-field v-model="specification.keyMatch" :label="t('key')" density="compact" variant="solo-filled"
-            flat hide-details clearable autofocus></v-text-field>
+          <s-text-field v-model="specification.keyMatch" :label="t('key')" density="compact" variant="solo-filled"
+            flat hide-details clearable autofocus></s-text-field>
         </div>
         <s-date-range-filter v-else-if="filter.key === 'itemsEffective'"
           v-model:from="specification.itemStartEffectiveDate"

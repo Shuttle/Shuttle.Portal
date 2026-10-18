@@ -33,13 +33,13 @@
             density="compact"
             hide-details
           ></v-autocomplete>
-          <v-text-field
+          <s-text-field
             v-else
             v-model="newItem.inputParameter"
             :label="$t('input-parameter')"
             density="compact"
             hide-details
-          ></v-text-field>
+          ></s-text-field>
         </v-col>
         <v-col cols="12" sm="2" class="flex items-center">
           <v-btn :icon="mdiPlus" @click="add" :disabled="!canAdd"></v-btn>

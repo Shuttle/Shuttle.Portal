@@ -5,8 +5,8 @@
       <div class="w-full">
         <WorkflowProcessDefinition v-model="state.name" @process-definition-selected="processDefinitionSelected"
           :error-messages="validation.message('name')"></WorkflowProcessDefinition>
-        <v-text-field v-model="state.key" :label="$t('key')"> </v-text-field>
-        <v-text-field v-model="state.description" :label="$t('description')"> </v-text-field>
+        <s-text-field v-model="state.key" :label="$t('key')"> </s-text-field>
+        <s-text-field v-model="state.description" :label="$t('description')"> </s-text-field>
         <s-date-input v-model="deferredTillDate" :label="$t('deferred-till')"></s-date-input>
         <s-time-picker v-model="deferredTillTime" :label="$t('deferred-till-time')"></s-time-picker>
       </div>

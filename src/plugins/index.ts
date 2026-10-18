@@ -32,6 +32,7 @@ import ShuttleForm from "@/components/ShuttleForm.vue";
 import ShuttleMaximumRows from "@/components/ShuttleMaximumRows.vue";
 import ShuttleNumberInput from "@/components/ShuttleNumberInput.vue";
 import ShuttleStrip from "@/components/ShuttleStrip.vue";
+import ShuttleTextField from "@/components/ShuttleTextField.vue";
 import ShuttleTimePicker from "@/components/ShuttleTimePicker.vue";
 import ShuttleTitle from "@/components/ShuttleTitle.vue";
 
@@ -57,6 +58,7 @@ export function registerPlugins(app: App) {
   app.component("s-maximum-rows", ShuttleMaximumRows);
   app.component("s-number-input", ShuttleNumberInput);
   app.component("s-strip", ShuttleStrip);
+  app.component("s-text-field", ShuttleTextField);
   app.component("s-time-picker", ShuttleTimePicker);
   app.component("s-title", ShuttleTitle);
 }

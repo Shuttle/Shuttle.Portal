@@ -38,7 +38,8 @@
   </v-app-bar>
   <v-navigation-drawer v-model="drawerStore.showProfileDrawer" location="right" temporary>
     <v-list>
-      <v-list-item :title="sessionStore.identityName ?? t('(unknown)')" class="select-none"></v-list-item>
+      <v-list-item :prepend-icon="mdiAccountCircleOutline" @click.prevent="viewProfile"
+        :title="sessionStore.identityName ?? t('(unknown)')"></v-list-item>
       <v-divider></v-divider>
       <v-list-item v-if="sessionStore.tenant" :prepend-icon="mdiSwapHorizontal" @click.prevent="selectTenant"
         :title="sessionStore.tenant.name ?? t('(unknown)')"></v-list-item>
@@ -46,43 +47,23 @@
       <v-list-item v-if="recallStore.eventStores.length > 1" :prepend-icon="mdiDatabaseOutline"
         @click.prevent="selectEventStore" :title="recallStore.selected?.name ?? t('event-store')"></v-list-item>
       <v-divider v-if="recallStore.eventStores.length > 1"></v-divider>
-      <v-list-item :prepend-icon="mdiShieldAccountOutline" to="/password/token"
-        :title="t('change-password')"></v-list-item>
-      <v-list-item v-if="configuration.isDebugging()" :prepend-icon="mdiShieldKeyOutline"
-        @click.prevent="showPermissions" :title="t('permissions')"></v-list-item>
       <v-list-item :prepend-icon="mdiLogout" @click.prevent="signOut" :title="t('sign-out')"></v-list-item>
     </v-list>
   </v-navigation-drawer>
-  <v-dialog v-model="permissionsDialog" max-width="720">
-    <v-card :title="t('permissions')">
-      <template v-slot:append>
-        <v-btn :icon="mdiClose" variant="text" @click="permissionsDialog = false"></v-btn>
-      </template>
-      <v-divider></v-divider>
-      <v-list density="compact" class="max-h-[70vh] overflow-y-auto">
-        <v-list-item v-if="!sessionStore.activePermissions.length">
-          <v-list-item-title>{{ t("none") }}</v-list-item-title>
-        </v-list-item>
-        <v-list-item v-for="permission in sortedActivePermissions" :key="permission.id"
-          :title="permission.name"></v-list-item>
-      </v-list>
-    </v-card>
-  </v-dialog>
+  <session-profile-drawer v-if="sessionStore.isAuthenticated"></session-profile-drawer>
 </template>
 
 <script setup lang="ts">
 import map from "./navigation-map";
 import {
+  mdiAccountCircleOutline,
   mdiArrowCollapseLeft,
-  mdiClose,
   mdiDatabaseOutline,
   mdiDotsVertical,
   mdiLogin,
   mdiLogout,
   mdiWhiteBalanceSunny,
   mdiWeatherNight,
-  mdiShieldAccountOutline,
-  mdiShieldKeyOutline,
   mdiSwapHorizontal,
 } from "@mdi/js";
 import { computed, ref, watch } from "vue";
@@ -95,6 +76,7 @@ import type { NavigationItem } from "@/portal";
 import { accessApi } from "@/api";
 import { useDrawerStore } from "@/stores/drawer";
 import configuration from "@/configuration";
+import SessionProfileDrawer from "@/components/SessionProfileDrawer.vue";
 
 const { t } = useI18n({ useScope: "global" });
 
@@ -155,17 +137,9 @@ const sections = computed(() => {
     .filter((section) => section.items.length > 0);
 });
 
-const permissionsDialog: Ref<boolean> = ref(false);
-
-const sortedActivePermissions = computed(() => {
-  return [...sessionStore.activePermissions].sort((a, b) =>
-    a.name.localeCompare(b.name),
-  );
-});
-
-const showPermissions = () => {
+const viewProfile = () => {
   drawerStore.showProfileDrawer = false;
-  permissionsDialog.value = true;
+  drawerStore.showSessionProfileDrawer = true;
 };
 
 const selectTenant = () => {
@@ -217,6 +191,7 @@ const signOut = async () => {
   sessionStore.signOut();
   drawerStore.showNavigationDrawer = false;
   drawerStore.showProfileDrawer = false;
+  drawerStore.showSessionProfileDrawer = false;
 
   signIn();
 };

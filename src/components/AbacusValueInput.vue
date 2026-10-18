@@ -17,7 +17,7 @@
   >
     <template v-if="$slots['append-inner']" v-slot:append-inner><slot name="append-inner"></slot></template>
   </s-date-input>
-  <v-text-field
+  <s-text-field
     v-else-if="dataTypeName === 'Integer' || dataTypeName === 'Decimal'"
     v-model="model"
     type="number"
@@ -27,10 +27,10 @@
     hide-details
   >
     <template v-if="$slots['append-inner']" v-slot:append-inner><slot name="append-inner"></slot></template>
-  </v-text-field>
-  <v-text-field v-else v-model="model" :label="label" :autofocus="autofocus" hide-details>
+  </s-text-field>
+  <s-text-field v-else v-model="model" :label="label" :autofocus="autofocus" hide-details>
     <template v-if="$slots['append-inner']" v-slot:append-inner><slot name="append-inner"></slot></template>
-  </v-text-field>
+  </s-text-field>
 </template>
 
 <script setup lang="ts">

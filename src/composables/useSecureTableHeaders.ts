@@ -7,7 +7,13 @@ export function useSecureTableHeaders(fields: any) {
   const securedFields: Ref<any[]> = ref([]);
 
   fields.forEach((item: any) => {
-    if (!item.permission || sessionStore.hasPermission(item.permission)) {
+    const allowed =
+      !item.permission ||
+      (typeof item.permission === "function"
+        ? item.permission()
+        : sessionStore.hasPermission(item.permission));
+
+    if (allowed) {
       securedFields.value.push(item);
     }
   });

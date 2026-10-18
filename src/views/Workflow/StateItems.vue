@@ -1,8 +1,8 @@
 <template>
   <s-form :submit="submit">
     <s-title :title="$t('state-items')" close-drawer type="borderless" />
-    <v-text-field v-model="state.key" :label="$t('key')" readonly variant="outlined" density="compact">
-    </v-text-field>
+    <s-text-field v-model="state.key" :label="$t('key')" readonly variant="outlined" density="compact">
+    </s-text-field>
     <WorkflowStateItemsEditor v-model="stateItems" :state-items="state.items" />
     <div class="flex justify-end mt-4">
       <s-btn-alert :disabled="busy">{{ $t("save") }}</s-btn-alert>

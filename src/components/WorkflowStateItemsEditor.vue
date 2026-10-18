@@ -5,8 +5,8 @@
     <v-btn :icon="mdiTablePlus" size="x-small" @click.stop="add(selectedStateItem)" v-tooltip="t('add')"
       class="mr-auto"></v-btn>
   </s-strip>
-  <v-text-field v-model="search" density="compact" :label="$t('search')" :prepend-inner-icon="mdiMagnify"
-    variant="solo-filled" flat hide-details single-line class="mb-2"></v-text-field>
+  <s-text-field v-model="search" density="compact" :label="$t('search')" :prepend-inner-icon="mdiMagnify"
+    variant="solo-filled" flat hide-details single-line class="mb-2"></s-text-field>
   <v-divider></v-divider>
   <v-data-table v-model:search="search" disable-sort hide-sort :items="items" :headers="headers" :mobile="true"
     :loading="busy" :items-per-page="5">
@@ -18,9 +18,9 @@
         v-tooltip="t('remove')" class="mr-auto"></v-btn>
     </template>
     <template v-slot:item.name="{ item }">
-      <v-text-field v-model="item.name" density="compact" :variant="item.required ? 'outlined' : 'solo-filled'"
+      <s-text-field v-model="item.name" density="compact" :variant="item.required ? 'outlined' : 'solo-filled'"
         :error-messages="item.message" :hide-details="!item.message" :readonly="item.required">
-      </v-text-field>
+      </s-text-field>
     </template>
     <template v-slot:item.type="{ item }">
       <v-select v-model="item.type" :items="types" density="compact"
@@ -31,17 +31,17 @@
       <div v-if="item.type === 'DateTime'">
         <s-date-input v-model="item.dateValue" @update:model-value="setDateValue(item)" density="compact"
           :error-messages="item.message" :hide-details="!item.message"></s-date-input>
-        <v-text-field :model-value="item.timeValue" :prepend-icon="mdiClockTimeFourOutline" readonly hide-details
+        <s-text-field :model-value="item.timeValue" :prepend-icon="mdiClockTimeFourOutline" readonly hide-details
           density="compact">
           <v-dialog v-model="showDialog" activator="parent" width="auto">
             <v-time-picker v-model="item.timeValue" @update:model-value="setTimeValue(item)"></v-time-picker>
           </v-dialog>
-        </v-text-field>
+        </s-text-field>
       </div>
       <v-checkbox v-else-if="item.type === 'Boolean'" v-model="item.value" density="compact" true-value="true"
         false-value="false"></v-checkbox>
-      <v-text-field v-else v-model="item.value" density="compact" variant="solo-filled" :error-messages="item.message"
-        :hide-details="!item.message"></v-text-field>
+      <s-text-field v-else v-model="item.value" density="compact" variant="solo-filled" :error-messages="item.message"
+        :hide-details="!item.message"></s-text-field>
     </template>
     <template v-slot:item.effectiveDate="{ item }">
       <s-date-input v-model="item.effectiveDate" density="compact" :error-messages="item.message"

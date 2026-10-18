@@ -1,12 +1,12 @@
 <template>
   <s-form :submit="submit">
     <s-title :title="$t('state')" close-drawer type="borderless" />
-    <v-text-field
+    <s-text-field
       v-model="state.key"
       :label="$t('key')"
       :error-messages="validation.message('key')"
     >
-    </v-text-field>
+    </s-text-field>
     <div class="flex justify-end mt-4">
       <s-btn-alert type="submit" :disabled="busy" :validation="validation">{{
         $t("save")

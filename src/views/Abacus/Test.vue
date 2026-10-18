@@ -1,13 +1,13 @@
 <template>
   <s-form :submit="submit">
     <s-title :title="$t('test')" close-drawer type="borderless" />
-    <v-text-field
+    <s-text-field
       v-model="state.name"
       :label="$t('test-name')"
       class="mb-2"
       :error-messages="validation.message('name')"
     >
-    </v-text-field>
+    </s-text-field>
     <v-autocomplete
       v-model="state.algorithmId"
       :label="$t('algorithm')"
@@ -34,13 +34,13 @@
       :error-messages="validation.message('comparison')"
     >
     </v-select>
-    <v-text-field
+    <s-text-field
       v-model="state.expectedResult"
       :label="$t('expected-result')"
       class="mb-2"
       :error-messages="validation.message('expectedResult')"
     >
-    </v-text-field>
+    </s-text-field>
     <s-strip reverse>
       <s-btn-alert type="submit" :disabled="busy" :validation="validation">{{
         $t("save")

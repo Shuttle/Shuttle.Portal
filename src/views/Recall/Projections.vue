@@ -23,8 +23,8 @@
       </template>
       <template v-slot:editor="{ filter }">
         <div v-if="filter.key === 'name'" class="p-3">
-          <v-text-field v-model="specification.nameMatch" :label="t('name')" density="compact" variant="solo-filled"
-            flat hide-details clearable autofocus></v-text-field>
+          <s-text-field v-model="specification.nameMatch" :label="t('name')" density="compact" variant="solo-filled"
+            flat hide-details clearable autofocus></s-text-field>
         </div>
         <div v-else-if="filter.key === 'sequenceNumber'" class="p-3">
           <s-number-input v-model="specification.sequenceNumberStart" :label="t('sequence-number-start')" :min="0"
@@ -59,13 +59,13 @@
     <v-card>
       <s-form :submit="save" class="p-4">
         <s-title :title="$t('projection')" type="borderless" :close-click="() => (editVisible = false)"></s-title>
-        <v-text-field :label="$t('name')" v-model="editState.name" readonly hide-details class="mb-2"></v-text-field>
-        <v-text-field :label="$t('sequence-number')" v-model="editState.sequenceNumber" type="number" hide-details
-          class="mb-2" :error-messages="validation.message('sequenceNumber')"></v-text-field>
-        <v-text-field :label="$t('failure-count')" v-model="editState.failureCount" type="number" hide-details
-          class="mb-2" :error-messages="validation.message('failureCount')"></v-text-field>
-        <v-text-field :label="$t('deferred-until')" v-model="editState.deferredUntil" type="datetime-local" clearable
-          hide-details class="mb-2"></v-text-field>
+        <s-text-field :label="$t('name')" v-model="editState.name" readonly hide-details class="mb-2"></s-text-field>
+        <s-text-field :label="$t('sequence-number')" v-model="editState.sequenceNumber" type="number" hide-details
+          class="mb-2" :error-messages="validation.message('sequenceNumber')"></s-text-field>
+        <s-text-field :label="$t('failure-count')" v-model="editState.failureCount" type="number" hide-details
+          class="mb-2" :error-messages="validation.message('failureCount')"></s-text-field>
+        <s-text-field :label="$t('deferred-until')" v-model="editState.deferredUntil" type="datetime-local" clearable
+          hide-details class="mb-2"></s-text-field>
         <s-strip reverse>
           <s-btn-alert type="submit" :disabled="busy" :validation="validation">{{
             $t("save")

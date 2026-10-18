@@ -9,7 +9,7 @@
     <v-messages v-if="messages.length" :messages="messages" color="error" active></v-messages>
   </div>
 
-  <v-text-field
+  <s-text-field
     v-else
     v-bind="fieldProps"
     :model-value="model"
@@ -39,7 +39,7 @@
         </template>
       </v-time-picker>
     </v-dialog>
-  </v-text-field>
+  </s-text-field>
 </template>
 
 <script lang="ts" setup>

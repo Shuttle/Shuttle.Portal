@@ -28,8 +28,8 @@
             hide-details clearable></WorkflowProcessDefinition>
         </div>
         <div v-else-if="filter.key === 'key'" class="p-3">
-          <v-text-field v-model="specification.keyMatch" :label="t('key')" density="compact" variant="solo-filled"
-            flat hide-details clearable autofocus></v-text-field>
+          <s-text-field v-model="specification.keyMatch" :label="t('key')" density="compact" variant="solo-filled"
+            flat hide-details clearable autofocus></s-text-field>
         </div>
         <div v-else-if="filter.key === 'ids'" class="p-3">
           <v-combobox v-model="specification.ids" :label="t('ids')" density="compact" variant="solo-filled" multiple

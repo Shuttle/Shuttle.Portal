@@ -1,13 +1,13 @@
 <template>
   <s-form :submit="submit">
     <s-title :title="$t('argument')" close-drawer type="borderless" />
-    <v-text-field
+    <s-text-field
       v-model="state.name"
       :label="$t('argument-name')"
       class="mb-2"
       :error-messages="validation.message('name')"
     >
-    </v-text-field>
+    </s-text-field>
     <v-select
       v-model="state.dataTypeName"
       :label="$t('data-type-name')"

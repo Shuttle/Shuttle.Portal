@@ -1,19 +1,19 @@
 <template>
   <s-form :submit="submit">
     <s-title :title="$t('permission')" close-path="/permissions" />
-    <v-text-field
+    <s-text-field
       v-model="state.name"
       :label="$t('name')"
       class="mb-2"
       :error-messages="validation.message('name')"
     >
-    </v-text-field>
-    <v-text-field
+    </s-text-field>
+    <s-text-field
       v-model="state.description"
       :label="$t('description')"
       class="mb-2"
     >
-    </v-text-field>
+    </s-text-field>
     <s-strip reverse>
       <s-btn-alert type="submit" :disabled="busy" :validation="validation">{{
         $t("save")

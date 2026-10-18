@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center flex-wrap gap-3 px-4 py-3">
-    <v-text-field
+    <s-text-field
       v-model="search"
       density="compact"
       :label="t('find-in-results')"
@@ -11,7 +11,7 @@
       single-line
       clearable
       style="max-width: 420px"
-    ></v-text-field>
+    ></s-text-field>
     <span class="text-caption text-medium-emphasis">
       {{
         (search ?? "").trim()

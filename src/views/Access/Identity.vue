@@ -1,7 +1,7 @@
 <template>
   <s-form :submit="submit">
     <s-title :title="$t('identity')" close-drawer type="borderless" />
-    <v-text-field
+    <s-text-field
       :prepend-icon="`svg:${mdiAccountOutline}`"
       v-model="state.identityName"
       :label="$t('identity-name')"
@@ -9,8 +9,8 @@
       :error-messages="validation.message('identityName')"
       autocomplete="new"
     >
-    </v-text-field>
-    <v-text-field
+    </s-text-field>
+    <s-text-field
       :prepend-icon="`svg:${mdiShieldOutline}`"
       v-model="state.password"
       :label="$t('password')"
@@ -22,13 +22,13 @@
       :error-messages="validation.message('password')"
       autocomplete="new"
     >
-    </v-text-field>
-    <v-text-field
+    </s-text-field>
+    <s-text-field
       v-model="state.description"
       :label="$t('description')"
       class="mb-2"
     >
-    </v-text-field>
+    </s-text-field>
     <div class="flex justify-end mt-4">
       <s-btn-alert type="submit" :disabled="busy" :validation="validation">{{
         $t("save")
