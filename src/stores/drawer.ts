@@ -17,6 +17,7 @@ export const useDrawerStore = defineStore("drawer", () => {
   const sizeToggleVisible = ref(false);
   const showNavigationDrawer = ref(false);
   const showProfileDrawer = ref(false);
+  const showSessionProfileDrawer = ref(false);
 
   const setSize = (drawerSize: DrawerSize) => {
     size.value = drawerSize;
@@ -59,6 +60,7 @@ export const useDrawerStore = defineStore("drawer", () => {
   return {
     showNavigationDrawer,
     showProfileDrawer,
+    showSessionProfileDrawer,
     options: drawerOptions,
     sizeToggleVisible,
     size,

@@ -21,7 +21,7 @@
           ></v-autocomplete>
         </v-col>
         <v-col cols="12" sm="5">
-          <v-text-field v-model="newItem.value" :label="$t('value')" density="compact" hide-details></v-text-field>
+          <s-text-field v-model="newItem.value" :label="$t('value')" density="compact" hide-details></s-text-field>
         </v-col>
         <v-col cols="12" sm="2" class="flex items-center">
           <v-btn :icon="mdiPlus" @click="add" :disabled="!canAdd"></v-btn>

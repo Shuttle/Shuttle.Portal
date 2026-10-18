@@ -4,7 +4,7 @@
       <s-title :title="$t('identities')" />
       <s-strip>
         <v-btn :icon="mdiRefresh" size="x-small" @click="refresh"></v-btn>
-        <v-text-field
+        <s-text-field
           v-model="search"
           density="compact"
           :label="$t('search')"
@@ -13,7 +13,7 @@
           flat
           hide-details
           single-line
-        ></v-text-field>
+        ></s-text-field>
       </s-strip>
     </v-card-title>
     <v-divider></v-divider>
@@ -36,11 +36,12 @@
         ></s-btn-add>
       </template>
       <template v-slot:item.action="{ item }">
-        <s-strip
-          v-if="sessionStore.hasPermission(Permissions.Identities.Manage)"
-        >
+        <s-strip>
           <v-btn
-            v-if="shouldShowRoles(item)"
+            v-if="
+              shouldShowRoles(item) &&
+              sessionStore.hasTenantPermission(Permissions.Identities.Register)
+            "
             :icon="mdiAccountGroupOutline"
             size="x-small"
             @click.stop="roles(item)"
@@ -51,8 +52,18 @@
             size="x-small"
             @click.stop="tenants(item)"
           />
-          <v-btn :icon="mdiKey" size="x-small" @click.stop="password(item)" />
-          <v-btn :icon="mdiDelete" size="x-small" @click.stop="remove(item)" />
+          <v-btn
+            v-if="sessionStore.hasPermission(Permissions.Identities.Register)"
+            :icon="mdiKey"
+            size="x-small"
+            @click.stop="password(item)"
+          />
+          <v-btn
+            v-if="sessionStore.hasPermission(Permissions.Identities.Manage)"
+            :icon="mdiDelete"
+            size="x-small"
+            @click.stop="remove(item)"
+          />
         </s-strip>
       </template>
       <template v-slot:item.name="{ item }">
@@ -152,7 +163,9 @@ const headers = useSecureTableHeaders([
     headerProps: {
       class: "w-1",
     },
-    permission: Permissions.Identities.Manage,
+    permission: () =>
+      sessionStore.hasPermission(Permissions.Identities.Manage) ||
+      sessionStore.hasTenantPermission(Permissions.Identities.Register),
   },
   {
     headerProps: {
@@ -213,9 +226,14 @@ const tenantHeaders = useSecureTableHeaders([
 const items: Ref<Identity[]> = ref([]);
 
 const shouldShowRoles = (identity: Identity) => {
-  return identity.tenants?.some((item) => {
-    return item.id === sessionStore.tenantId;
-  });
+  // While operating in the system tenant, roles can be managed for an identity in any of its tenants, not just
+  // the system tenant, so the identity's own tenant membership no longer gates the button.
+  return (
+    sessionStore.systemTenantActive ||
+    identity.tenants?.some((item) => {
+      return item.id === sessionStore.tenantId;
+    })
+  );
 };
 
 const getSelectedTab = (id: string) => {

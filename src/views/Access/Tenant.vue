@@ -1,22 +1,22 @@
 <template>
   <s-form :submit="submit">
     <s-title :title="$t('tenant')" close-drawer type="borderless" />
-    <v-text-field v-model="state.id" :label="$t('id')" class="mb-2" clearable>
-    </v-text-field>
-    <v-text-field
+    <s-text-field v-model="state.id" :label="$t('id')" class="mb-2" clearable>
+    </s-text-field>
+    <s-text-field
       v-model="state.name"
       :label="$t('name')"
       class="mb-2"
       :error-messages="validation.message('name')"
     >
-    </v-text-field>
-    <v-text-field
+    </s-text-field>
+    <s-text-field
       v-model="state.administratorIdentityName"
       :label="$t('administrator-identity-name')"
       class="mb-2"
       :error-messages="validation.message('administratorIdentityName')"
     >
-    </v-text-field>
+    </s-text-field>
     <s-strip reverse>
       <s-btn-alert type="submit" :disabled="busy" :validation="validation">{{
         $t("save")

@@ -41,6 +41,9 @@ const routes: Array<RouteRecordRaw> = [
         name: "identity-password",
         props: true,
         component: () => import("../views/Access/Password.vue"),
+        meta: {
+          permission: Permissions.Identities.Register,
+        },
       },
       {
         path: "identity/:id/description",

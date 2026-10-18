@@ -2,13 +2,13 @@
   <s-form :submit="signIn" size="small" class="px-5 pt-6">
     <s-title :title="$t('sign-in')"></s-title>
     <div v-if="configuration.isAccessPasswordAuthenticationAllowed()">
-      <v-text-field :prepend-icon="`svg:${mdiAccountOutline}`" v-model="state.identityName" :label="$t('identity-name')"
+      <s-text-field :prepend-icon="`svg:${mdiAccountOutline}`" v-model="state.identityName" :label="$t('identity-name')"
         class="mb-2" :error-messages="validation.message('identityName')">
-      </v-text-field>
-      <v-text-field :prepend-icon="`svg:${mdiShieldOutline}`" v-model="state.password" :label="$t('password')"
+      </s-text-field>
+      <s-text-field :prepend-icon="`svg:${mdiShieldOutline}`" v-model="state.password" :label="$t('password')"
         :icon-end="getPasswordIcon()" icon-end-clickable :append-icon="`svg:${getPasswordIcon()}`"
         @click:append="togglePasswordIcon" :type="getPasswordType()" :error-messages="validation.message('password')">
-      </v-text-field>
+      </s-text-field>
       <div class="flex justify-end mt-4">
         <s-btn-alert type="submit" :disabled="busy" :validation="validation">{{
           $t("sign-in")

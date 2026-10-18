@@ -10,12 +10,12 @@
       </template>
       <template v-slot:editor="{ filter }">
         <div v-if="filter.key === 'key'" class="p-3">
-          <v-text-field v-model="specification.keyMatch" :label="t('key')" density="compact" variant="solo-filled"
-            flat hide-details clearable autofocus></v-text-field>
+          <s-text-field v-model="specification.keyMatch" :label="t('key')" density="compact" variant="solo-filled"
+            flat hide-details clearable autofocus></s-text-field>
         </div>
         <div v-else-if="filter.key === 'owner'" class="p-3">
-          <v-text-field v-model="specification.ownerMatch" :label="t('owner')" density="compact"
-            variant="solo-filled" flat hide-details clearable autofocus></v-text-field>
+          <s-text-field v-model="specification.ownerMatch" :label="t('owner')" density="compact"
+            variant="solo-filled" flat hide-details clearable autofocus></s-text-field>
         </div>
       </template>
     </s-filter-bar>

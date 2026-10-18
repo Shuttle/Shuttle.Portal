@@ -1,8 +1,8 @@
 <template>
   <s-form :submit="submit">
     <s-title :title="$t('process-message')" close-drawer type="borderless" />
-    <v-text-field v-model="state.typeName" :label="$t('type-name')" :error-messages="validation.message('typeName')">
-    </v-text-field>
+    <s-text-field v-model="state.typeName" :label="$t('type-name')" :error-messages="validation.message('typeName')">
+    </s-text-field>
     <div class="flex justify-end mt-4">
       <s-btn-alert type="submit" :disabled="busy" :validation="validation">{{
         $t("save")

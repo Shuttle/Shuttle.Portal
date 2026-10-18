@@ -17,8 +17,8 @@
       </template>
       <template v-slot:editor="{ filter }">
         <div v-if="filter.key === 'id'" class="p-3">
-          <v-text-field v-model="specification.id" :label="t('id')" density="compact" variant="solo-filled" flat
-            hide-details clearable autofocus></v-text-field>
+          <s-text-field v-model="specification.id" :label="t('id')" density="compact" variant="solo-filled" flat
+            hide-details clearable autofocus></s-text-field>
         </div>
         <div v-else-if="filter.key === 'sequenceNumber'" class="p-3">
           <s-number-input v-model="specification.sequenceNumberStart" :label="t('sequence-number-start')" :min="0"

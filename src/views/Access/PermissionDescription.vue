@@ -1,19 +1,19 @@
 <template>
   <s-form :submit="submit">
     <s-title :title="$t('permission')" close-drawer type="borderless" />
-    <v-text-field
+    <s-text-field
       v-model="state.current"
       :label="$t('description')"
       class="mb-2"
       readonly
     >
-    </v-text-field>
-    <v-text-field
+    </s-text-field>
+    <s-text-field
       v-model="state.description"
       :label="$t('new-value')"
       class="mb-2"
     >
-    </v-text-field>
+    </s-text-field>
     <s-strip reverse>
       <v-btn type="submit" :disabled="busy || same">{{ $t("save") }}</v-btn>
     </s-strip>

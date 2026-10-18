@@ -9,13 +9,13 @@
     <v-divider></v-divider>
     <v-card-text>
       <v-form @submit.prevent="add" class="flex items-end gap-2 mb-4">
-        <v-text-field
+        <s-text-field
           v-model="newValue"
           :label="$t('new-value')"
           density="compact"
           hide-details
           class="max-w-sm"
-        ></v-text-field>
+        ></s-text-field>
         <v-btn :icon="mdiPlus" @click="add" :disabled="!newValue"></v-btn>
       </v-form>
     </v-card-text>

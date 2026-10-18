@@ -1,20 +1,20 @@
 <template>
   <s-form :submit="submit">
     <s-title :title="$t('identity')" close-drawer type="borderless" />
-    <v-text-field
+    <s-text-field
       v-model="state.current"
       :label="$t('name')"
       class="mb-2"
       readonly
     >
-    </v-text-field>
-    <v-text-field
+    </s-text-field>
+    <s-text-field
       v-model="state.name"
       :label="$t('new-value')"
       class="mb-2"
       :error-messages="validation.message('name')"
     >
-    </v-text-field>
+    </s-text-field>
     <s-strip reverse>
       <s-btn-alert
         type="submit"

@@ -1,13 +1,13 @@
 <template>
   <s-form :submit="submit">
     <s-title :title="$t('role')" close-drawer type="borderless" />
-    <v-text-field
+    <s-text-field
       v-model="state.name"
       :label="$t('name')"
       class="mb-2"
       :error-messages="validation.message('name')"
     >
-    </v-text-field>
+    </s-text-field>
     <s-strip reverse>
       <s-btn-alert type="submit" :disabled="busy" :validation="validation">{{
         $t("save")

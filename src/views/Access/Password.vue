@@ -5,7 +5,7 @@
       :close-path="getClosePath()"
       :type="getTitleType()"
     />
-    <v-text-field
+    <s-text-field
       :prepend-icon="`svg:${mdiAccountOutline}`"
       v-model="state.identityName"
       :label="$t('identity-name')"
@@ -13,8 +13,8 @@
       :error-messages="validation.message('identityName')"
       readonly
     >
-    </v-text-field>
-    <v-text-field
+    </s-text-field>
+    <s-text-field
       :prepend-icon="`svg:${mdiKey}`"
       v-model="state.password"
       :label="$t('password')"
@@ -26,7 +26,7 @@
       autocomplete="current-password"
       :error-messages="validation.message('password')"
     >
-    </v-text-field>
+    </s-text-field>
     <div class="flex justify-end mt-4">
       <s-btn-alert type="submit" :disabled="busy" :validation="validation">{{
         $t("change")
