@@ -1,20 +1,44 @@
+import type { SnackbarMessage } from "@/portal";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { i18n } from "@/i18n";
 
-export const useSnackbarStore = defineStore("snackbar", () => {
-  const visible = ref(false);
-  const text = ref("");
-  const timeout = ref(2000);
+type SnackbarQueueMessage = {
+  text: string;
+  color?: string;
+  timeout: number;
+  onDismiss: () => void;
+};
 
-  function open(message: string, duration: number = 2000) {
-    text.value = message;
-    visible.value = true;
-    timeout.value = duration;
+export const useSnackbarStore = defineStore("snackbar", () => {
+  const queue = ref<SnackbarQueueMessage[]>([]);
+
+  // Messages that are queued or currently displayed; used to suppress duplicates (e.g. repeated API errors).
+  const active = new Set<string>();
+
+  function add(snackbarMessage: SnackbarMessage) {
+    if (!snackbarMessage || !snackbarMessage.message) {
+      return;
+    }
+
+    const text = snackbarMessage.message;
+
+    if (active.has(text)) {
+      return;
+    }
+
+    active.add(text);
+
+    queue.value.push({
+      text,
+      color: snackbarMessage.type,
+      timeout: snackbarMessage.timeout ?? 10000,
+      onDismiss: () => active.delete(text),
+    });
   }
 
-  function close() {
-    visible.value = false;
+  function open(message: string, duration: number = 2000) {
+    add({ message, timeout: duration });
   }
 
   function requestSent(duration: number = 3000) {
@@ -26,11 +50,9 @@ export const useSnackbarStore = defineStore("snackbar", () => {
   }
 
   return {
-    visible,
-    text,
-    timeout,
+    queue,
+    add,
     open,
-    close,
     requestSent,
     working,
   };

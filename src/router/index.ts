@@ -1,7 +1,7 @@
 import type { RouteRecordRaw } from "vue-router";
 import { createRouter, createWebHistory } from "vue-router";
 import { useSessionStore } from "@/stores/session";
-import { useAlertStore } from "@/stores/alert";
+import { useSnackbarStore } from "@/stores/snackbar";
 import Permissions from "../permissions";
 import { i18n } from "@/i18n";
 import Dashboard from "../views/Dashboard.vue";
@@ -481,10 +481,9 @@ router.beforeEach(async (to) => {
     try {
       await sessionStore.initialize();
     } catch (error: any) {
-      useAlertStore().add({
+      useSnackbarStore().add({
         message: error.toString(),
         type: "error",
-        name: "session-initialize",
       });
       if (!window.location.pathname.startsWith("/sign-in")) {
         router.push({ path: "/sign-in" });
@@ -496,10 +495,9 @@ router.beforeEach(async (to) => {
     !!to.meta.permission &&
     !sessionStore.hasPermission(to.meta.permission as string)
   ) {
-    useAlertStore().add({
+    useSnackbarStore().add({
       message: i18n.global.t("exceptions.insufficient-permission"),
       type: "info",
-      name: "insufficient-permission",
     });
 
     return false;

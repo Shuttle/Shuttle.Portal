@@ -61,7 +61,7 @@ import { useRouter } from "vue-router";
 import { useSecureTableHeaders } from "@/composables/useSecureTableHeaders";
 import Permissions from "@/permissions";
 import type { Tenant } from "@/portal";
-import { useAlertStore } from "@/stores/alert";
+import { useSnackbarStore } from "@/stores/snackbar";
 import { useConfirmationStore } from "@/stores/confirmation";
 import { useDrawerStore } from "@/stores/drawer";
 import { useSessionStore } from "@/stores/session";
@@ -118,10 +118,9 @@ const setStatus = async (item: Tenant) => {
       status: item.status,
     });
   } catch (error: any) {
-    useAlertStore().add({
+    useSnackbarStore().add({
       message: error.toString(),
       type: "error",
-      name: "tenant-status",
     });
     item.status = item.status === 1 ? 0 : 1;
   }

@@ -1,51 +1,25 @@
 <template>
   <v-app>
     <v-layout>
-      <div
-        v-if="alertStore.alerts.length"
-        class="absolute top-0 left-0 right-0 bottom-0 z-5000 flex flex-col items-center bg-black/25 w-full"
-        @click="clearAlerts"
-      >
-        <div class="mt-6 mb-2 lg:w-1/2 md:w-100 lg:mx-auto md:mx-2">
-          <v-alert
-            :type="alert.type"
-            v-bind:key="alert.key"
-            v-for="alert in alertStore.alerts"
-            :text="alert.message"
-            class="mb-2"
-          >
-            <template v-slot:text>
-              {{ alert.message }}
-            </template>
-            <template v-slot:close v-if="alert.dismissable">
-              <v-icon
-                :icon="`svg:${mdiCloseCircleOutline}`"
-                @click="closeClicked(alert.name)"
-              />
-            </template>
-          </v-alert>
-        </div>
-      </div>
       <ShuttleNavbar />
       <v-main>
         <div class="p-2">
           <RouterView />
         </div>
-        <v-snackbar
-          v-model="snackbarStore.visible"
-          :timeout="snackbarStore.timeout"
+        <v-snackbar-queue
+          v-model="snackbarStore.queue"
+          location="bottom end"
+          :total-visible="5"
+          closable
         >
-          {{ snackbarStore.text }}
-
-          <template v-slot:actions>
+          <template v-slot:actions="{ props }">
             <v-btn
-              color="blue"
+              v-bind="props"
               variant="text"
-              @click="snackbarStore.close()"
               :icon="`svg:${mdiCloseCircleOutline}`"
             ></v-btn>
           </template>
-        </v-snackbar>
+        </v-snackbar-queue>
       </v-main>
       <v-dialog
         v-model="confirmationStore.isOpen"
@@ -90,38 +64,16 @@
 <script lang="ts" setup>
 import ShuttleNavbar from "@/components/ShuttleNavbar.vue";
 import { mdiCloseCircleOutline } from "@mdi/js";
-import { useAlertStore } from "@/stores/alert";
 import { RouterView } from "vue-router";
 import { useConfirmationStore } from "@/stores/confirmation";
 import { useSnackbarStore } from "@/stores/snackbar";
 import configuration from "@/configuration";
 import { useI18n } from "vue-i18n";
 
-const alertStore = useAlertStore();
 const confirmationStore = useConfirmationStore();
 const snackbarStore = useSnackbarStore();
 
 const { t } = useI18n({ useScope: "global" });
-
-watch(
-  () => alertStore.alerts.length,
-  (newLength, oldLength) => {
-    if (newLength > oldLength) {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    }
-  },
-);
-
-const clearAlerts = () => {
-  alertStore.clear();
-};
-
-const closeClicked = (name: string) => {
-  alertStore.remove(name);
-};
 
 const handleBeforeUnload = (event: BeforeUnloadEvent) => {
   const message = useConfirmationStore().getConfirmationMessage();
@@ -151,14 +103,12 @@ onUnmounted(() => {
 
 if (!configuration.isOk()) {
   t("configuration-error");
-  alertStore.add({
+  snackbarStore.add({
     message: t("exceptions.configuration-error", {
       error: configuration.getErrorMessage(),
     }),
     type: "error",
-    name: "configuration-error",
-    dismissable: false,
-    expire: false,
+    timeout: -1,
   });
 }
 </script>

@@ -1,15 +1,22 @@
 <template>
-  <div
-    class="lg:w-2/4 md:w-3/4 mt-6 p-6 mx-auto bg-zinc-800 text-zinc-300 border border-zinc-400 text-lg flex flex-col justify-center items-center"
-  >
-    <v-progress-circular indeterminate></v-progress-circular>
-    <span>{{ $t("signing-in") }}</span>
+  <div class="flex items-center justify-center min-h-[calc(100vh-96px)] px-4 py-8">
+    <v-card class="w-full max-w-md" rounded="xl" elevation="8">
+      <div class="h-1 bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600"></div>
+      <v-card-text class="flex flex-col items-center text-center px-8 py-10">
+        <v-progress-circular indeterminate color="primary" size="80" width="3">
+          <v-icon :icon="`svg:${mdiShieldAccountOutline}`" color="primary" size="36"></v-icon>
+        </v-progress-circular>
+        <div class="text-2xl font-semibold mt-6">{{ $t("signing-in") }}</div>
+        <div class="text-sm text-medium-emphasis mt-1">{{ $t("signing-in-subtitle") }}</div>
+      </v-card-text>
+    </v-card>
   </div>
 </template>
 
 <script setup lang="ts">
+import { mdiShieldAccountOutline } from "@mdi/js";
 import { ref } from "vue";
-import { useAlertStore } from "@/stores/alert";
+import { useSnackbarStore } from "@/stores/snackbar";
 import { useSessionStore } from "@/stores/session";
 import { useI18n } from "vue-i18n";
 import router from "@/router";
@@ -17,7 +24,7 @@ import { useRoute } from "vue-router";
 
 const { t } = useI18n({ useScope: "global" });
 
-const alertStore = useAlertStore();
+const snackbarStore = useSnackbarStore();
 
 const busy = ref(false);
 
@@ -26,12 +33,11 @@ onMounted(async () => {
   const route = useRoute();
 
   if (!!route.query.error) {
-    alertStore.add({
+    snackbarStore.add({
       message: t("exceptions.oauth-error", {
         error: route.query.error_description,
       }),
       type: "error",
-      name: "oauth-error",
     });
 
     router.push({ name: "sign-in" });
@@ -51,12 +57,11 @@ onMounted(async () => {
     const params = { identityName: sessionResponse.session?.identityName };
 
     if (sessionResponse.result === "UnknownIdentity") {
-      alertStore.add({
+      snackbarStore.add({
         message: sessionResponse.registrationRequested
           ? t("_messages.oauth-unknown-identity-registered", params)
           : t("_messages.oauth-unknown-identity", params),
         type: "error",
-        name: "oauth-unknown-identity",
       });
 
       router.push({ name: "sign-in" });
@@ -70,7 +75,7 @@ onMounted(async () => {
 
     router.push({ name: "dashboard" });
   } catch (error: any) {
-    alertStore.add({
+    snackbarStore.add({
       message:
         error.response?.status == 400
           ? t("exceptions.invalid-credentials", {
@@ -78,7 +83,6 @@ onMounted(async () => {
             })
           : error.toString(),
       type: "error",
-      name: "sign-in-exception",
     });
 
     router.push({ name: "sign-in" });

@@ -1,5 +1,5 @@
 import axios, { type AxiosInstance } from "axios";
-import { useAlertStore } from "@/stores/alert";
+import { useSnackbarStore } from "@/stores/snackbar";
 import { useSessionStore } from "@/stores/session";
 import { useRecallStore } from "@/stores/recall";
 import configuration from "./configuration";
@@ -33,15 +33,14 @@ const configure = (
         return error;
       }
 
-      const alertStore = useAlertStore();
+      const snackbarStore = useSnackbarStore();
 
-      alertStore.add({
+      snackbarStore.add({
         message:
           error.response?.data ||
           error.response?.statusText ||
           "(unknown communication/network error)",
         type: "error",
-        name: "api-error",
       });
 
       return Promise.reject(error);

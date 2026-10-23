@@ -1,16 +1,10 @@
 import type { Api } from "./enums";
 
-export type Alert = {
+export type SnackbarMessage = {
   message: string;
-  name: string;
   type?: "error" | "success" | "warning" | "info" | undefined;
-  expire?: boolean;
-  expirySeconds?: number;
-  expiryDate?: Date;
-  dismissable?: boolean;
-  key?: string;
-  variant?: string;
-  visiblePercentage?: number;
+  // Milliseconds before the message is dismissed; -1 keeps it open until it is closed.
+  timeout?: number;
 };
 
 export type Configuration = {

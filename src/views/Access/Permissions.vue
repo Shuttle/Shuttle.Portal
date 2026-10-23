@@ -215,7 +215,7 @@ const setStatus = async (permission: PermissionItem) => {
   permission.working = true;
 
   try {
-    await accessApi.patch(`v1/permissions/${permission.id}`, {
+    await accessApi.patch(`v1/permissions/${permission.id}/status`, {
       status: permission.status,
     });
 

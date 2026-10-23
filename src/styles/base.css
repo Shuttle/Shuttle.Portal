@@ -15,3 +15,14 @@
 .route-leave-active {
   transition: all 0.3s ease;
 }
+
+/* neutralise the browser autofill highlight so that inputs keep the Vuetify field styling */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: rgb(var(--v-theme-on-surface));
+  caret-color: rgb(var(--v-theme-on-surface));
+  transition:
+    background-color 600000s 0s,
+    color 600000s 0s;
+}

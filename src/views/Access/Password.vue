@@ -45,7 +45,7 @@ import {
 import { computed, onMounted, reactive, ref, type Reactive } from "vue";
 import { required } from "@vuelidate/validators";
 import { useValidation } from "@/composables/useValidation";
-import { useAlertStore } from "@/stores/alert";
+import { useSnackbarStore } from "@/stores/snackbar";
 import { useSessionStore } from "@/stores/session";
 import { useI18n } from "vue-i18n";
 import { accessApi } from "@/api";
@@ -57,7 +57,7 @@ const props = defineProps({
 });
 
 const { t } = useI18n({ useScope: "global" });
-const alertStore = useAlertStore();
+const snackbarStore = useSnackbarStore();
 
 const busy: Ref<boolean> = ref(false);
 
@@ -127,10 +127,9 @@ const change = async () => {
       newPassword: state.password,
     });
 
-    alertStore.add({
+    snackbarStore.add({
       message: t("_messages.password-changed"),
-      variant: "success",
-      name: "password-changed",
+      type: "success",
     });
 
     router.push(props.id === "token" ? "/dashboard" : "/identities");

@@ -117,7 +117,7 @@ import {
   mdiEyeOutline,
 } from "@mdi/js";
 import { accessApi } from "@/api";
-import { useAlertStore } from "@/stores/alert";
+import { useSnackbarStore } from "@/stores/snackbar";
 import { useDrawerStore } from "@/stores/drawer";
 import { useSessionStore } from "@/stores/session";
 import { useValidation } from "@/composables/useValidation";
@@ -192,10 +192,9 @@ const changePassword = async () => {
 
     passwordState.password = "";
 
-    useAlertStore().add({
+    useSnackbarStore().add({
       message: t("_messages.password-changed"),
-      variant: "success",
-      name: "password-changed",
+      type: "success",
     });
   } finally {
     passwordBusy.value = false;
